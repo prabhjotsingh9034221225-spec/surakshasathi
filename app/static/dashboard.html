@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SurakshaSathi Dashboard</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --bg:#f6f7f9; --card:#ffffff; --text:#1b2430; --muted:#667085; --line:#e4e7ec;
+    --brand:#0f766e; --scam:#d92d20; --warn:#dc6803; --ok:#16803c; --bubble-user:#dcf8c6; --bubble-bot:#ffffff; --bubble-guard:#fff3cd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0e1116; --card:#171b22; --text:#e8ecf2; --muted:#9aa4b2; --line:#2a313c; --bubble-user:#1f4d36; --bubble-bot:#222833; --bubble-guard:#4a3a12; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari","Noto Sans Gurmukhi",sans-serif; }
+  header { display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--line); background:var(--card); position:sticky; top:0; z-index:500; }
+  header h1 { font-size:18px; margin:0; }
+  header .tag { color:var(--muted); font-size:13px; }
+  .badge { margin-left:auto; font-size:12px; padding:3px 10px; border-radius:999px; background:#fef3c7; color:#92400e; display:none; }
+  main { max-width:1280px; margin:0 auto; padding:16px 20px 40px; display:grid; gap:16px; }
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+  .tile, .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .tile .n { font-size:28px; font-weight:700; line-height:1.1; }
+  .tile .l { color:var(--muted); font-size:13px; }
+  .tile.scam .n { color:var(--scam); } .tile.warn .n { color:var(--warn); } .tile.ok .n { color:var(--ok); }
+  .grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(280px,1fr); gap:16px; }
+  @media (max-width:900px) { .grid { grid-template-columns:1fr; } }
+  h2 { font-size:14px; margin:0 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+  #map { height:460px; border-radius:10px; z-index:1; }
+  .feed { list-style:none; margin:0; padding:0; max-height:260px; overflow:auto; }
+  .feed li { padding:8px 0; border-bottom:1px solid var(--line); font-size:13px; }
+  .feed li:last-child { border:0; }
+  .feed .meta { color:var(--muted); font-size:12px; }
+  .pill { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px; color:#fff; margin-right:6px; }
+  .pill.scam { background:var(--scam); } .pill.suspicious { background:var(--warn); }
+  .bars .row { display:grid; grid-template-columns:110px 1fr 30px; align-items:center; gap:8px; font-size:13px; margin:6px 0; }
+  .bars .bar { height:8px; border-radius:4px; background:var(--brand); }
+  .sim { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+  @media (max-width:900px) { .sim { grid-template-columns:1fr; } }
+  textarea, select, input { width:100%; font:inherit; color:var(--text); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
+  textarea { min-height:96px; resize:vertical; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0; }
+  button { font:inherit; border:0; border-radius:8px; padding:9px 16px; background:var(--brand); color:#fff; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--brand); border:1px solid var(--brand); }
+  button:disabled { opacity:.6; cursor:wait; }
+  .samples { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+  .samples button { font-size:12px; padding:4px 10px; }
+  .chat { display:flex; flex-direction:column; gap:8px; min-height:200px; max-height:420px; overflow:auto; }
+  .bubble { padding:8px 12px; border-radius:12px; max-width:92%; white-space:pre-wrap; font-size:14px; border:1px solid var(--line); }
+  .bubble.user { background:var(--bubble-user); align-self:flex-end; }
+  .bubble.bot { background:var(--bubble-bot); align-self:flex-start; }
+  .bubble.guardian { background:var(--bubble-guard); align-self:flex-start; }
+  .who { font-size:11px; color:var(--muted); margin-bottom:2px; }
+  audio { width:100%; margin-top:4px; }
+  .empty { color:var(--muted); font-size:13px; }
+  .note { color:var(--muted); font-size:12px; margin-top:6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ SurakshaSathi</h1>
+  <span class="tag">Community scam heatmap · from anonymous reports only</span>
+  <span class="badge" id="sampleBadge">Includes sample demo data</span>
+</header>
+<main>
+  <section class="tiles" aria-label="Summary">
+    <div class="tile"><div class="n" id="tChecked">–</div><div class="l">Messages checked (30 days)</div></div>
+    <div class="tile scam"><div class="n" id="tScam">–</div><div class="l">Scams caught</div></div>
+    <div class="tile warn"><div class="n" id="tSusp">–</div><div class="l">Suspicious</div></div>
+    <div class="tile ok"><div class="n" id="tGuard">–</div><div class="l">Users with a family guardian</div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Scam hotspots by district</h2>
+      <div id="map" role="img" aria-label="Map of scam reports by district"></div>
+      <div class="note">Circle size and colour show the number of scam reports in the district. Updates every few seconds.</div>
+    </div>
+    <div style="display:grid; gap:16px; align-content:start;">
+      <div class="card">
+        <h2>Live reports</h2>
+        <ul class="feed" id="feed"></ul>
+      </div>
+      <div class="card bars">
+        <h2>Top scam types</h2>
+        <div id="cats"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="simCard">
+    <h2>Try it: simulate a WhatsApp message</h2>
+    <div class="sim">
+      <div>
+        <div class="samples" id="samples"></div>
+        <textarea id="simText" placeholder="Paste or type a suspicious message in English, Hindi or Punjabi"></textarea>
+        <div class="row2">
+          <select id="simLang" aria-label="Reply language">
+            <option value="">Auto-detect language</option>
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="pa">ਪੰਜਾਬੀ</option>
+          </select>
+          <select id="simDistrict" aria-label="District"></select>
+        </div>
+        <button id="simBtn">Check message</button>
+        <div class="note" id="simNote">This uses the real analysis engine and creates a real report on the map, but no WhatsApp messages are actually sent.</div>
+      </div>
+      <div>
+        <div class="chat" id="chat" aria-live="polite"><div class="empty">Replies from the bot and the family guardian's phone will appear here.</div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const CAT = {
+  kyc:"Fake KYC", otp:"OTP theft", pin:"PIN theft", upi_collect:"UPI collect", lottery:"Lottery", advance_fee:"Advance fee",
+  remote_access:"Remote access", malware:"Malicious app", legal_threat:"Digital arrest", electricity:"Electricity",
+  parcel:"Courier", job_scam:"Job scam", investment:"Investment", extortion:"Blackmail", credentials:"Password theft",
+  block_threat:"Account block", link_link:"Phishing link", link_bait:"Phishing link", urgency:"Pressure tactic", impersonation:"Impersonation", none:"Other"
+};
+const label = (c) => CAT[c] || c || "Other";
+
+const map = L.map("map", { scrollWheelZoom:false }).setView([30.6, 76.2], 7);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:12, attribution:"© OpenStreetMap contributors" }).addTo(map);
+const layer = L.layerGroup().addTo(map);
+
+function colorFor(ratio) { return ratio > .66 ? "#d92d20" : ratio > .33 ? "#f79009" : "#fdb022"; }
+
+async function getJSON(url, opts) {
+  const r = await fetch(url, opts);
+  if (!r.ok) throw new Error(url + " " + r.status);
+  return r.json();
+}
+
+async function refresh() {
+  try {
+    const [stats, heat, recent] = await Promise.all([getJSON("/api/stats"), getJSON("/api/heatmap"), getJSON("/api/reports/recent?limit=12")]);
+    $("tChecked").textContent = stats.total_checked.toLocaleString();
+    $("tScam").textContent = stats.scams_blocked.toLocaleString();
+    $("tSusp").textContent = stats.suspicious.toLocaleString();
+    $("tGuard").textContent = stats.users_with_guardian.toLocaleString();
+    $("sampleBadge").style.display = stats.sample_data ? "inline-block" : "none";
+
+    layer.clearLayers();
+    const max = Math.max(1, ...heat.map(h => h.count));
+    heat.forEach(h => {
+      const ratio = h.count / max;
+      const c = L.circleMarker([h.lat, h.lng], { radius: 8 + 22 * Math.sqrt(ratio), color: colorFor(ratio), fillColor: colorFor(ratio), fillOpacity: .5, weight: 2 }).addTo(layer);
+      const tip = document.createElement("div");
+      const b = document.createElement("strong"); b.textContent = h.district + ", " + h.state;
+      tip.append(b, document.createElement("br"), document.createTextNode(h.count + " reports · top: " + label(h.top_category)));
+      c.bindTooltip(tip);
+    });
+
+    const feed = $("feed"); feed.replaceChildren();
+    if (!recent.length) { const li = document.createElement("li"); li.className = "empty"; li.textContent = "No reports yet."; feed.append(li); }
+    recent.forEach(r => {
+      const li = document.createElement("li");
+      const pill = document.createElement("span"); pill.className = "pill " + r.verdict; pill.textContent = r.verdict;
+      const t = document.createElement("span"); t.textContent = label(r.category);
+      const meta = document.createElement("div"); meta.className = "meta";
+      meta.textContent = (r.district || "Unknown district") + " · " + new Date(r.ts * 1000).toLocaleTimeString() + " · " + (r.snippet || "");
+      li.append(pill, t, meta); feed.append(li);
+    });
+
+    const cats = $("cats"); cats.replaceChildren();
+    const topN = Math.max(1, ...stats.by_category.map(c => c.count));
+    stats.by_category.forEach(c => {
+      const row = document.createElement("div"); row.className = "row";
+      const l = document.createElement("span"); l.textContent = label(c.category);
+      const track = document.createElement("div"); const bar = document.createElement("div"); bar.className = "bar"; bar.style.width = (100 * c.count / topN) + "%"; track.append(bar);
+      const n = document.createElement("span"); n.textContent = c.count;
+      row.append(l, track, n); cats.append(row);
+    });
+  } catch (e) { console.error(e); }
+}
+
+// ---- simulator
+const SAMPLES = [
+  ["Fake KYC (EN)", "Dear customer, your SBI account is blocked. Update KYC immediately: http://sbi-kyc-update.xyz/login"],
+  ["Fake KYC (हिन्दी)", "आपका SBI खाता बंद हो जाएगा। तुरंत KYC अपडेट करें और OTP बताएं।"],
+  ["Lottery", "Congratulations! You won Rs 25,00,000 in KBC lottery. Pay processing fee Rs 5000 to claim."],
+  ["ਬਿਜਲੀ (ਪੰਜਾਬੀ)", "ਤੁਹਾਡਾ ਬਿਜਲੀ ਕੁਨੈਕਸ਼ਨ ਅੱਜ ਰਾਤ ਕੱਟ ਦਿੱਤਾ ਜਾਵੇਗਾ। ਬਿੱਲ ਅਪਡੇਟ ਕਰੋ।"],
+  ["UPI refund", "Approve the collect request and enter your UPI PIN to receive your Rs 5000 refund."],
+  ["Genuine OTP", "Your OTP is 482913. Do not share it with anyone. -HDFC Bank"],
+];
+SAMPLES.forEach(([name, text]) => {
+  const b = document.createElement("button"); b.className = "ghost"; b.textContent = name;
+  b.onclick = () => { $("simText").value = text; }; $("samples").append(b);
+});
+const DISTRICTS = ["", "Ambala", "Amritsar", "Bathinda", "Chandigarh", "Delhi", "Faridabad", "Gurugram", "Hisar", "Jalandhar", "Karnal", "Ludhiana", "Mohali", "Panipat", "Patiala", "Rohtak", "Sirsa"];
+DISTRICTS.forEach(d => { const o = document.createElement("option"); o.value = d; o.textContent = d || "District (optional)"; $("simDistrict").append(o); });
+
+function bubble(kind, who, text, audioUrl) {
+  const wrap = document.createElement("div"); wrap.className = "bubble " + kind;
+  const w = document.createElement("div"); w.className = "who"; w.textContent = who;
+  const body = document.createElement("div"); body.textContent = text;
+  wrap.append(w, body);
+  if (audioUrl) { const a = document.createElement("audio"); a.controls = true; a.src = audioUrl; wrap.append(a); }
+  return wrap;
+}
+
+$("simBtn").onclick = async () => {
+  const text = $("simText").value.trim(); if (!text) return;
+  const btn = $("simBtn"); btn.disabled = true;
+  const chat = $("chat"); chat.replaceChildren(bubble("user", "Elderly user", text));
+  try {
+    const res = await getJSON("/api/demo/simulate", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, lang: $("simLang").value || null, district: $("simDistrict").value || null }),
+    });
+    res.messages.forEach(m => {
+      if (m.type === "text") chat.append(bubble(m.recipient === "guardian" ? "guardian" : "bot", m.recipient === "guardian" ? "Family guardian's phone" : "SurakshaSathi", m.body));
+      else chat.append(bubble(m.recipient === "guardian" ? "guardian" : "bot", "SurakshaSathi (voice)", "🔊 Voice reply", m.url));
+    });
+    refresh();
+  } catch (e) {
+    const msg = String(e.message).includes("404") ? "Demo mode is off on this server (DEMO_MODE=0)." : "Something went wrong: " + e.message;
+    chat.append(bubble("bot", "Error", msg));
+  } finally { btn.disabled = false; chat.scrollTop = chat.scrollHeight; }
+};
+
+refresh(); setInterval(refresh, 4000);
+</script>
+</body>
+</html>
