@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: surakshasathi
+    runtime: python
+    plan: starter            # paid plan: required for a persistent disk
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    disk:
+      name: surakshasathi-data
+      mountPath: /var/data   # survives restarts and redeploys
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_PATH
+        value: /var/data/surakshasathi.db
+      - key: AUDIO_DIR
+        value: /var/data/audio
+      - key: DEMO_MODE
+        value: "1"           # set to "0" before using real data or real WhatsApp
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: WHATSAPP_PROVIDER
+        value: console
+      - key: PUBLIC_BASE_URL
+        sync: false          # enter your https://<name>.onrender.com URL in the Render dashboard
