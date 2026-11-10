@@ -3,100 +3,663 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SurakshaSathi Dashboard</title>
+<title>SurakshaSathi — Scam Guardian</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
+  /* ── Apple Design System ───────────────────────────────────────────── */
   :root {
-    --bg:#f6f7f9; --card:#ffffff; --text:#1b2430; --muted:#667085; --line:#e4e7ec;
-    --brand:#0f766e; --scam:#d92d20; --warn:#dc6803; --ok:#16803c; --bubble-user:#dcf8c6; --bubble-bot:#ffffff; --bubble-guard:#fff3cd;
+    --bg: #f5f5f7;
+    --bg2: #ffffff;
+    --card: rgba(255,255,255,0.72);
+    --card-border: rgba(0,0,0,0.08);
+    --text: #1d1d1f;
+    --text2: #6e6e73;
+    --text3: #aeaeb2;
+    --accent: #0071e3;
+    --accent2: #34c759;
+    --scam: #ff3b30;
+    --warn: #ff9500;
+    --ok: #34c759;
+    --brand: #0071e3;
+    --nav-bg: rgba(255,255,255,0.80);
+    --separator: rgba(0,0,0,0.08);
+    --bubble-user: #0071e3;
+    --bubble-bot: rgba(0,0,0,0.05);
+    --bubble-guard: rgba(255,149,0,0.12);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#0e1116; --card:#171b22; --text:#e8ecf2; --muted:#9aa4b2; --line:#2a313c; --bubble-user:#1f4d36; --bubble-bot:#222833; --bubble-guard:#4a3a12; }
+    :root {
+      --bg: #000000;
+      --bg2: #1c1c1e;
+      --card: rgba(28,28,30,0.80);
+      --card-border: rgba(255,255,255,0.1);
+      --text: #f5f5f7;
+      --text2: #98989d;
+      --text3: #48484a;
+      --nav-bg: rgba(28,28,30,0.80);
+      --separator: rgba(255,255,255,0.1);
+      --bubble-bot: rgba(255,255,255,0.08);
+      --bubble-guard: rgba(255,149,0,0.15);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+    }
   }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari","Noto Sans Gurmukhi",sans-serif; }
-  header { display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--line); background:var(--card); position:sticky; top:0; z-index:500; }
-  header h1 { font-size:18px; margin:0; }
-  header .tag { color:var(--muted); font-size:13px; }
-  .badge { margin-left:auto; font-size:12px; padding:3px 10px; border-radius:999px; background:#fef3c7; color:#92400e; display:none; }
-  main { max-width:1280px; margin:0 auto; padding:16px 20px 40px; display:grid; gap:16px; }
-  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
-  .tile, .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
-  .tile .n { font-size:28px; font-weight:700; line-height:1.1; }
-  .tile .l { color:var(--muted); font-size:13px; }
-  .tile.scam .n { color:var(--scam); } .tile.warn .n { color:var(--warn); } .tile.ok .n { color:var(--ok); }
-  .grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(280px,1fr); gap:16px; }
-  @media (max-width:900px) { .grid { grid-template-columns:1fr; } }
-  h2 { font-size:14px; margin:0 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
-  #map { height:460px; border-radius:10px; z-index:1; }
-  .feed { list-style:none; margin:0; padding:0; max-height:260px; overflow:auto; }
-  .feed li { padding:8px 0; border-bottom:1px solid var(--line); font-size:13px; }
-  .feed li:last-child { border:0; }
-  .feed .meta { color:var(--muted); font-size:12px; }
-  .pill { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px; color:#fff; margin-right:6px; }
-  .pill.scam { background:var(--scam); } .pill.suspicious { background:var(--warn); }
-  .bars .row { display:grid; grid-template-columns:110px 1fr 30px; align-items:center; gap:8px; font-size:13px; margin:6px 0; }
-  .bars .bar { height:8px; border-radius:4px; background:var(--brand); }
-  .sim { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
-  @media (max-width:900px) { .sim { grid-template-columns:1fr; } }
-  textarea, select, input { width:100%; font:inherit; color:var(--text); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
-  textarea { min-height:96px; resize:vertical; }
-  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0; }
-  button { font:inherit; border:0; border-radius:8px; padding:9px 16px; background:var(--brand); color:#fff; cursor:pointer; }
-  button.ghost { background:transparent; color:var(--brand); border:1px solid var(--brand); }
-  button:disabled { opacity:.6; cursor:wait; }
-  .samples { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
-  .samples button { font-size:12px; padding:4px 10px; }
-  .chat { display:flex; flex-direction:column; gap:8px; min-height:200px; max-height:420px; overflow:auto; }
-  .bubble { padding:8px 12px; border-radius:12px; max-width:92%; white-space:pre-wrap; font-size:14px; border:1px solid var(--line); }
-  .bubble.user { background:var(--bubble-user); align-self:flex-end; }
-  .bubble.bot { background:var(--bubble-bot); align-self:flex-start; }
-  .bubble.guardian { background:var(--bubble-guard); align-self:flex-start; }
-  .who { font-size:11px; color:var(--muted); margin-bottom:2px; }
-  audio { width:100%; margin-top:4px; }
-  .empty { color:var(--muted); font-size:13px; }
-  .note { color:var(--muted); font-size:12px; margin-top:6px; }
+
+  /* ── Reset & Base ──────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+      "Helvetica Neue", "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gurmukhi", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Navigation Bar ────────────────────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(145deg, #0071e3, #34c759);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+  }
+  .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .nav-subtitle {
+    font-size: 12px;
+    color: var(--text2);
+    margin-left: 2px;
+  }
+  .nav-badge {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255,149,0,0.15);
+    color: #ff9500;
+    display: none;
+    letter-spacing: 0.1px;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--ok);
+    border-radius: 50%;
+    margin-left: auto;
+    box-shadow: 0 0 0 2px rgba(52,199,89,0.25);
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 2px rgba(52,199,89,0.25); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(52,199,89,0.1); }
+  }
+  .live-label { font-size: 12px; color: var(--ok); font-weight: 500; }
+
+  /* ── Layout ────────────────────────────────────────────────────────── */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Hero Section ──────────────────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding: 48px 24px 32px;
+  }
+  .hero-eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.08;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .hero-title span {
+    background: linear-gradient(135deg, #0071e3, #34c759);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text2);
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.6;
+    letter-spacing: -0.1px;
+  }
+
+  /* ── Stats Tiles ───────────────────────────────────────────────────── */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 768px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .tiles { grid-template-columns: 1fr; } }
+
+  .tile {
+    background: var(--card);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 20px 20px 18px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .tile:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .tile-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .tile-icon.blue { background: rgba(0,113,227,0.12); }
+  .tile-icon.red  { background: rgba(255,59,48,0.12); }
+  .tile-icon.orange { background: rgba(255,149,0,0.12); }
+  .tile-icon.green { background: rgba(52,199,89,0.12); }
+  .tile-num {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .tile-num.red { color: var(--scam); }
+  .tile-num.orange { color: var(--warn); }
+  .tile-num.green { color: var(--ok); }
+  .tile-num.blue { color: var(--accent); }
+  .tile-label {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 400;
+    letter-spacing: -0.1px;
+  }
+
+  /* ── Cards ─────────────────────────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .card-body { padding: 16px 24px 24px; }
+
+  /* ── Map & Side Panel Grid ─────────────────────────────────────────── */
+  .map-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 860px) { .map-grid { grid-template-columns: 1fr; } }
+
+  #map {
+    height: 420px;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    z-index: 1;
+  }
+  .map-note {
+    font-size: 12px;
+    color: var(--text3);
+    padding: 10px 24px 16px;
+    letter-spacing: -0.1px;
+  }
+
+  /* ── Side Cards ────────────────────────────────────────────────────── */
+  .side-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Feed */
+  .feed {
+    list-style: none;
+  }
+  .feed li {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 11px 0;
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .feed li:last-child { border-bottom: none; }
+  .feed-row { display: flex; align-items: center; gap: 8px; }
+  .feed-label { font-size: 14px; font-weight: 500; color: var(--text); }
+  .feed-meta { font-size: 12px; color: var(--text2); letter-spacing: -0.1px; }
+  .feed-empty { font-size: 14px; color: var(--text3); padding: 16px 0; text-align: center; }
+
+  /* Pills */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .pill.scam      { background: rgba(255,59,48,0.12); color: var(--scam); }
+  .pill.suspicious { background: rgba(255,149,0,0.12); color: var(--warn); }
+  .pill.safe      { background: rgba(52,199,89,0.12); color: var(--ok); }
+
+  /* Category Bars */
+  .bar-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 32px;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .bar-track {
+    background: var(--separator);
+    border-radius: 999px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #0071e3, #34c759);
+    transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .bar-count { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; }
+
+  /* ── Simulator ─────────────────────────────────────────────────────── */
+  .sim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  @media (max-width: 860px) { .sim-grid { grid-template-columns: 1fr; } }
+
+  .sim-left {
+    padding: 24px;
+    border-right: 0.5px solid var(--separator);
+  }
+  @media (max-width: 860px) { .sim-left { border-right: none; border-bottom: 0.5px solid var(--separator); } }
+
+  .sim-right {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .samples-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    min-height: 108px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: -0.1px;
+  }
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
+  }
+
+  .controls-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+  select {
+    width: 100%;
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236e6e73' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    outline: none;
+    cursor: pointer;
+  }
+  select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.15); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s, box-shadow 0.2s;
+    letter-spacing: -0.1px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,113,227,0.35);
+    margin-top: 4px;
+  }
+  .btn-primary:hover { box-shadow: 0 4px 16px rgba(0,113,227,0.45); }
+  .btn-primary:disabled { opacity: 0.55; cursor: wait; }
+  .btn-ghost {
+    background: var(--bg);
+    color: var(--accent);
+    border: 0.5px solid var(--card-border);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  .btn-ghost:hover { background: rgba(0,113,227,0.08); }
+
+  /* Sim note */
+  .sim-note {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ── Chat Bubbles ──────────────────────────────────────────────────── */
+  .chat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+    flex: 1;
+  }
+  .chat::-webkit-scrollbar { width: 4px; }
+  .chat::-webkit-scrollbar-track { background: transparent; }
+  .chat::-webkit-scrollbar-thumb { background: var(--text3); border-radius: 999px; }
+
+  .chat-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text3);
+    font-size: 14px;
+    padding: 32px 0;
+    text-align: center;
+  }
+  .chat-empty-icon { font-size: 36px; opacity: 0.5; }
+
+  .bubble-wrap { display: flex; flex-direction: column; }
+  .bubble-wrap.user { align-items: flex-end; }
+  .bubble-wrap.bot, .bubble-wrap.guardian { align-items: flex-start; }
+
+  .bubble-who {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 4px;
+    padding: 0 4px;
+    font-weight: 500;
+  }
+  .bubble {
+    padding: 10px 14px;
+    border-radius: 18px;
+    max-width: 88%;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.1px;
+  }
+  .bubble.user {
+    background: var(--bubble-user);
+    color: #fff;
+    border-radius: 18px 18px 4px 18px;
+  }
+  .bubble.bot {
+    background: var(--bubble-bot);
+    color: var(--text);
+    border-radius: 18px 18px 18px 4px;
+    border: 0.5px solid var(--card-border);
+  }
+  .bubble.guardian {
+    background: var(--bubble-guard);
+    color: var(--text);
+    border-radius: 18px 18px 18px 4px;
+    border: 0.5px solid rgba(255,149,0,0.2);
+  }
+  audio { width: 100%; margin-top: 6px; border-radius: 8px; }
+
+  /* ── Footer ────────────────────────────────────────────────────────── */
+  footer {
+    text-align: center;
+    color: var(--text3);
+    font-size: 12px;
+    padding: 24px 0 8px;
+    letter-spacing: -0.1px;
+  }
+  footer a { color: var(--text2); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* ── Animations ─────────────────────────────────────────────────────*/
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
+  .fade-in:nth-child(1) { animation-delay: 0.05s; }
+  .fade-in:nth-child(2) { animation-delay: 0.10s; }
+  .fade-in:nth-child(3) { animation-delay: 0.15s; }
+  .fade-in:nth-child(4) { animation-delay: 0.20s; }
 </style>
 </head>
 <body>
-<header>
-  <h1>🛡️ SurakshaSathi</h1>
-  <span class="tag">Community scam heatmap · from anonymous reports only</span>
-  <span class="badge" id="sampleBadge">Includes sample demo data</span>
-</header>
+
+<!-- ── Navigation ───────────────────────────────────────────────────── -->
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-icon">🛡️</div>
+    <div>
+      <div class="nav-title">SurakshaSathi</div>
+    </div>
+  </a>
+  <span class="nav-badge" id="sampleBadge">Demo Data</span>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+    <div class="live-dot"></div>
+    <span class="live-label">Live</span>
+  </div>
+</nav>
+
+<!-- ── Main ─────────────────────────────────────────────────────────── -->
 <main>
-  <section class="tiles" aria-label="Summary">
-    <div class="tile"><div class="n" id="tChecked">–</div><div class="l">Messages checked (30 days)</div></div>
-    <div class="tile scam"><div class="n" id="tScam">–</div><div class="l">Scams caught</div></div>
-    <div class="tile warn"><div class="n" id="tSusp">–</div><div class="l">Suspicious</div></div>
-    <div class="tile ok"><div class="n" id="tGuard">–</div><div class="l">Users with a family guardian</div></div>
+
+  <!-- Hero -->
+  <section class="hero fade-in">
+    <div class="hero-eyebrow">AI-Powered Scam Protection</div>
+    <h1 class="hero-title">Your <span>Guardian</span><br>Against Scams</h1>
+    <p class="hero-sub">Helping elderly and first-time internet users detect fraud in Hindi, Punjabi &amp; English — via WhatsApp.</p>
   </section>
 
-  <section class="grid">
+  <!-- Stats Tiles -->
+  <section class="tiles" aria-label="Summary statistics">
+    <div class="tile fade-in">
+      <div class="tile-icon blue">🔍</div>
+      <div class="tile-num blue" id="tChecked">–</div>
+      <div class="tile-label">Messages checked (30 days)</div>
+    </div>
+    <div class="tile fade-in">
+      <div class="tile-icon red">🚨</div>
+      <div class="tile-num red" id="tScam">–</div>
+      <div class="tile-label">Scams blocked</div>
+    </div>
+    <div class="tile fade-in">
+      <div class="tile-icon orange">⚠️</div>
+      <div class="tile-num orange" id="tSusp">–</div>
+      <div class="tile-label">Suspicious flagged</div>
+    </div>
+    <div class="tile fade-in">
+      <div class="tile-icon green">👨‍👩‍👧</div>
+      <div class="tile-num green" id="tGuard">–</div>
+      <div class="tile-label">With family guardian</div>
+    </div>
+  </section>
+
+  <!-- Map + Side Panel -->
+  <section class="map-grid">
+    <!-- Map Card -->
     <div class="card">
-      <h2>Scam hotspots by district</h2>
-      <div id="map" role="img" aria-label="Map of scam reports by district"></div>
-      <div class="note">Circle size and colour show the number of scam reports in the district. Updates every few seconds.</div>
-    </div>
-    <div style="display:grid; gap:16px; align-content:start;">
-      <div class="card">
-        <h2>Live reports</h2>
-        <ul class="feed" id="feed"></ul>
+      <div class="card-header">
+        <span class="card-title">Scam hotspots by district</span>
       </div>
-      <div class="card bars">
-        <h2>Top scam types</h2>
-        <div id="cats"></div>
+      <div style="padding: 12px 24px 0;">
+        <div id="map" role="img" aria-label="Heatmap of scam reports by district"></div>
+      </div>
+      <div class="map-note">Circle size and colour indicate report volume. Updates every few seconds.</div>
+    </div>
+
+    <!-- Side Cards -->
+    <div class="side-stack">
+      <!-- Live Reports -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Live reports</span>
+        </div>
+        <div class="card-body" style="padding-top:12px;">
+          <ul class="feed" id="feed">
+            <li><div class="feed-empty">No reports yet.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Top Scam Types -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Top scam types</span>
+        </div>
+        <div class="card-body" id="cats">
+          <div class="feed-empty" style="padding:16px 0 0;">No data yet.</div>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- Simulator -->
   <section class="card" id="simCard">
-    <h2>Try it: simulate a WhatsApp message</h2>
-    <div class="sim">
-      <div>
-        <div class="samples" id="samples"></div>
-        <textarea id="simText" placeholder="Paste or type a suspicious message in English, Hindi or Punjabi"></textarea>
-        <div class="row2">
+    <div class="card-header" style="padding:24px 24px 0;">
+      <span class="card-title">Try it — simulate a WhatsApp message</span>
+    </div>
+    <div class="sim-grid" style="margin-top:16px;">
+      <!-- Input Side -->
+      <div class="sim-left">
+        <div class="samples-wrap" id="samples"></div>
+        <textarea id="simText" placeholder="Paste or type a suspicious message in English, Hindi or Punjabi…"></textarea>
+        <div class="controls-row">
           <select id="simLang" aria-label="Reply language">
             <option value="">Auto-detect language</option>
             <option value="en">English</option>
@@ -105,83 +668,154 @@
           </select>
           <select id="simDistrict" aria-label="District"></select>
         </div>
-        <button id="simBtn">Check message</button>
-        <div class="note" id="simNote">This uses the real analysis engine and creates a real report on the map, but no WhatsApp messages are actually sent.</div>
+        <button class="btn btn-primary" id="simBtn">
+          <span>🔎</span> Check Message
+        </button>
+        <p class="sim-note" id="simNote">Uses the real analysis engine. Creates a real report on the map, but no WhatsApp messages are actually sent.</p>
       </div>
-      <div>
-        <div class="chat" id="chat" aria-live="polite"><div class="empty">Replies from the bot and the family guardian's phone will appear here.</div></div>
+
+      <!-- Chat Side -->
+      <div class="sim-right">
+        <div class="chat" id="chat" aria-live="polite">
+          <div class="chat-empty">
+            <div class="chat-empty-icon">💬</div>
+            <div>Replies from SurakshaSathi and the<br>family guardian will appear here.</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
 </main>
 
+<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<footer>
+  <p>SurakshaSathi · <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">Report at cybercrime.gov.in</a> · Helpline <strong>1930</strong></p>
+</footer>
+
+<!-- ── Scripts ────────────────────────────────────────────────────────── -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
+
 const CAT = {
-  kyc:"Fake KYC", otp:"OTP theft", pin:"PIN theft", upi_collect:"UPI collect", lottery:"Lottery", advance_fee:"Advance fee",
-  remote_access:"Remote access", malware:"Malicious app", legal_threat:"Digital arrest", electricity:"Electricity",
-  parcel:"Courier", job_scam:"Job scam", investment:"Investment", extortion:"Blackmail", credentials:"Password theft",
-  block_threat:"Account block", link_link:"Phishing link", link_bait:"Phishing link", urgency:"Pressure tactic", impersonation:"Impersonation", none:"Other"
+  kyc:"Fake KYC", otp:"OTP theft", pin:"PIN theft", upi_collect:"UPI collect", lottery:"Lottery",
+  advance_fee:"Advance fee", remote_access:"Remote access", malware:"Malicious app",
+  legal_threat:"Digital arrest", electricity:"Electricity", parcel:"Courier", job_scam:"Job scam",
+  investment:"Investment", extortion:"Blackmail", credentials:"Password theft",
+  block_threat:"Account block", link_link:"Phishing link", link_bait:"Phishing link",
+  urgency:"Pressure tactic", impersonation:"Impersonation", none:"Other"
 };
 const label = (c) => CAT[c] || c || "Other";
 
-const map = L.map("map", { scrollWheelZoom:false }).setView([30.6, 76.2], 7);
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:12, attribution:"© OpenStreetMap contributors" }).addTo(map);
+// ── Map setup ─────────────────────────────────────────────────────────
+const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const map = L.map("map", { scrollWheelZoom: false }).setView([30.6, 76.2], 7);
+L.tileLayer(
+  isDark
+    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+    : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  { maxZoom: 14, attribution: "© OpenStreetMap © CARTO" }
+).addTo(map);
 const layer = L.layerGroup().addTo(map);
 
-function colorFor(ratio) { return ratio > .66 ? "#d92d20" : ratio > .33 ? "#f79009" : "#fdb022"; }
+function colorFor(ratio) {
+  return ratio > 0.66 ? "#ff3b30" : ratio > 0.33 ? "#ff9500" : "#ffcc00";
+}
 
+// ── Data refresh ──────────────────────────────────────────────────────
 async function getJSON(url, opts) {
   const r = await fetch(url, opts);
   if (!r.ok) throw new Error(url + " " + r.status);
   return r.json();
 }
 
+function animateNum(el, target) {
+  const start = parseInt(el.textContent) || 0;
+  const diff = target - start;
+  const dur = 600;
+  const startTime = performance.now();
+  function step(now) {
+    const p = Math.min((now - startTime) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(start + diff * ease).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 async function refresh() {
   try {
-    const [stats, heat, recent] = await Promise.all([getJSON("/api/stats"), getJSON("/api/heatmap"), getJSON("/api/reports/recent?limit=12")]);
-    $("tChecked").textContent = stats.total_checked.toLocaleString();
-    $("tScam").textContent = stats.scams_blocked.toLocaleString();
-    $("tSusp").textContent = stats.suspicious.toLocaleString();
-    $("tGuard").textContent = stats.users_with_guardian.toLocaleString();
+    const [stats, heat, recent] = await Promise.all([
+      getJSON("/api/stats"), getJSON("/api/heatmap"), getJSON("/api/reports/recent?limit=12")
+    ]);
+
+    animateNum($("tChecked"), stats.total_checked);
+    animateNum($("tScam"), stats.scams_blocked);
+    animateNum($("tSusp"), stats.suspicious);
+    animateNum($("tGuard"), stats.users_with_guardian);
     $("sampleBadge").style.display = stats.sample_data ? "inline-block" : "none";
 
+    // Map
     layer.clearLayers();
     const max = Math.max(1, ...heat.map(h => h.count));
     heat.forEach(h => {
       const ratio = h.count / max;
-      const c = L.circleMarker([h.lat, h.lng], { radius: 8 + 22 * Math.sqrt(ratio), color: colorFor(ratio), fillColor: colorFor(ratio), fillOpacity: .5, weight: 2 }).addTo(layer);
+      const c = L.circleMarker([h.lat, h.lng], {
+        radius: 10 + 24 * Math.sqrt(ratio),
+        color: colorFor(ratio),
+        fillColor: colorFor(ratio),
+        fillOpacity: 0.45,
+        weight: 2
+      }).addTo(layer);
       const tip = document.createElement("div");
       const b = document.createElement("strong"); b.textContent = h.district + ", " + h.state;
-      tip.append(b, document.createElement("br"), document.createTextNode(h.count + " reports · top: " + label(h.top_category)));
+      tip.append(b, document.createElement("br"),
+        document.createTextNode(h.count + " reports · " + label(h.top_category)));
       c.bindTooltip(tip);
     });
 
+    // Feed
     const feed = $("feed"); feed.replaceChildren();
-    if (!recent.length) { const li = document.createElement("li"); li.className = "empty"; li.textContent = "No reports yet."; feed.append(li); }
-    recent.forEach(r => {
+    if (!recent.length) {
       const li = document.createElement("li");
-      const pill = document.createElement("span"); pill.className = "pill " + r.verdict; pill.textContent = r.verdict;
-      const t = document.createElement("span"); t.textContent = label(r.category);
-      const meta = document.createElement("div"); meta.className = "meta";
-      meta.textContent = (r.district || "Unknown district") + " · " + new Date(r.ts * 1000).toLocaleTimeString() + " · " + (r.snippet || "");
-      li.append(pill, t, meta); feed.append(li);
-    });
+      li.innerHTML = '<div class="feed-empty">No reports yet.</div>';
+      feed.append(li);
+    } else {
+      recent.forEach(r => {
+        const li = document.createElement("li");
+        const row = document.createElement("div"); row.className = "feed-row";
+        const pill = document.createElement("span"); pill.className = "pill " + r.verdict; pill.textContent = r.verdict;
+        const lbl = document.createElement("span"); lbl.className = "feed-label"; lbl.textContent = label(r.category);
+        row.append(pill, lbl);
+        const meta = document.createElement("div"); meta.className = "feed-meta";
+        meta.textContent = (r.district || "Unknown district") + " · " + new Date(r.ts * 1000).toLocaleTimeString();
+        if (r.snippet) { meta.textContent += " · " + r.snippet; }
+        li.append(row, meta); feed.append(li);
+      });
+    }
 
+    // Category bars
     const cats = $("cats"); cats.replaceChildren();
-    const topN = Math.max(1, ...stats.by_category.map(c => c.count));
-    stats.by_category.forEach(c => {
-      const row = document.createElement("div"); row.className = "row";
-      const l = document.createElement("span"); l.textContent = label(c.category);
-      const track = document.createElement("div"); const bar = document.createElement("div"); bar.className = "bar"; bar.style.width = (100 * c.count / topN) + "%"; track.append(bar);
-      const n = document.createElement("span"); n.textContent = c.count;
-      row.append(l, track, n); cats.append(row);
-    });
+    if (!stats.by_category.length) {
+      const d = document.createElement("div"); d.className = "feed-empty"; d.style.paddingTop = "16px";
+      d.textContent = "No data yet."; cats.append(d);
+    } else {
+      const topN = Math.max(1, ...stats.by_category.map(c => c.count));
+      stats.by_category.forEach(c => {
+        const row = document.createElement("div"); row.className = "bar-row";
+        const l = document.createElement("span"); l.textContent = label(c.category); l.style.overflow = "hidden"; l.style.textOverflow = "ellipsis"; l.style.whiteSpace = "nowrap";
+        const track = document.createElement("div"); track.className = "bar-track";
+        const fill = document.createElement("div"); fill.className = "bar-fill";
+        fill.style.width = (100 * c.count / topN) + "%"; track.append(fill);
+        const n = document.createElement("div"); n.className = "bar-count"; n.textContent = c.count;
+        row.append(l, track, n); cats.append(row);
+      });
+    }
   } catch (e) { console.error(e); }
 }
 
-// ---- simulator
+// ── Simulator ────────────────────────────────────────────────────────
 const SAMPLES = [
   ["Fake KYC (EN)", "Dear customer, your SBI account is blocked. Update KYC immediately: http://sbi-kyc-update.xyz/login"],
   ["Fake KYC (हिन्दी)", "आपका SBI खाता बंद हो जाएगा। तुरंत KYC अपडेट करें और OTP बताएं।"],
@@ -191,42 +825,64 @@ const SAMPLES = [
   ["Genuine OTP", "Your OTP is 482913. Do not share it with anyone. -HDFC Bank"],
 ];
 SAMPLES.forEach(([name, text]) => {
-  const b = document.createElement("button"); b.className = "ghost"; b.textContent = name;
-  b.onclick = () => { $("simText").value = text; }; $("samples").append(b);
+  const b = document.createElement("button"); b.className = "btn btn-ghost"; b.textContent = name;
+  b.onclick = () => { $("simText").value = text; };
+  $("samples").append(b);
 });
-const DISTRICTS = ["", "Ambala", "Amritsar", "Bathinda", "Chandigarh", "Delhi", "Faridabad", "Gurugram", "Hisar", "Jalandhar", "Karnal", "Ludhiana", "Mohali", "Panipat", "Patiala", "Rohtak", "Sirsa"];
-DISTRICTS.forEach(d => { const o = document.createElement("option"); o.value = d; o.textContent = d || "District (optional)"; $("simDistrict").append(o); });
+
+const DISTRICTS = ["", "Ambala","Amritsar","Bathinda","Chandigarh","Delhi","Faridabad","Gurugram","Hisar","Jalandhar","Karnal","Ludhiana","Mohali","Panipat","Patiala","Rohtak","Sirsa"];
+DISTRICTS.forEach(d => {
+  const o = document.createElement("option"); o.value = d;
+  o.textContent = d || "District (optional)"; $("simDistrict").append(o);
+});
 
 function bubble(kind, who, text, audioUrl) {
-  const wrap = document.createElement("div"); wrap.className = "bubble " + kind;
-  const w = document.createElement("div"); w.className = "who"; w.textContent = who;
-  const body = document.createElement("div"); body.textContent = text;
-  wrap.append(w, body);
-  if (audioUrl) { const a = document.createElement("audio"); a.controls = true; a.src = audioUrl; wrap.append(a); }
+  const wrap = document.createElement("div"); wrap.className = "bubble-wrap " + kind;
+  const whoEl = document.createElement("div"); whoEl.className = "bubble-who"; whoEl.textContent = who;
+  const bbl = document.createElement("div"); bbl.className = "bubble " + kind;
+  bbl.textContent = text;
+  wrap.append(whoEl, bbl);
+  if (audioUrl) {
+    const a = document.createElement("audio"); a.controls = true; a.src = audioUrl; bbl.append(a);
+  }
   return wrap;
 }
 
 $("simBtn").onclick = async () => {
   const text = $("simText").value.trim(); if (!text) return;
   const btn = $("simBtn"); btn.disabled = true;
-  const chat = $("chat"); chat.replaceChildren(bubble("user", "Elderly user", text));
+  const chat = $("chat"); chat.replaceChildren(bubble("user", "You", text));
   try {
     const res = await getJSON("/api/demo/simulate", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, lang: $("simLang").value || null, district: $("simDistrict").value || null }),
     });
     res.messages.forEach(m => {
-      if (m.type === "text") chat.append(bubble(m.recipient === "guardian" ? "guardian" : "bot", m.recipient === "guardian" ? "Family guardian's phone" : "SurakshaSathi", m.body));
-      else chat.append(bubble(m.recipient === "guardian" ? "guardian" : "bot", "SurakshaSathi (voice)", "🔊 Voice reply", m.url));
+      const isGuardian = m.recipient === "guardian";
+      if (m.type === "text") {
+        chat.append(bubble(isGuardian ? "guardian" : "bot",
+          isGuardian ? "👨‍👩‍👧 Family guardian's phone" : "🛡️ SurakshaSathi", m.body));
+      } else {
+        chat.append(bubble(isGuardian ? "guardian" : "bot",
+          isGuardian ? "👨‍👩‍👧 Family guardian" : "🛡️ SurakshaSathi (voice)", "🔊 Voice reply", m.url));
+      }
     });
     refresh();
   } catch (e) {
-    const msg = String(e.message).includes("404") ? "Demo mode is off on this server (DEMO_MODE=0)." : "Something went wrong: " + e.message;
-    chat.append(bubble("bot", "Error", msg));
-  } finally { btn.disabled = false; chat.scrollTop = chat.scrollHeight; }
+    const msg = String(e.message).includes("404")
+      ? "Demo mode is off on this server (DEMO_MODE=0)."
+      : "Something went wrong: " + e.message;
+    chat.append(bubble("bot", "⚠️ Error", msg));
+  } finally {
+    btn.disabled = false;
+    chat.scrollTop = chat.scrollHeight;
+  }
 };
 
-refresh(); setInterval(refresh, 4000);
+// ── Init ──────────────────────────────────────────────────────────────
+refresh();
+setInterval(refresh, 4000);
 </script>
 </body>
 </html>
