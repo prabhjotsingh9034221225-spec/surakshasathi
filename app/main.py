@@ -27,6 +27,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="SurakshaSathi", version="1.0.0", lifespan=lifespan)
 app.mount("/audio", StaticFiles(directory=str(settings.audio_dir)), name="audio")
 STATIC = ROOT / "app" / "static"
+app.mount("/samples", StaticFiles(directory=str(STATIC / "samples")), name="samples")
 
 
 # ---------------------------------------------------------------- tiny rate limiter

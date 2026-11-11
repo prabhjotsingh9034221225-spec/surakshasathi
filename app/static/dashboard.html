@@ -612,6 +612,9 @@
 .ck-quote{font-size:14px;background:rgba(37,99,235,.07);padding:10px 12px;border-radius:10px;white-space:pre-wrap;max-height:120px;overflow:auto}
 .ck-rep a{color:var(--accent);font-weight:600}
 .ck-call{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:10px;margin:4px 8px 8px 0}
+.ck-samples{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--text2)}
+.ck-chip{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.ck-chip:hover{background:rgba(37,99,235,.08)}
 .ck-guide{padding:0 24px 24px}
 .ck-guide details{border:1px solid var(--border,#c9d6f5);border-radius:14px;padding:14px 18px}
 .ck-guide summary{cursor:pointer;font-weight:700}
@@ -786,10 +789,20 @@
       <div>
         <div data-pane="msg">
           <textarea id="ckText" placeholder="Paste the message you received (English, Hindi or Punjabi)…"></textarea>
+          <div class="ck-samples"><span>Try a sample:</span>
+            <button type="button" class="ck-chip" data-text="Dear customer, your SBI account will be BLOCKED today. Update KYC now: http://sbi-kyc-update.xyz/login and share the OTP you receive.">Fake KYC</button>
+            <button type="button" class="ck-chip" data-text="यह पुलिस है। आपके नाम पर केस दर्ज है, गिरफ्तारी से बचने के लिए अभी पैसे भेजें और किसी को न बताएं।">पुलिस धमकी (Hindi)</button>
+            <button type="button" class="ck-chip" data-text="Papa, I will reach home by 7. Please keep dinner ready.">Safe message</button>
+          </div>
         </div>
         <div data-pane="link" hidden>
           <input type="text" id="ckUrl" placeholder="Paste the link, e.g. bit.ly/abc123" autocomplete="off" inputmode="url">
           <p class="ck-hint">Do not open the link. Paste it here and we will check it for you.</p>
+          <div class="ck-samples"><span>Try a sample:</span>
+            <button type="button" class="ck-chip" data-url="http://sbi-kyc-update.xyz/login">Fake bank link</button>
+            <button type="button" class="ck-chip" data-url="bit.ly/win-prize-now">Short link</button>
+            <button type="button" class="ck-chip" data-url="https://www.onlinesbi.sbi">Real bank site</button>
+          </div>
         </div>
         <div data-pane="shot" hidden>
           <label class="ck-drop" for="ckFile">
@@ -798,6 +811,11 @@
             <input type="file" id="ckFile" accept="image/*">
             <img id="ckPreview" alt="" hidden>
           </label>
+          <div class="ck-samples"><span>Try a sample:</span>
+            <button type="button" class="ck-chip" data-img="/samples/scam-kyc.png">Fake KYC chat</button>
+            <button type="button" class="ck-chip" data-img="/samples/scam-upi.png">Lottery scam chat</button>
+            <button type="button" class="ck-chip" data-img="/samples/safe-family.png">Safe chat</button>
+          </div>
         </div>
         <div style="margin-top:12px"><select id="ckLang" aria-label="Language">
           <option value="">Auto-detect language</option><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option>
@@ -1120,6 +1138,20 @@ setInterval(refresh, 4000);
     if (!f) { img.hidden = true; return; }
     img.src = URL.createObjectURL(f); img.hidden = false;
   };
+
+  document.querySelectorAll(".ck-chip").forEach(c => c.onclick = async () => {
+    if (c.dataset.text) document.getElementById("ckText").value = c.dataset.text;
+    if (c.dataset.url) document.getElementById("ckUrl").value = c.dataset.url;
+    if (c.dataset.img) {
+      try {
+        const blob = await (await fetch(c.dataset.img)).blob();
+        const f = new File([blob], c.dataset.img.split("/").pop(), {type: blob.type || "image/png"});
+        const dt = new DataTransfer(); dt.items.add(f);
+        const inp = document.getElementById("ckFile"); inp.files = dt.files; inp.onchange({target: inp});
+      } catch (e) { err.textContent = "Could not load the sample image."; err.hidden = false; return; }
+    }
+    btn.click();
+  });
   const ICON = {scam: "🚨", suspicious: "⚠️", safe: "✅"};
   function show(r) {
     const ex = r.explanation, v = r.verdict;
