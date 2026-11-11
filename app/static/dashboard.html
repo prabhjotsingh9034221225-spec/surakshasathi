@@ -8,22 +8,22 @@
 <style>
   /* ── Apple Design System ───────────────────────────────────────────── */
   :root {
-    --bg: #f5f5f7;
+    --bg: #eef3ff;
     --bg2: #ffffff;
     --card: rgba(255,255,255,0.72);
-    --card-border: rgba(0,0,0,0.08);
-    --text: #1d1d1f;
-    --text2: #6e6e73;
+    --card-border: rgba(37,99,235,0.12);
+    --text: #0b1f4d;
+    --text2: #4a5f8a;
     --text3: #aeaeb2;
-    --accent: #0071e3;
-    --accent2: #34c759;
+    --accent: #2563eb;
+    --accent2: #3b82f6;
     --scam: #ff3b30;
     --warn: #ff9500;
     --ok: #34c759;
-    --brand: #0071e3;
+    --brand: #2563eb;
     --nav-bg: rgba(255,255,255,0.80);
-    --separator: rgba(0,0,0,0.08);
-    --bubble-user: #0071e3;
+    --separator: rgba(37,99,235,0.12);
+    --bubble-user: #2563eb;
     --bubble-bot: rgba(0,0,0,0.05);
     --bubble-guard: rgba(255,149,0,0.12);
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
@@ -36,14 +36,14 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #000000;
-      --bg2: #1c1c1e;
-      --card: rgba(28,28,30,0.80);
+      --bg: #050b1f;
+      --bg2: #0c1633;
+      --card: rgba(12,22,51,0.80);
       --card-border: rgba(255,255,255,0.1);
-      --text: #f5f5f7;
-      --text2: #98989d;
+      --text: #eaf0ff;
+      --text2: #9fb0d6;
       --text3: #48484a;
-      --nav-bg: rgba(28,28,30,0.80);
+      --nav-bg: rgba(8,16,40,0.80);
       --separator: rgba(255,255,255,0.1);
       --bubble-bot: rgba(255,255,255,0.08);
       --bubble-guard: rgba(255,149,0,0.15);
@@ -57,7 +57,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
   body {
-    background: var(--bg);
+    background: radial-gradient(1200px 500px at 50% -100px, rgba(59,130,246,0.18), transparent 70%), var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
       "Helvetica Neue", "Noto Sans", "Noto Sans Devanagari", "Noto Sans Gurmukhi", sans-serif;
@@ -90,7 +90,7 @@
   .nav-icon {
     width: 32px;
     height: 32px;
-    background: linear-gradient(145deg, #0071e3, #34c759);
+    background: linear-gradient(145deg, #3b82f6, #1e3a8a);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -168,7 +168,7 @@
     margin-bottom: 14px;
   }
   .hero-title span {
-    background: linear-gradient(135deg, #0071e3, #34c759);
+    background: linear-gradient(135deg, #3b82f6, #1e3a8a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -341,7 +341,7 @@
   .bar-fill {
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, #0071e3, #34c759);
+    background: linear-gradient(90deg, #60a5fa, #1e40af);
     transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   }
   .bar-count { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; }
