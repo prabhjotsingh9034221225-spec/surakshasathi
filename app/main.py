@@ -6,12 +6,12 @@ import time
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 
-from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Query, Request, Response
+from fastapi import BackgroundTasks, FastAPI, File, Form, Header, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import demo, geo, storage, whatsapp
+from . import demo, explain, geo, llm, storage, whatsapp
 from .analyzer import analyze
 from .bot import Bot, broadcast_daily_lesson
 from .config import ROOT, settings
@@ -128,7 +128,57 @@ class AnalyzeIn(BaseModel):
 def api_analyze(body: AnalyzeIn, request: Request) -> dict:
     rate_limit(request)
     lang = body.lang or detect_language(body.text)
-    return analyze(body.text, lang).to_dict()
+    a = analyze(body.text, lang)
+    return {**a.to_dict(), "explanation": explain.build(a)}
+
+
+class LinkIn(BaseModel):
+    url: str = Field(min_length=3, max_length=2000)
+    lang: str | None = Field(default=None, pattern="^(en|hi|pa)$")
+
+
+@app.post("/api/check/link")
+def api_check_link(body: LinkIn, request: Request) -> dict:
+    """Check a single link without needing a whole message."""
+    rate_limit(request)
+    url = body.url.strip()
+    a = analyze(f"Click {url}", body.lang or "en")
+    if not a.links:
+        raise HTTPException(422, "That does not look like a web link.")
+    worst = max(a.links, key=lambda x: x.score)
+    # A link on its own is judged by the link evidence only.
+    verdict = "scam" if worst.score >= 60 else "suspicious" if worst.score >= 30 else "safe"
+    a.verdict = verdict
+    a.score = worst.score
+    a.categories = ["link_link"] if verdict != "safe" else []
+    ex = explain.build(a)
+    ex["why"] = [] if verdict == "safe" else ex["why"]
+    return {**a.to_dict(), "explanation": ex}
+
+
+MAX_IMAGE_BYTES = 5 * 1024 * 1024
+
+
+@app.post("/api/check/screenshot")
+async def api_check_screenshot(request: Request, file: UploadFile = File(...), lang: str | None = Form(None)) -> dict:
+    """Read the text out of a screenshot of a message and analyze it."""
+    rate_limit(request)
+    mime = (file.content_type or "").lower()
+    if not mime.startswith("image/"):
+        raise HTTPException(415, "Please upload an image (PNG or JPG).")
+    data = await file.read(MAX_IMAGE_BYTES + 1)
+    if len(data) > MAX_IMAGE_BYTES:
+        raise HTTPException(413, "Image is too large. Please upload one under 5 MB.")
+    text = llm.read_image_text(data, mime)
+    if not text or text.strip().upper() == "NONE":
+        raise HTTPException(
+            422,
+            "We could not read any text from this image. Try a clearer screenshot, or paste the message instead.",
+        )
+    text = text.strip()[:4000]
+    lg = lang if lang in ("en", "hi", "pa") else detect_language(text)
+    a = analyze(text, lg)
+    return {**a.to_dict(), "extracted_text": text, "explanation": explain.build(a)}
 
 
 # ---------------------------------------------------------------- dashboard API
