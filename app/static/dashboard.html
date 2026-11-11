@@ -711,10 +711,26 @@ const label = (c) => CAT[c] || c || "Other";
 // ── Map setup ─────────────────────────────────────────────────────────
 const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 const mapOk = typeof L !== "undefined";
-if (!mapOk) {
-  const m = document.getElementById("map");
-  m.style.cssText = "display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text2);background:var(--bg);border-radius:16px;padding:24px";
-  m.textContent = "Map could not load. Check your connection or ad blocker and refresh.";
+if (!mapOk) { document.getElementById("map").style.cssText = "background:var(--bg);border-radius:16px;overflow:hidden"; }
+function drawFallbackMap(heat) {
+  const el = document.getElementById("map"); const W = 640, H = 420, NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.cssText = "width:100%;height:100%;display:block";
+  for (let i = 1; i < 8; i++) { const l = document.createElementNS(NS, "line"); l.setAttribute("x1", i*W/8); l.setAttribute("x2", i*W/8); l.setAttribute("y1", 0); l.setAttribute("y2", H); l.setAttribute("stroke", "rgba(37,99,235,0.10)"); svg.append(l);
+    const m = document.createElementNS(NS, "line"); m.setAttribute("y1", i*H/8); m.setAttribute("y2", i*H/8); m.setAttribute("x1", 0); m.setAttribute("x2", W); m.setAttribute("stroke", "rgba(37,99,235,0.10)"); svg.append(m); }
+  if (!heat.length) { const t = document.createElementNS(NS, "text"); t.setAttribute("x", W/2); t.setAttribute("y", H/2); t.setAttribute("text-anchor", "middle"); t.setAttribute("fill", "#6b7fa8"); t.textContent = "No reports on the map yet."; svg.append(t); }
+  else {
+    const lats = heat.map(h => h.lat), lngs = heat.map(h => h.lng);
+    const minLa = Math.min(...lats) - 0.8, maxLa = Math.max(...lats) + 0.8, minLo = Math.min(...lngs) - 0.8, maxLo = Math.max(...lngs) + 0.8;
+    const max = Math.max(1, ...heat.map(h => h.count));
+    heat.forEach(h => {
+      const ratio = h.count / max, x = 40 + (h.lng - minLo) / (maxLo - minLo) * (W - 80), y = 40 + (maxLa - h.lat) / (maxLa - minLa) * (H - 80);
+      const c = document.createElementNS(NS, "circle"); c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 10 + 24 * Math.sqrt(ratio));
+      c.setAttribute("fill", colorFor(ratio)); c.setAttribute("fill-opacity", "0.45"); c.setAttribute("stroke", colorFor(ratio)); c.setAttribute("stroke-width", "2");
+      const tt = document.createElementNS(NS, "title"); tt.textContent = `${h.district}, ${h.state}: ${h.count} reports · ${label(h.top_category)}`; c.append(tt); svg.append(c);
+      const t = document.createElementNS(NS, "text"); t.setAttribute("x", x); t.setAttribute("y", y + 24 + 24 * Math.sqrt(ratio)); t.setAttribute("text-anchor", "middle"); t.setAttribute("font-size", "12"); t.setAttribute("fill", "#4a5f8a"); t.textContent = h.district; svg.append(t);
+    });
+  }
+  el.replaceChildren(svg);
 }
 const map = mapOk ? L.map("map", { scrollWheelZoom: false }).setView([30.6, 76.2], 7) : null;
 if (mapOk) L.tileLayer(
@@ -768,7 +784,7 @@ async function refresh() {
     $("sampleBadge").style.display = stats.sample_data ? "inline-block" : "none";
 
     // Map
-    if (mapOk) layer.clearLayers();
+    if (mapOk) layer.clearLayers(); else drawFallbackMap(heat);
     const max = Math.max(1, ...heat.map(h => h.count));
     if (mapOk) heat.forEach(h => {
       const ratio = h.count / max;
