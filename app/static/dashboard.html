@@ -616,6 +616,7 @@
     <div class="card">
       <div class="card-header">
         <span class="card-title">Scam hotspots by district</span>
+        <button id="locBtn" type="button" style="margin-left:auto;border:0;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;background:var(--accent);color:#fff;cursor:pointer">📍 Use my location</button>
       </div>
       <div style="padding: 12px 24px 0;">
         <div id="map" role="img" aria-label="Heatmap of scam reports by district"></div>
@@ -734,10 +735,8 @@ function drawFallbackMap(heat) {
 }
 const map = mapOk ? L.map("map", { scrollWheelZoom: false }).setView([30.6, 76.2], 7) : null;
 if (mapOk) L.tileLayer(
-  isDark
-    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-  { maxZoom: 14, attribution: "© OpenStreetMap © CARTO" }
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  { maxZoom: 18, attribution: "© OpenStreetMap contributors" }
 ).addTo(map);
 const layer = mapOk ? L.layerGroup().addTo(map) : null;
 if (mapOk) {
@@ -910,6 +909,25 @@ $("simBtn").onclick = async () => {
 // ── Init ──────────────────────────────────────────────────────────────
 refresh();
 setInterval(refresh, 4000);
+
+// ── Detect my location ────────────────────────────────────────────────
+(function () {
+  const btn = document.getElementById("locBtn"); if (!btn) return;
+  let me = null;
+  btn.addEventListener("click", () => {
+    if (!navigator.geolocation) { btn.textContent = "Location not supported"; return; }
+    btn.textContent = "Locating…";
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude: la, longitude: lo } = pos.coords;
+      btn.textContent = "📍 Located";
+      if (mapOk) {
+        if (me) map.removeLayer(me);
+        me = L.circleMarker([la, lo], { radius: 9, color: "#fff", weight: 3, fillColor: "#2563eb", fillOpacity: 1 }).addTo(map).bindTooltip("You are here");
+        map.setView([la, lo], 11);
+      }
+    }, () => { btn.textContent = "📍 Allow location access"; }, { enableHighAccuracy: true, timeout: 10000 });
+  });
+})();
 </script>
 </body>
 </html>
