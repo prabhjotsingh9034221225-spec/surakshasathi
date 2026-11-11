@@ -710,14 +710,25 @@ const label = (c) => CAT[c] || c || "Other";
 
 // ── Map setup ─────────────────────────────────────────────────────────
 const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-const map = L.map("map", { scrollWheelZoom: false }).setView([30.6, 76.2], 7);
-L.tileLayer(
+const mapOk = typeof L !== "undefined";
+if (!mapOk) {
+  const m = document.getElementById("map");
+  m.style.cssText = "display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text2);background:var(--bg);border-radius:16px;padding:24px";
+  m.textContent = "Map could not load. Check your connection or ad blocker and refresh.";
+}
+const map = mapOk ? L.map("map", { scrollWheelZoom: false }).setView([30.6, 76.2], 7) : null;
+if (mapOk) L.tileLayer(
   isDark
     ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
     : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
   { maxZoom: 14, attribution: "© OpenStreetMap © CARTO" }
 ).addTo(map);
-const layer = L.layerGroup().addTo(map);
+const layer = mapOk ? L.layerGroup().addTo(map) : null;
+if (mapOk) {
+  const fix = () => map.invalidateSize();
+  window.addEventListener("load", () => { fix(); setTimeout(fix, 400); setTimeout(fix, 1500); });
+  window.addEventListener("resize", fix);
+}
 
 function colorFor(ratio) {
   return ratio > 0.66 ? "#ff3b30" : ratio > 0.33 ? "#ff9500" : "#ffcc00";
@@ -757,9 +768,9 @@ async function refresh() {
     $("sampleBadge").style.display = stats.sample_data ? "inline-block" : "none";
 
     // Map
-    layer.clearLayers();
+    if (mapOk) layer.clearLayers();
     const max = Math.max(1, ...heat.map(h => h.count));
-    heat.forEach(h => {
+    if (mapOk) heat.forEach(h => {
       const ratio = h.count / max;
       const c = L.circleMarker([h.lat, h.lng], {
         radius: 10 + 24 * Math.sqrt(ratio),
