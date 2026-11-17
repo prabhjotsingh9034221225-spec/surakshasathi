@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator
 
+from . import indicators
 from .config import settings
 
 _SCHEMA = """
@@ -34,6 +35,17 @@ CREATE TABLE IF NOT EXISTS reports (
     channel TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_reports_ts ON reports(ts);
+CREATE TABLE IF NOT EXISTS indicators (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    report_id INTEGER NOT NULL,
+    ts REAL NOT NULL,
+    kind TEXT NOT NULL,
+    digest TEXT NOT NULL,
+    hint TEXT,
+    district TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_ind_digest ON indicators(digest);
+CREATE INDEX IF NOT EXISTS idx_ind_report ON indicators(report_id);
 CREATE TABLE IF NOT EXISTS seen_messages (
     id TEXT PRIMARY KEY,
     ts REAL NOT NULL
@@ -119,7 +131,14 @@ def add_report(*, district: str | None, verdict: str, score: int, category: str,
             "INSERT INTO reports(ts, district, verdict, score, category, snippet, channel) VALUES (?,?,?,?,?,?,?)",
             (ts or time.time(), district, verdict, score, category, redact(snippet), channel),
         )
-        return int(cur.lastrowid)
+        rid = int(cur.lastrowid)
+        if verdict != "safe":
+            for ind in indicators.extract(snippet):
+                c.execute(
+                    "INSERT INTO indicators(report_id, ts, kind, digest, hint, district) VALUES (?,?,?,?,?,?)",
+                    (rid, ts or time.time(), ind["kind"], ind["digest"], ind["hint"], district),
+                )
+        return rid
 
 
 def stats(since_days: int = 30) -> dict[str, Any]:
@@ -193,7 +212,7 @@ def first_time_seen(message_id: str) -> bool:
 
 def clear_all() -> None:
     with connect() as c:
-        c.executescript("DELETE FROM reports; DELETE FROM users; DELETE FROM seen_messages;")
+        c.executescript("DELETE FROM reports; DELETE FROM indicators; DELETE FROM users; DELETE FROM seen_messages;")
 
 
 def delete_user(phone: str) -> None:

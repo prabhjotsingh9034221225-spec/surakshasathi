@@ -587,11 +587,11 @@
 
 /* ── Scam checker (message / link / screenshot) ── */
 .ck-tabs{display:flex;gap:8px;padding:16px 24px 0;flex-wrap:wrap}
-.ck-tab{border:1px solid var(--border,#c9d6f5);background:transparent;color:var(--text2);padding:9px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+.ck-tab{border:1px solid var(--card-border);background:transparent;color:var(--text2);padding:9px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
 .ck-tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .ck-body{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:20px 24px 24px}
 @media(max-width:820px){.ck-body{grid-template-columns:1fr}}
-.ck-body textarea,.ck-body input[type=url],.ck-body input[type=text]{width:100%;box-sizing:border-box;padding:12px;border-radius:12px;border:1px solid var(--border,#c9d6f5);background:var(--surface,transparent);color:var(--text);font:inherit}
+.ck-body textarea,.ck-body input[type=url],.ck-body input[type=text]{width:100%;box-sizing:border-box;padding:12px;border-radius:12px;border:1px solid var(--card-border);background:var(--bg2);color:var(--text);font:inherit}
 .ck-body textarea{min-height:130px;resize:vertical}
 .ck-drop{display:block;border:2px dashed var(--accent);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;color:var(--text2)}
 .ck-drop:hover{background:rgba(37,99,235,.06)}
@@ -599,14 +599,14 @@
 .ck-drop img{max-width:100%;max-height:180px;border-radius:10px;margin-top:10px}
 .ck-hint{font-size:13px;color:var(--text2);margin:8px 0 0}
 .ck-err{color:#b91c1c;font-weight:600;margin-top:10px}
-.ck-res{border-radius:16px;border:1px solid var(--border,#c9d6f5);overflow:hidden}
+.ck-res{border-radius:16px;border:1px solid var(--card-border);overflow:hidden}
 .ck-res-empty{padding:40px 20px;text-align:center;color:var(--text2)}
 .ck-banner{padding:18px 20px;color:#fff;display:flex;gap:12px;align-items:center}
 .ck-banner h3{margin:0;font-size:22px}
 .ck-banner small{opacity:.9}
 .ck-banner.scam{background:#c62828}.ck-banner.suspicious{background:#d97706}.ck-banner.safe{background:#15803d}
 .ck-icon{font-size:32px}
-.ck-sec{padding:14px 20px;border-top:1px solid var(--border,#dbe4fb)}
+.ck-sec{padding:14px 20px;border-top:1px solid var(--separator)}
 .ck-sec h4{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--text2)}
 .ck-sec ul,.ck-sec ol{margin:0;padding-left:20px;line-height:1.6}
 .ck-quote{font-size:14px;background:rgba(37,99,235,.07);padding:10px 12px;border-radius:10px;white-space:pre-wrap;max-height:120px;overflow:auto}
@@ -616,7 +616,7 @@
 .ck-chip{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
 .ck-chip:hover{background:rgba(37,99,235,.08)}
 .ck-guide{padding:0 24px 24px}
-.ck-guide details{border:1px solid var(--border,#c9d6f5);border-radius:14px;padding:14px 18px}
+.ck-guide details{border:1px solid var(--card-border);border-radius:14px;padding:14px 18px}
 .ck-guide summary{cursor:pointer;font-weight:700}
 .ck-guide ol{line-height:1.7;margin:12px 0 0;padding-left:20px}
 
@@ -631,7 +631,7 @@
 .lp-grid.g4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:900px){.lp-grid.g4{grid-template-columns:repeat(2,1fr)}.lp-grid.g3{grid-template-columns:1fr}}
 @media(max-width:520px){.lp-grid.g4{grid-template-columns:1fr}}
-.lp-card{background:var(--surface,#fff);border:1px solid var(--border,#c9d6f5);border-radius:18px;padding:22px;transition:transform .15s,box-shadow .15s}
+.lp-card{background:var(--bg2);border:1px solid var(--card-border);border-radius:18px;padding:22px;transition:transform .15s,box-shadow .15s}
 .lp-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,.12)}
 .lp-card h3{margin:0 0 6px;font-size:18px;color:var(--text)}
 .lp-card p{margin:0;color:var(--text2);line-height:1.5;font-size:15px}
@@ -645,6 +645,58 @@
 .lp-cta h2{margin:0 0 10px;font-size:clamp(24px,4vw,34px)}
 .lp-cta p{margin:0 auto 20px;max-width:560px;opacity:.92;line-height:1.55}
 .lp-cta a{display:inline-block;background:#fff;color:#1e3a8a;font-weight:700;text-decoration:none;padding:12px 22px;border-radius:12px}
+
+/* ── Early-warning intelligence, awareness, golden hour ── */
+.aw{margin:20px 0 0;border-radius:20px;padding:20px 22px;background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;display:grid;grid-template-columns:1.3fr 1fr;gap:20px}
+@media(max-width:820px){.aw{grid-template-columns:1fr}}
+.aw .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.aw h3{margin:6px 0 8px;font-size:clamp(20px,3vw,26px)}
+.aw p{margin:0 0 10px;line-height:1.55;opacity:.95}
+.aw-lang{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.aw-lang button,.aw select{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer}
+.aw-lang button[aria-pressed="true"]{background:#fff;color:#1e3a8a;font-weight:700}
+.aw select option{color:#0b1f4d}
+.aw-quiz{background:rgba(255,255,255,.12);border-radius:14px;padding:14px}
+.aw-quiz b{display:block;margin-bottom:10px;line-height:1.4}
+.aw-quiz button{display:block;width:100%;text-align:left;margin:6px 0;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:10px;padding:9px 12px;font:inherit;cursor:pointer}
+.aw-quiz button.right{background:#15803d;border-color:#15803d}.aw-quiz button.wrong{background:#b91c1c;border-color:#b91c1c}
+.aw-quiz small{display:block;margin-top:8px;opacity:.95}
+.iw-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:16px 24px 0}
+.iw-tab{border:1px solid var(--card-border);background:transparent;color:var(--text2);padding:8px 14px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+.iw-tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.iw-body{padding:18px 24px 24px;min-height:120px}
+.iw-lead{margin:0 0 14px;color:var(--text2);line-height:1.55;font-size:14.5px}
+.iw-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.iw-box{border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;background:var(--bg2)}
+.iw-box h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2)}
+.iw-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--separator);font-size:14px;line-height:1.4}
+.iw-row:first-of-type{border-top:0}
+.iw-pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap}
+.iw-pill.critical{background:#c62828}.iw-pill.high{background:#e65100}.iw-pill.watch{background:#b7791f}
+.iw-muted{color:var(--text2);font-size:13px}
+.iw-big{font-size:28px;font-weight:800;line-height:1.1;color:var(--text)}
+.iw-bar{height:8px;border-radius:6px;background:var(--separator);overflow:hidden;margin-top:5px}.iw-bar i{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#1e3a8a)}
+.iw-bar.warn i{background:linear-gradient(90deg,#f59e0b,#c62828)}
+.iw-svg{width:100%;height:auto;display:block}
+.iw-pre{background:rgba(37,99,235,.08);border-radius:12px;padding:12px;font-size:12.5px;max-height:260px;overflow:auto;white-space:pre-wrap;color:var(--text)}
+.iw-btn{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:10px;padding:7px 14px;font:inherit;font-weight:600;cursor:pointer}
+.iw-empty{padding:24px;text-align:center;color:var(--text2)}
+.gh-wrap{padding:6px 24px 24px}
+.gh-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0 20px}
+.gh-step{border:1px solid var(--card-border);border-radius:14px;padding:12px 14px;background:var(--bg2)}
+.gh-step b{display:block;color:var(--accent);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.gh-step span{font-size:14px;line-height:1.45;color:var(--text)}
+.gh-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.gh-form label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--text2);font-weight:600}
+.gh-form input,.gh-form select{padding:10px;border-radius:10px;border:1px solid var(--card-border);background:var(--bg2);color:var(--text);font:inherit}
+.gh-out{margin-top:20px;display:grid;gap:14px}
+.gh-doc{border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
+.gh-doc header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:rgba(37,99,235,.08);font-weight:700;color:var(--text)}
+.gh-doc pre{margin:0;padding:14px;white-space:pre-wrap;font:13.5px/1.55 ui-monospace,Menlo,Consolas,monospace;color:var(--text)}
+.gh-lang{display:flex;gap:6px}
+.gh-lang button{border:1px solid var(--card-border);background:transparent;color:var(--text2);border-radius:999px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer}
+.gh-lang button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+@media print{body *{visibility:hidden}.gh-out,.gh-out *{visibility:visible}.gh-out{position:absolute;left:0;top:0;width:100%}.gh-doc header button{display:none}}
 </style>
 </head>
 <body>
@@ -735,6 +787,23 @@
     <a href="#checkCard">Check a message now</a>
   </section>
 
+
+  <!-- Awareness alert -->
+  <section class="aw" id="awareCard" hidden aria-label="This week's scam alert">
+    <div>
+      <div class="eyebrow" id="awEyebrow">Awareness alert</div>
+      <h3 id="awTitle"></h3>
+      <p id="awTip"></p>
+      <div class="aw-lang">
+        <button type="button" data-l="en" aria-pressed="true">English</button>
+        <button type="button" data-l="hi" aria-pressed="false">हिन्दी</button>
+        <button type="button" data-l="pa" aria-pressed="false">ਪੰਜਾਬੀ</button>
+        <select id="awDistrict" aria-label="Choose district"></select>
+      </div>
+    </div>
+    <div class="aw-quiz" id="awQuiz" hidden></div>
+  </section>
+
   <!-- Map + Side Panel -->
   <section class="map-grid">
     <!-- Map Card -->
@@ -776,6 +845,22 @@
   </section>
 
   <!-- Simulator -->
+
+  <!-- Early-warning intelligence -->
+  <section class="card" id="intel">
+    <div class="card-header" style="padding:24px 24px 0;">
+      <span class="card-title">Early-warning intelligence</span>
+    </div>
+    <div class="iw-tabs" role="tablist">
+      <button class="iw-tab" role="tab" aria-selected="true" data-t="outbreaks">🚨 Outbreaks</button>
+      <button class="iw-tab" role="tab" aria-selected="false" data-t="trends">📈 Trends and forecast</button>
+      <button class="iw-tab" role="tab" aria-selected="false" data-t="rings">🕸️ Scammer rings</button>
+      <button class="iw-tab" role="tab" aria-selected="false" data-t="feed">🔒 Threat feed</button>
+      <button class="iw-tab" role="tab" aria-selected="false" data-t="bench">🧪 Benchmark</button>
+    </div>
+    <div class="iw-body" id="iwBody"><div class="iw-empty">Loading…</div></div>
+  </section>
+
   <section class="card" id="checkCard">
     <div class="card-header" style="padding:24px 24px 0;">
       <span class="card-title">Check anything suspicious</span>
@@ -784,6 +869,7 @@
       <button class="ck-tab" role="tab" aria-selected="true" data-mode="msg">💬 Message</button>
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="link">🔗 Link</button>
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="shot">📷 Screenshot</button>
+      <button class="ck-tab" role="tab" aria-selected="false" data-mode="call">📞 Call</button>
     </div>
     <div class="ck-body">
       <div>
@@ -817,6 +903,16 @@
             <button type="button" class="ck-chip" data-img="/samples/safe-family.png">Safe chat</button>
           </div>
         </div>
+        <div data-pane="call" hidden>
+          <textarea id="ckCall" placeholder="Paste what the caller said (or type the main points)…"></textarea>
+          <p class="ck-hint">Or upload a recording (MP3, M4A or OGG, up to 8 MB). Recording needs speech-to-text on the server, so pasting the words always works.</p>
+          <input type="file" id="ckAudio" accept="audio/*">
+          <div class="ck-samples"><span>Try a sample:</span>
+            <button type="button" class="ck-chip" data-call="Hello sir, I am calling from CBI. Your Aadhaar is linked to money laundering. Do not disconnect the call and do not tell anyone. Transfer your money to the RBI verification account to clear your name.">Digital arrest call</button>
+            <button type="button" class="ck-chip" data-call="Your SIM will be blocked in two hours. Press 1 to talk to TRAI officer. Do not cut the call.">SIM block call</button>
+            <button type="button" class="ck-chip" data-call="Hello, this is your branch. Your cheque book is ready. You can collect it any day this week.">Normal bank call</button>
+          </div>
+        </div>
         <div style="margin-top:12px"><select id="ckLang" aria-label="Language">
           <option value="">Auto-detect language</option><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option>
         </select></div>
@@ -839,6 +935,37 @@
           <li>Keep the message until your complaint is filed. Never share your OTP, PIN or password.</li>
         </ol>
       </details>
+    </div>
+  </section>
+
+
+  <!-- Golden hour -->
+  <section class="card" id="goldenHour">
+    <div class="card-header" style="padding:24px 24px 0;">
+      <span class="card-title">💸 Lost money? The first hour matters</span>
+    </div>
+    <div class="gh-wrap">
+      <p class="iw-lead">Do the steps in order. Fill the form and we will prepare what to say on 1930, a letter for your bank and a complaint summary. Everything stays in your browser. Nothing is sent to our server.</p>
+      <div class="gh-steps">
+        <div class="gh-step"><b>Right now</b><span>Call <a href="tel:1930">1930</a> and give the details below.</span></div>
+        <div class="gh-step"><b>Within 15 minutes</b><span>Call your bank or UPI app helpline and ask them to hold the payment.</span></div>
+        <div class="gh-step"><b>Within the hour</b><span>File the complaint at cybercrime.gov.in with screenshots.</span></div>
+        <div class="gh-step"><b>Same day</b><span>Change passwords and UPI PIN, block the card if shared, and report the number in WhatsApp.</span></div>
+        <div class="gh-step"><b>This week</b><span>Follow up with the complaint number and keep every message as evidence.</span></div>
+      </div>
+      <form class="gh-form" id="ghForm" onsubmit="return false">
+        <label>Your name<input id="ghName" autocomplete="name" placeholder="Full name"></label>
+        <label>Amount lost (Rs)<input id="ghAmount" inputmode="numeric" placeholder="e.g. 25000"></label>
+        <label>Date and time of payment<input id="ghWhen" placeholder="e.g. 17 Nov, 4:30 pm"></label>
+        <label>Transaction ID / UTR<input id="ghTxn" placeholder="From your bank SMS or UPI app"></label>
+        <label>Paid through<select id="ghVia"><option>UPI app</option><option>Net banking</option><option>Debit / credit card</option><option>Bank transfer</option><option>Other</option></select></label>
+        <label>Your bank<input id="ghBank" placeholder="e.g. State Bank of India"></label>
+        <label>Account ending (last 4)<input id="ghAcc" inputmode="numeric" maxlength="4" placeholder="1234"></label>
+        <label>Scammer's number / UPI ID<input id="ghScammer" placeholder="If you have it"></label>
+        <label>What happened<select id="ghType"><option value="a fake KYC / account-block message">Fake KYC / account block</option><option value="an OTP or UPI PIN theft call">OTP / PIN theft</option><option value="a fake UPI collect or refund request">Fake UPI collect / refund</option><option value="a digital arrest / fake police call">Digital arrest / police call</option><option value="a lottery or prize fee">Lottery / prize fee</option><option value="a fake job or task offer">Fake job / task</option><option value="an investment scheme">Investment fraud</option><option value="a remote-access app (AnyDesk) call">Remote-access app</option><option value="online fraud">Something else</option></select></label>
+      </form>
+      <div style="margin-top:14px"><button class="btn btn-primary" id="ghBtn" type="button"><span>📝</span> Prepare my documents</button></div>
+      <div class="gh-out" id="ghOut" hidden></div>
     </div>
   </section>
 
@@ -1142,6 +1269,7 @@ setInterval(refresh, 4000);
   document.querySelectorAll(".ck-chip").forEach(c => c.onclick = async () => {
     if (c.dataset.text) document.getElementById("ckText").value = c.dataset.text;
     if (c.dataset.url) document.getElementById("ckUrl").value = c.dataset.url;
+    if (c.dataset.call) document.getElementById("ckCall").value = c.dataset.call;
     if (c.dataset.img) {
       try {
         const blob = await (await fetch(c.dataset.img)).blob();
@@ -1157,6 +1285,7 @@ setInterval(refresh, 4000);
     const ex = r.explanation, v = r.verdict;
     let h = `<div class="ck-banner ${v}"><span class="ck-icon">${ICON[v]}</span><div><h3>${esc(ex.headline)}</h3><small>Risk score ${r.score}/100</small></div></div>`;
     if (r.extracted_text) h += `<div class="ck-sec"><h4>Text we read from your screenshot</h4><div class="ck-quote">${esc(r.extracted_text)}</div></div>`;
+    if (r.transcript) h += `<div class="ck-sec"><h4>${r.source === "recording" ? "What we heard on the recording" : "Call transcript"}</h4><div class="ck-quote">${esc(r.transcript)}</div></div>`;
     h += `<div class="ck-sec"><h4>What we found</h4><p style="margin:0">${esc(ex.summary)}</p></div>`;
     if (ex.why.length) h += `<div class="ck-sec"><h4>Why</h4><ul>${ex.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
     if (ex.link_notes.length) h += `<div class="ck-sec"><h4>About the link</h4><ul>${ex.link_notes.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
@@ -1176,6 +1305,13 @@ setInterval(refresh, 4000);
       const u = document.getElementById("ckUrl").value.trim();
       if (!u) { err.textContent = "Please paste a link first."; err.hidden = false; return; }
       url = "/api/check/link"; opts = {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({url: u, lang: lang || null})};
+    } else if (mode === "call") {
+      const t = document.getElementById("ckCall").value.trim();
+      const af = document.getElementById("ckAudio").files[0];
+      if (!t && !af) { err.textContent = "Paste what the caller said, or choose a recording."; err.hidden = false; return; }
+      if (af && af.size > 8 * 1024 * 1024) { err.textContent = "Recording is too large. Please use one under 8 MB."; err.hidden = false; return; }
+      const fd = new FormData(); if (t) fd.append("transcript", t); else fd.append("file", af); if (lang) fd.append("lang", lang);
+      url = "/api/check/call"; opts = {method: "POST", body: fd};
     } else {
       const f = document.getElementById("ckFile").files[0];
       if (!f) { err.textContent = "Please choose a screenshot first."; err.hidden = false; return; }
@@ -1191,6 +1327,149 @@ setInterval(refresh, 4000);
       show(j);
     } catch (e) { err.textContent = "Could not reach the server. Please try again."; err.hidden = false; }
     finally { btn.disabled = false; btn.innerHTML = old; }
+  };
+})();
+
+// ── Intelligence, awareness, golden hour ──
+(() => {
+  const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const getJSON = async u => { const r = await fetch(u); if (!r.ok) throw new Error(r.status); return r.json(); };
+  const ago = ts => { const m = Math.max(1, Math.round((Date.now()/1000 - ts)/60)); return m < 90 ? m + " min ago" : Math.round(m/60) + " h ago"; };
+
+  // Awareness alert
+  const aw = document.getElementById("awareCard");
+  let awData = null, awLang = "en";
+  function drawAware() {
+    if (!awData || !awData.available) { aw.hidden = true; return; }
+    aw.hidden = false;
+    const where = awData.district ? awData.district : "your region";
+    document.getElementById("awEyebrow").textContent = "Awareness alert · last 7 days";
+    document.getElementById("awTitle").textContent = `Most reported scam in ${where}: ${awData.label} (${awData.reports_7d} reports)`;
+    document.getElementById("awTip").textContent = awData.tip[awLang] || awData.tip.en;
+    const q = document.getElementById("awQuiz");
+    if (!awData.quiz) { q.hidden = true; return; }
+    q.hidden = false;
+    q.innerHTML = `<b>Quick check: ${esc(awData.quiz.question)}</b>` + awData.quiz.options.map((o, i) => `<button type="button" data-i="${i}">${esc(o)}</button>`).join("") + `<small hidden></small>`;
+    q.querySelectorAll("button").forEach(b => b.onclick = () => {
+      const ok = +b.dataset.i === awData.quiz.answer;
+      q.querySelectorAll("button").forEach(x => { x.disabled = true; if (+x.dataset.i === awData.quiz.answer) x.classList.add("right"); });
+      if (!ok) b.classList.add("wrong");
+      const sm = q.querySelector("small"); sm.hidden = false; sm.textContent = (ok ? "Correct. " : "Not quite. ") + awData.quiz.explanation;
+    });
+  }
+  async function loadAware(d) {
+    try { awData = await getJSON("/api/intel/awareness" + (d ? "?district=" + encodeURIComponent(d) : "")); drawAware(); } catch (e) { aw.hidden = true; }
+  }
+  aw.querySelectorAll(".aw-lang button").forEach(b => b.onclick = () => {
+    awLang = b.dataset.l; aw.querySelectorAll(".aw-lang button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); drawAware();
+  });
+  (async () => {
+    const sel = document.getElementById("awDistrict");
+    sel.innerHTML = '<option value="">All districts</option>';
+    try { (await getJSON("/api/heatmap")).sort((a, b) => b.count - a.count).forEach(d => { const o = document.createElement("option"); o.value = d.district; o.textContent = d.district; sel.append(o); }); } catch (e) {}
+    sel.onchange = () => loadAware(sel.value);
+    loadAware("");
+  })();
+
+  // Intelligence tabs
+  const body = document.getElementById("iwBody");
+  const tabs = document.querySelectorAll(".iw-tab");
+  const cache = {};
+  const bars = (arr, max, cls = "") => `<div class="iw-bar ${cls}"><i style="width:${Math.min(100, Math.round(arr / max * 100))}%"></i></div>`;
+
+  function vOutbreaks(d) {
+    const alerts = d.alerts.length ? d.alerts.map(a => `<div class="iw-row"><div><span class="iw-pill ${a.level}">${a.level.toUpperCase()}</span> <b>${esc(a.district)}</b> · ${esc(a.label)}<div class="iw-muted">${a.count} reports in ${d.window_hours}h, normally ~${a.expected} · ${a.ratio}× above baseline · last ${ago(a.last_seen)}</div></div></div>`).join("") : '<div class="iw-empty">No unusual spikes right now.</div>';
+    const camp = d.campaigns.length ? d.campaigns.map(c => `<div class="iw-row"><div><b>${esc(c.label)}</b> · ${c.size} similar messages <span class="iw-muted">(${c.trend === "rising" ? "↑ rising" : c.trend === "falling" ? "↓ falling" : "→ steady"})</span><div class="iw-muted">“${esc(c.sample)}”</div><div class="iw-muted">${c.districts.map(esc).join(", ")}</div></div></div>`).join("") : '<div class="iw-empty">No campaign clusters yet.</div>';
+    const hrs = d.curve.hours || [], mx = Math.max(1, ...hrs);
+    const W = 360, H = 90, bw = W / 24;
+    const curve = hrs.length ? `<svg class="iw-svg" viewBox="0 0 ${W} ${H + 18}" role="img" aria-label="Reports per hour, last 24 hours">${hrs.map((v, i) => `<rect x="${i * bw + 1}" y="${H - v / mx * H}" width="${bw - 2}" height="${Math.max(1, v / mx * H)}" rx="2" fill="${i >= 20 ? "#c62828" : "#3b82f6"}"/>`).join("")}<text x="0" y="${H + 14}" font-size="10" fill="currentColor" opacity=".6">24h ago</text><text x="${W}" y="${H + 14}" font-size="10" text-anchor="end" fill="currentColor" opacity=".6">now</text></svg>` : "";
+    return `<p class="iw-lead">Spikes compare each district and scam type with its own last-7-day baseline. Campaigns group near-identical messages, even when the wording differs a little.</p><div class="iw-grid"><div class="iw-box"><h4>Live spikes</h4>${alerts}</div><div class="iw-box"><h4>Campaigns in the last 24h</h4>${camp}</div>${hrs.length ? `<div class="iw-box"><h4>Spread curve: ${esc(d.curve.label)} (per hour)</h4>${curve}</div>` : ""}</div>`;
+  }
+
+  function vTrends(d) {
+    const all = d.daily.concat(d.forecast.map(f => ({...f, f: 1})));
+    const mx = Math.max(1, ...all.map(p => p.count)), W = 520, H = 130, step = W / (all.length - 1);
+    const pt = (p, i) => `${(i * step).toFixed(1)},${(H - p.count / mx * H).toFixed(1)}`;
+    const hist = d.daily.map(pt).join(" "), fc = d.daily.slice(-1).concat(d.forecast).map((p, i) => pt(p, d.daily.length - 1 + i)).join(" ");
+    const chart = `<svg class="iw-svg" viewBox="0 0 ${W} ${H + 20}" role="img" aria-label="Daily scam reports with a 7-day forecast"><polyline points="${hist}" fill="none" stroke="#2563eb" stroke-width="2.5"/><polyline points="${fc}" fill="none" stroke="#c62828" stroke-width="2.5" stroke-dasharray="6 5"/><text x="0" y="${H + 15}" font-size="10" fill="currentColor" opacity=".6">28 days ago</text><text x="${W}" y="${H + 15}" font-size="10" text-anchor="end" fill="currentColor" opacity=".6">next 7 days (dashed = forecast)</text></svg>`;
+    const mv = d.movers.map(m => `<div class="iw-row"><span>${esc(m.label)}</span><span class="iw-muted">${m.this_week} this wk · ${m.change_pct === null ? "new" : (m.change_pct >= 0 ? "+" : "") + m.change_pct + "%"} · next wk ~${m.next_week_expected}</span></div>`).join("");
+    const mo = d.monthly.map(m => `<div class="iw-row"><span><b>${esc(m.month)}</b> · ${m.total} reports</span><span class="iw-muted">${m.top.map(t => esc(t.label) + " " + t.count).join(", ")}</span></div>`).join("");
+    const se = d.seasonal_watch.map(x => `<div class="iw-row"><span>${esc(x.scam)}</span><span class="iw-muted">${esc(x.months)}</span></div>`).join("");
+    return `<p class="iw-lead">${esc(d.method)}</p><div class="iw-grid"><div class="iw-box" style="grid-column:1/-1"><h4>Daily reports and 7-day forecast</h4>${chart}</div><div class="iw-box"><h4>Biggest movers (week on week)</h4>${mv}</div><div class="iw-box"><h4>Monthly view</h4>${mo || '<div class="iw-empty">Not enough history yet.</div>'}</div><div class="iw-box"><h4>Seasonal watch-list (heuristic)</h4>${se}</div></div>`;
+  }
+
+  function vRings(d) {
+    if (!d.rings.length) return '<div class="iw-empty">No linked scammer identifiers yet. Rings appear when the same number, UPI ID or fake domain shows up across reports.</div>';
+    const col = {phone: "#2563eb", upi: "#c62828", domain: "#15803d"};
+    const cards = d.rings.map(g => {
+      const R = 70, cx = 110, cy = 85, n = g.nodes.length, pos = {};
+      g.nodes.forEach((nd, i) => { const a = i / n * Math.PI * 2 - Math.PI / 2; pos[nd.id] = [cx + R * Math.cos(a), cy + R * Math.sin(a)]; });
+      const ed = g.edges.filter(e => pos[e.a] && pos[e.b]).map(e => `<line x1="${pos[e.a][0]}" y1="${pos[e.a][1]}" x2="${pos[e.b][0]}" y2="${pos[e.b][1]}" stroke="currentColor" opacity=".25"/>`).join("");
+      const nd = g.nodes.map(x => `<circle cx="${pos[x.id][0]}" cy="${pos[x.id][1]}" r="${6 + Math.min(8, x.reports)}" fill="${col[x.kind] || "#64748b"}"/>`).join("");
+      return `<div class="iw-box"><h4>${esc(g.label)} ring</h4><svg class="iw-svg" viewBox="0 0 220 170" role="img" aria-label="Linked identifiers">${ed}${nd}</svg><div class="iw-muted" style="margin:6px 0">${g.identifiers} linked identifiers · ${g.reports} reports · ${g.districts.map(esc).join(", ")}</div>${g.nodes.map(x => `<div class="iw-row"><span><span class="iw-pill" style="background:${col[x.kind] || "#64748b"}">${esc(x.kind)}</span> ${esc(x.hint)}</span><span class="iw-muted">${x.reports} reports</span></div>`).join("")}</div>`;
+    }).join("");
+    return `<p class="iw-lead">Numbers, UPI IDs and fake domains that appear together are joined into one network. Only a keyed hash is used to match them, and the display is masked. Banks and telecoms could use rings like these to block mule accounts and SIMs together.</p><div class="iw-grid">${cards}</div>`;
+  }
+
+  function vFeed(d) {
+    return `<p class="iw-lead">${esc(d.privacy)} Police, banks or CERT-In could read this feed. ${d.suppressed_cells} small cells are currently withheld.</p><div class="iw-box"><h4>Sample of /api/intel/feed</h4><pre class="iw-pre">${esc(JSON.stringify({...d, items: d.items.slice(0, 5)}, null, 2))}</pre><div style="margin-top:10px"><button class="iw-btn" id="feedDl" type="button">Download full feed (JSON)</button></div></div>`;
+  }
+
+  function vBench(d) {
+    if (!d.available) return `<div class="iw-empty">Benchmark unavailable: ${esc(d.error || "")}</div>`;
+    const mut = d.by_mutation.map(m => `<div class="iw-row" style="display:block"><div style="display:flex;justify-content:space-between"><span>${esc(m.mutation)}</span><b>${m.recall}%</b></div>${bars(m.recall, 100, m.recall < 70 ? "warn" : "")}</div>`).join("");
+    const lg = d.by_language.map(m => `<div class="iw-row"><span>${esc(m.language)}</span><span><b>${m.recall}%</b> <span class="iw-muted">of ${m.tested}</span></span></div>`).join("");
+    const ms = d.misses.map(m => `<div class="iw-row"><span class="iw-muted"><b>${esc(m.mutation)}:</b> ${esc(m.text)}</span></div>`).join("");
+    return `<p class="iw-lead">Known scam messages are rewritten the way attackers do (capitals, emojis, hidden characters, 0TP spelling) and the detector is re-run. ${esc(d.note)}</p><div class="iw-grid"><div class="iw-box"><h4>Clean samples</h4><div class="iw-big">${d.baseline_recall}%</div><div class="iw-muted">of ${d.scams} scams caught · ${d.baseline_false_alarms} false alarms on ${d.safe} safe messages</div></div><div class="iw-box"><h4>After attacker tricks</h4><div class="iw-big">${d.mutated_recall}%</div><div class="iw-muted">recall over ${d.mutated_cases} mutated messages</div></div><div class="iw-box"><h4>By mutation</h4>${mut}</div><div class="iw-box"><h4>By language (mutated)</h4>${lg}</div><div class="iw-box" style="grid-column:1/-1"><h4>Weak spots: messages that slipped through</h4>${ms || '<div class="iw-empty">None</div>'}</div></div>`;
+  }
+
+  const VIEWS = {outbreaks: ["/api/intel/outbreaks", vOutbreaks], trends: ["/api/intel/trends", vTrends], rings: ["/api/intel/rings", vRings], feed: ["/api/intel/feed", vFeed], bench: ["/api/intel/benchmark", vBench]};
+  async function openTab(t) {
+    tabs.forEach(x => x.setAttribute("aria-selected", x.dataset.t === t ? "true" : "false"));
+    body.innerHTML = '<div class="iw-empty">Loading…</div>';
+    try {
+      const [url, view] = VIEWS[t];
+      const d = cache[t] || (cache[t] = await getJSON(url));
+      body.innerHTML = view(d);
+      const dl = document.getElementById("feedDl");
+      if (dl) dl.onclick = async () => {
+        const full = await getJSON("/api/intel/feed"); const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(full, null, 2)], {type: "application/json"})); a.download = "surakshasathi-threat-feed.json"; a.click();
+      };
+    } catch (e) { delete cache[t]; body.innerHTML = '<div class="iw-empty">Could not load this view. Please try again.</div>'; }
+  }
+  tabs.forEach(b => b.onclick = () => openTab(b.dataset.t));
+  openTab("outbreaks");
+  setInterval(() => { if (document.querySelector('.iw-tab[aria-selected="true"]').dataset.t === "outbreaks") { delete cache.outbreaks; openTab("outbreaks"); } }, 60000);
+
+  // Golden hour documents (built entirely in the browser)
+  const SAY = {
+    en: (v) => `Hello, I want to report online financial fraud.\nMy name is ${v.name}.\nI lost Rs ${v.amount} on ${v.when} through ${v.via}, after ${v.type}.\nTransaction ID: ${v.txn}.\nMy bank is ${v.bank}, account ending ${v.acc}.\nThe fraudster's number / UPI ID: ${v.scammer}.\nPlease register my complaint, ask the bank to hold the money, and give me the acknowledgement number.`,
+    hi: (v) => `नमस्ते, मैं ऑनलाइन वित्तीय धोखाधड़ी की शिकायत दर्ज कराना चाहता/चाहती हूं।\nमेरा नाम ${v.name} है।\nमैंने ${v.when} को ${v.via} से Rs ${v.amount} गंवाए हैं।\nट्रांज़ैक्शन ID: ${v.txn}।\nमेरा बैंक ${v.bank} है, खाते के आखिरी अंक ${v.acc}।\nधोखेबाज़ का नंबर / UPI ID: ${v.scammer}।\nकृपया शिकायत दर्ज करें, बैंक से पैसे रोकने को कहें और मुझे पावती नंबर दें।`,
+    pa: (v) => `ਸਤ ਸ੍ਰੀ ਅਕਾਲ, ਮੈਂ ਆਨਲਾਈਨ ਵਿੱਤੀ ਧੋਖਾਧੜੀ ਦੀ ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰਵਾਉਣੀ ਹੈ।\nਮੇਰਾ ਨਾਂ ${v.name} ਹੈ।\nਮੈਂ ${v.when} ਨੂੰ ${v.via} ਰਾਹੀਂ Rs ${v.amount} ਗੁਆਏ ਹਨ।\nਟ੍ਰਾਂਜ਼ੈਕਸ਼ਨ ID: ${v.txn}।\nਮੇਰਾ ਬੈਂਕ ${v.bank} ਹੈ, ਖਾਤੇ ਦੇ ਆਖਰੀ ਅੰਕ ${v.acc}।\nਠੱਗ ਦਾ ਨੰਬਰ / UPI ID: ${v.scammer}।\nਕਿਰਪਾ ਕਰਕੇ ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰੋ, ਬੈਂਕ ਨੂੰ ਪੈਸੇ ਰੋਕਣ ਲਈ ਕਹੋ ਅਤੇ ਮੈਨੂੰ ਰਸੀਦ ਨੰਬਰ ਦਿਓ।`,
+  };
+  const val = id => (document.getElementById(id).value || "").trim();
+  document.getElementById("ghBtn").onclick = () => {
+    const ph = "[fill in]";
+    const v = {name: val("ghName") || ph, amount: val("ghAmount") || ph, when: val("ghWhen") || ph, txn: val("ghTxn") || ph, via: val("ghVia"), bank: val("ghBank") || ph, acc: val("ghAcc") || ph, scammer: val("ghScammer") || "not known", type: val("ghType")};
+    const today = new Date().toLocaleDateString("en-IN", {day: "numeric", month: "long", year: "numeric"});
+    const letter = `To,\nThe Branch Manager / Nodal Officer (Cyber Fraud)\n${v.bank}\n\nDate: ${today}\nSubject: URGENT request to hold a fraudulent transaction (Txn ID ${v.txn})\n\nRespected Sir / Madam,\n\nI am your account holder (${v.name}, account ending ${v.acc}). On ${v.when}, Rs ${v.amount} was debited from my account through ${v.via} after I was cheated through ${v.type}. The transaction ID is ${v.txn}. The fraudster's contact: ${v.scammer}.\n\nI have reported this on the National Cyber Crime Helpline 1930 and will file / have filed a complaint on cybercrime.gov.in.\n\nI request you to:\n1. Immediately place a hold on the amount in the beneficiary account, if still available.\n2. Block further transactions on my card / UPI if required.\n3. Give me a written acknowledgement with a complaint number.\n4. Investigate the matter and tell me my rights for reversal as per RBI guidelines on customer protection in unauthorised electronic transactions.\n\nYours faithfully,\n${v.name}`;
+    const comp = `COMPLAINT SUMMARY (for cybercrime.gov.in)\n\nCategory: Online financial fraud\nWhat happened: I was cheated through ${v.type}.\nAmount lost: Rs ${v.amount}\nDate and time: ${v.when}\nPayment mode: ${v.via}\nTransaction ID / UTR: ${v.txn}\nMy bank and account (last 4): ${v.bank}, ${v.acc}\nSuspect number / UPI ID: ${v.scammer}\nComplainant: ${v.name}\n\nEvidence to attach: screenshots of messages and call log, bank / UPI debit SMS, the suspect's number or UPI ID, and the app's transaction screen.`;
+    let lang = "en";
+    const out = document.getElementById("ghOut");
+    out.hidden = false;
+    out.innerHTML = `<div class="gh-doc"><header><span>1. What to say on 1930</span><span class="gh-lang"><button type="button" data-l="en" aria-pressed="true">EN</button><button type="button" data-l="hi" aria-pressed="false">हि</button><button type="button" data-l="pa" aria-pressed="false">ਪੰ</button></span></header><pre id="ghSay"></pre><header><span></span><span><button class="iw-btn" type="button" data-copy="ghSay">Copy</button></span></header></div>
+      <div class="gh-doc"><header><span>2. Letter to your bank</span><button class="iw-btn" type="button" data-copy="ghLetter">Copy</button></header><pre id="ghLetter"></pre></div>
+      <div class="gh-doc"><header><span>3. Complaint summary</span><button class="iw-btn" type="button" data-copy="ghComp">Copy</button></header><pre id="ghComp"></pre></div>
+      <div><button class="iw-btn" type="button" id="ghPrint">🖨️ Print or save as PDF</button></div>`;
+    const setSay = () => { document.getElementById("ghSay").textContent = SAY[lang](v); };
+    setSay();
+    document.getElementById("ghLetter").textContent = letter;
+    document.getElementById("ghComp").textContent = comp;
+    out.querySelectorAll(".gh-lang button").forEach(b => b.onclick = () => { lang = b.dataset.l; out.querySelectorAll(".gh-lang button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); setSay(); });
+    out.querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent); b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1500); } catch (e) { b.textContent = "Select and copy"; } });
+    document.getElementById("ghPrint").onclick = () => window.print();
+    out.scrollIntoView({behavior: "smooth", block: "start"});
   };
 })();
 </script>

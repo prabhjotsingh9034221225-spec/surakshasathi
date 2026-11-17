@@ -103,6 +103,31 @@ WHY = {
         "hi": "इसमें निजी फोटो या वीडियो फैलाने की धमकी है। पैसे न दें। यह ब्लैकमेल है।",
         "pa": "ਇਸ ਵਿੱਚ ਨਿੱਜੀ ਫੋਟੋ ਜਾਂ ਵੀਡੀਓ ਫੈਲਾਉਣ ਦੀ ਧਮਕੀ ਹੈ। ਪੈਸੇ ਨਾ ਦਿਓ। ਇਹ ਬਲੈਕਮੇਲ ਹੈ।",
     },
+    "isolation": {
+        "en": "The caller tells you to keep this secret from family or friends. Scammers isolate victims so nobody can warn them.",
+        "hi": "फोन करने वाला कहता है कि परिवार या दोस्तों को न बताएं। ठग इसलिए अकेला करते हैं ताकि कोई आपको चेतावनी न दे सके।",
+        "pa": "ਫ਼ੋਨ ਕਰਨ ਵਾਲਾ ਕਹਿੰਦਾ ਹੈ ਕਿ ਪਰਿਵਾਰ ਜਾਂ ਦੋਸਤਾਂ ਨੂੰ ਨਾ ਦੱਸੋ। ਠੱਗ ਇਸ ਲਈ ਇਕੱਲਾ ਕਰਦੇ ਹਨ ਤਾਂ ਜੋ ਕੋਈ ਚੇਤਾਵਨੀ ਨਾ ਦੇ ਸਕੇ।",
+    },
+    "stay_on_line": {
+        "en": "You are told not to hang up or to stay on a video call. Real agencies never keep you on a call to 'investigate' you.",
+        "hi": "आपको फोन न काटने या वीडियो कॉल पर रहने को कहा गया है। असली एजेंसियां 'जांच' के नाम पर आपको कॉल पर नहीं रखतीं।",
+        "pa": "ਤੁਹਾਨੂੰ ਫ਼ੋਨ ਨਾ ਕੱਟਣ ਜਾਂ ਵੀਡੀਓ ਕਾਲ ਤੇ ਰਹਿਣ ਲਈ ਕਿਹਾ ਗਿਆ ਹੈ। ਅਸਲੀ ਏਜੰਸੀਆਂ 'ਜਾਂਚ' ਦੇ ਨਾਂ ਤੇ ਕਾਲ ਤੇ ਨਹੀਂ ਰੱਖਦੀਆਂ।",
+    },
+    "safe_account": {
+        "en": "It asks you to move money to a 'safe' or 'RBI verification' account. No such account exists. Your money goes straight to the scammer.",
+        "hi": "इसमें पैसे 'सुरक्षित' या 'RBI वेरिफिकेशन' खाते में भेजने को कहा गया है। ऐसा कोई खाता नहीं होता। पैसे सीधे ठग के पास जाते हैं।",
+        "pa": "ਇਸ ਵਿੱਚ ਪੈਸੇ 'ਸੁਰੱਖਿਅਤ' ਜਾਂ 'RBI ਵੈਰੀਫਿਕੇਸ਼ਨ' ਖਾਤੇ ਵਿੱਚ ਭੇਜਣ ਲਈ ਕਿਹਾ ਗਿਆ ਹੈ। ਅਜਿਹਾ ਕੋਈ ਖਾਤਾ ਨਹੀਂ ਹੁੰਦਾ। ਪੈਸੇ ਸਿੱਧੇ ਠੱਗ ਕੋਲ ਜਾਂਦੇ ਹਨ।",
+    },
+    "authority_call": {
+        "en": "The caller claims to be police, CBI, TRAI, customs or a bank officer and says your SIM, Aadhaar or parcel is involved in a crime.",
+        "hi": "फोन करने वाला पुलिस, CBI, TRAI, कस्टम या बैंक अधिकारी बनकर कहता है कि आपका SIM, आधार या पार्सल किसी अपराध में फंसा है।",
+        "pa": "ਫ਼ੋਨ ਕਰਨ ਵਾਲਾ ਪੁਲਿਸ, CBI, TRAI, ਕਸਟਮ ਜਾਂ ਬੈਂਕ ਅਫ਼ਸਰ ਬਣ ਕੇ ਕਹਿੰਦਾ ਹੈ ਕਿ ਤੁਹਾਡਾ SIM, ਆਧਾਰ ਜਾਂ ਪਾਰਸਲ ਕਿਸੇ ਜੁਰਮ ਵਿੱਚ ਫਸਿਆ ਹੈ।",
+    },
+    "sim_threat": {
+        "en": "It threatens that your SIM or number will be blocked within hours. This is a pressure tactic.",
+        "hi": "इसमें कुछ घंटों में SIM या नंबर बंद होने की धमकी है। यह दबाव बनाने की चाल है।",
+        "pa": "ਇਸ ਵਿੱਚ ਕੁਝ ਘੰਟਿਆਂ ਵਿੱਚ SIM ਜਾਂ ਨੰਬਰ ਬੰਦ ਹੋਣ ਦੀ ਧਮਕੀ ਹੈ। ਇਹ ਦਬਾਅ ਬਣਾਉਣ ਦੀ ਚਾਲ ਹੈ।",
+    },
     "link_link": {
         "en": "It contains a link that looks unsafe or fake.",
         "hi": "इसमें ऐसा लिंक है जो असुरक्षित या नकली लगता है।",

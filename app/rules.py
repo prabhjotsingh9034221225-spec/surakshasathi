@@ -38,6 +38,7 @@ class RuleResult:
 
 def normalise(text: str) -> str:
     text = unicodedata.normalize("NFKC", text or "")
+    text = re.sub("[\u200b\u200c\u200d\u2060\ufeff\u00ad]", "", text)  # invisible characters used to split keywords
     text = text.lower()
     return re.sub(r"\s+", " ", text).strip()
 
