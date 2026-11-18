@@ -768,6 +768,14 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
  .iw-box,.gh-step,.cb-bot,.lp-lang-say,.iw-what{background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 1px rgba(255,255,255,.2)}
  .gh-form input,.gh-form select,.ck-body textarea,.ck-body input[type=url],.ck-body input[type=text]{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.16)!important}
 }
+
+/* ── Map full width + live reports / top scams section ── */
+.map-single{display:block}
+.map-single #map{height:460px}
+.live-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:860px){.live-grid{grid-template-columns:1fr}}
+.live-grid .feed{max-height:380px;overflow:auto}
+.grp-num.emoji,#g-live .grp-num{font-size:20px}
 </style>
 </head>
 <body>
@@ -782,7 +790,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   </a>
   <span class="nav-badge" id="sampleBadge">Demo Data</span>
   <div class="nav-links" aria-label="Sections">
-    <a href="#g-check">Check</a><a href="#g-help">Lost money?</a><a href="#g-learn">Scams near me</a><a href="#g-about">About</a>
+    <a href="#g-check">Check</a><a href="#g-help">Lost money?</a><a href="#g-learn">Scams near me</a><a href="#g-live">Live reports</a><a href="#g-about">About</a>
   </div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
     <div class="live-dot"></div>
@@ -972,7 +980,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     <div class="aw-quiz" id="awQuiz" hidden></div>
   </section>
 
-  <section class="map-grid">
+  <section class="map-single">
     <!-- Map Card -->
     <div class="card">
       <div class="card-header">
@@ -985,8 +993,11 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
       <div class="map-note">Circle size and colour indicate report volume. Updates every few seconds.</div>
     </div>
 
-    <!-- Side Cards -->
-    <div class="side-stack">
+  </section>
+
+  <div class="grp" id="g-live"><span class="grp-num">📡</span><div><h2>Live reports and top scams</h2><p>What people are reporting right now, and which scam types are most common.</p></div></div>
+
+  <section class="live-grid">
       <!-- Live Reports -->
       <div class="card">
         <div class="card-header">
@@ -1008,7 +1019,6 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
           <div class="feed-empty" style="padding:16px 0 0;">No data yet.</div>
         </div>
       </div>
-    </div>
   </section>
 
   <section class="card" id="intel">
