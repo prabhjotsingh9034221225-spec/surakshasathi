@@ -738,6 +738,11 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
  .act-check,.act-help,.act-learn{border-top-color:rgba(255,255,255,.16)}
  .tile-icon{background-color:rgba(255,255,255,.1)!important}
 }
+
+/* ── Gradient headline ── */
+.hero-title{background:linear-gradient(110deg,#0b1b44 0%,#1d4ed8 48%,#38bdf8 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;padding-bottom:.08em}
+.hero-title em{-webkit-text-fill-color:transparent}
+@media (prefers-color-scheme:dark){.hero-title{background:linear-gradient(110deg,#ffffff 0%,#93c5fd 50%,#60a5fa 100%);-webkit-background-clip:text;background-clip:text}}
 </style>
 </head>
 <body>
