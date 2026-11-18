@@ -743,6 +743,31 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .hero-title{background:linear-gradient(110deg,#0b1b44 0%,#1d4ed8 48%,#38bdf8 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;padding-bottom:.08em}
 .hero-title em{-webkit-text-fill-color:transparent}
 @media (prefers-color-scheme:dark){.hero-title{background:linear-gradient(110deg,#ffffff 0%,#93c5fd 50%,#60a5fa 100%);-webkit-background-clip:text;background-clip:text}}
+
+/* ── Glass look: every box ── */
+.card,.chat-card,.lp-card,.lp-ghost{
+ background:linear-gradient(145deg,rgba(255,255,255,.62),rgba(255,255,255,.28));
+ border:1px solid rgba(255,255,255,.65);
+ -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.9),inset 0 -1px 2px rgba(37,99,235,.08),0 8px 28px rgba(30,64,175,.12)}
+.lp-card:hover{box-shadow:inset 0 1px 1px rgba(255,255,255,.95),0 14px 36px rgba(37,99,235,.22)}
+.iw-box,.gh-step,.cb-bot,.lp-lang-say,.iw-what{
+ background:linear-gradient(145deg,rgba(255,255,255,.55),rgba(255,255,255,.22));
+ border:1px solid rgba(255,255,255,.6);
+ -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.85),0 2px 10px rgba(30,64,175,.08)}
+.gh-form input,.gh-form select,.ck-body textarea,.ck-body input[type=url],.ck-body input[type=text]{
+ background:rgba(255,255,255,.5)!important;border:1px solid rgba(255,255,255,.7)!important;
+ box-shadow:inset 0 1px 2px rgba(30,64,175,.08)}
+.lp-cta{background:linear-gradient(135deg,rgba(37,99,235,.78),rgba(30,58,138,.7));
+ border:1px solid rgba(255,255,255,.35);
+ -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.45),0 12px 36px rgba(30,64,175,.3)}
+@media (prefers-color-scheme:dark){
+ .card,.chat-card,.lp-card,.lp-ghost{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 1px rgba(255,255,255,.25),0 8px 28px rgba(0,0,0,.35)}
+ .iw-box,.gh-step,.cb-bot,.lp-lang-say,.iw-what{background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 1px rgba(255,255,255,.2)}
+ .gh-form input,.gh-form select,.ck-body textarea,.ck-body input[type=url],.ck-body input[type=text]{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.16)!important}
+}
 </style>
 </head>
 <body>
