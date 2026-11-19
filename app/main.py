@@ -1,8 +1,12 @@
 """FastAPI app: WhatsApp webhooks, analysis API, dashboard API, and the static dashboard."""
 from __future__ import annotations
 
+import csv
+import io
 import json
+import logging
 import time
+import uuid
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 
@@ -30,7 +34,30 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="SurakshaSathi", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="SurakshaSathi", version="1.1.0", lifespan=lifespan)
+log = logging.getLogger("surakshasathi")
+STARTED = time.time()
+_SEC_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "microphone=(self), camera=(), geolocation=(self)",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+}
+
+
+@app.middleware("http")
+async def harden_and_trace(request: Request, call_next):
+    """Security headers on every response, plus a request id and timing line for the logs (no bodies, no phone numbers)."""
+    rid = request.headers.get("x-request-id") or uuid.uuid4().hex[:12]
+    t0 = time.perf_counter()
+    response = await call_next(request)
+    for k, v in _SEC_HEADERS.items():
+        response.headers.setdefault(k, v)
+    response.headers["X-Request-ID"] = rid
+    if request.url.path.startswith("/api/"):
+        log.info("%s %s %s %.0fms rid=%s", request.method, request.url.path, response.status_code, (time.perf_counter() - t0) * 1000, rid)
+    return response
 app.mount("/audio", StaticFiles(directory=str(settings.audio_dir)), name="audio")
 STATIC = ROOT / "app" / "static"
 app.mount("/samples", StaticFiles(directory=str(STATIC / "samples")), name="samples")
@@ -138,6 +165,53 @@ def api_analyze(body: AnalyzeIn, request: Request) -> dict:
     lang = body.lang or detect_language(body.text)
     a = analyze(body.text, lang)
     return {**a.to_dict(), "explanation": explain.build(a)}
+
+
+@app.get("/api/status")
+def api_status() -> dict:
+    """Public health summary for monitors and the footer link."""
+    try:
+        with storage.connect() as c:
+            c.execute("SELECT 1").fetchone()
+        db = "ok"
+    except Exception:
+        db = "error"
+    return {
+        "status": "ok" if db == "ok" else "degraded",
+        "version": app.version,
+        "uptime_seconds": int(time.time() - STARTED),
+        "database": db,
+        "ai_explanations": bool(settings.anthropic_api_key),
+        "link_checker": "google-safe-browsing" if settings.safe_browsing_key else "heuristics-only",
+        "demo_mode": settings.demo_mode,
+    }
+
+
+@app.get("/api/feedback/summary")
+def api_feedback_summary() -> dict:
+    f = storage.feedback_summary()
+    f["helpful_pct"] = round(100 * f["helpful"] / f["total"]) if f["total"] else None
+    return f
+
+
+@app.get("/api/export/reports")
+def api_export_reports(
+    days: int = Query(30, ge=1, le=365),
+    format: str = Query("csv", pattern="^(csv|json)$"),
+    x_admin_token: str | None = Header(None),
+) -> Response:
+    """Anonymous report data for police, banks and CERT-In. Needs the admin token in the X-Admin-Token header."""
+    require_admin(x_admin_token)
+    rows = storage.export_reports(days)
+    if format == "json":
+        return JSONResponse({"days": days, "count": len(rows), "reports": rows})
+    buf = io.StringIO()
+    cols = ["id", "time_utc", "district", "verdict", "score", "category", "channel", "snippet"]
+    w = csv.DictWriter(buf, fieldnames=cols)
+    w.writeheader()
+    for r in rows:
+        w.writerow({k: r.get(k) for k in cols})
+    return Response(buf.getvalue(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="surakshasathi-reports-{days}d.csv"'})
 
 
 class FeedbackIn(BaseModel):

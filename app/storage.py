@@ -88,6 +88,7 @@ def redact(text: str, limit: int = 140) -> str:
     """Remove phone numbers, long digit runs (OTP, card, account) and UPI IDs from a snippet."""
     text = re.sub(r"[\w.\-]{2,}@[a-z]{2,}", "[upi]", text or "", flags=re.I)
     text = re.sub(r"\+?\d[\d\s\-]{5,}\d", "[number]", text)
+    text = re.sub(r"\b\d{4,}\b", "[number]", text)  # bare OTPs / PINs / amounts of 4+ digits
     text = re.sub(r"\s+", " ", text).strip()
     return text[:limit]
 
@@ -243,3 +244,19 @@ def feedback_summary() -> dict[str, int]:
     with connect() as c:
         row = c.execute("SELECT COUNT(*), COALESCE(SUM(helpful),0) FROM feedback").fetchone()
     return {"total": row[0], "helpful": row[1]}
+
+
+def export_reports(days: int = 30, limit: int = 20000) -> list[dict[str, Any]]:
+    """Anonymous report rows for authorised analysts (police, banks, CERT-In). Snippets are already redacted."""
+    cutoff = time.time() - days * 86400
+    with connect() as c:
+        rows = c.execute(
+            "SELECT id, ts, district, verdict, score, category, channel, snippet FROM reports WHERE ts>=? ORDER BY ts DESC LIMIT ?",
+            (cutoff, limit),
+        ).fetchall()
+    out = []
+    for r in rows:
+        d = dict(r)
+        d["time_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(d.pop("ts")))
+        out.append(d)
+    return out

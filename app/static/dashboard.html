@@ -1185,7 +1185,7 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
       <li><b>Not legal or financial advice.</b> SurakshaSathi gives an automated opinion and can be wrong. When in doubt, do not pay, do not share an OTP or PIN, and call your bank or <a href="tel:1930">1930</a>.</li>
     </ul>
   </details>
-  <p>SurakshaSathi · <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">Report at cybercrime.gov.in</a> · Helpline <strong>1930</strong></p>
+  <p><a href="/docs">API reference</a> · <a href="/api/status">System status</a> · SurakshaSathi · <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">Report at cybercrime.gov.in</a> · Helpline <strong>1930</strong></p>
 </footer>
 
 <!-- ── Scripts ────────────────────────────────────────────────────────── -->
@@ -1640,15 +1640,39 @@ setInterval(refresh, 4000);
   }
 
   function vFeed(d) {
-    return `<p class="iw-lead">${esc(d.privacy)} Police, banks or CERT-In could read this feed. ${d.suppressed_cells} small cells are currently withheld.</p><div class="iw-box"><h4>Sample of /api/intel/feed</h4><pre class="iw-pre">${esc(JSON.stringify({...d, items: d.items.slice(0, 5)}, null, 2))}</pre><div style="margin-top:10px"><button class="iw-btn" id="feedDl" type="button">Download full feed (JSON)</button></div></div>`;
+    return `<p class="iw-lead">${esc(d.privacy)} Police, banks or CERT-In could read this feed. ${d.suppressed_cells} small cells are currently withheld.</p><div class="iw-box"><h4>Sample of /api/intel/feed</h4><pre class="iw-pre">${esc(JSON.stringify({...d, items: d.items.slice(0, 5)}, null, 2))}</pre><div style="margin-top:10px"><button class="iw-btn" id="feedDl" type="button">Download full feed (JSON)</button></div></div><div class="iw-box" style="margin-top:12px"><h4>Analyst export (police, banks, CERT-In)</h4><p class="iw-muted" style="margin:0 0 8px">Anonymous report rows with redacted snippets. Needs the access key issued to your organisation.</p><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input type="password" id="exKey" placeholder="Access key" autocomplete="off" style="padding:8px 12px;border-radius:10px;border:1px solid var(--card-border);background:transparent;color:inherit"><select id="exDays" aria-label="Period"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select><button class="iw-btn" type="button" data-ex="csv">Download CSV</button><button class="iw-btn" type="button" data-ex="json">Download JSON</button></div><div class="iw-muted" id="exMsg" role="status" style="margin-top:8px"></div></div>`;
   }
+
+  async function loadFb() {
+    const el = document.getElementById("fbBox"); if (!el) return;
+    try {
+      const f = await getJSON("/api/feedback/summary");
+      el.innerHTML = f.total ? `<span class="iw-big" style="font-size:28px">${f.helpful_pct}%</span> of ${f.total} people said the verdict was right.` : "No feedback yet. Use 👍 / 👎 under any verdict.";
+    } catch (e) { el.textContent = "Feedback is unavailable right now."; }
+  }
+  document.addEventListener("click", async ev => {
+    const b = ev.target.closest && ev.target.closest("[data-ex]"); if (!b) return;
+    const msg = document.getElementById("exMsg"), key = document.getElementById("exKey").value.trim();
+    if (!key) { msg.textContent = "Enter your access key first."; return; }
+    msg.textContent = "Preparing…";
+    try {
+      const days = document.getElementById("exDays").value, fmt = b.dataset.ex;
+      const r = await fetch(`/api/export/reports?days=${days}&format=${fmt}`, {headers: {"X-Admin-Token": key}});
+      if (r.status === 403) { msg.textContent = "That access key was not accepted."; return; }
+      if (!r.ok) { msg.textContent = "Export failed. Please try again."; return; }
+      const url = URL.createObjectURL(await r.blob()), a = document.createElement("a");
+      a.href = url; a.download = `surakshasathi-reports-${days}d.${fmt}`; a.click(); URL.revokeObjectURL(url);
+      msg.textContent = "Downloaded.";
+    } catch (e) { msg.textContent = "Could not reach the server."; }
+  });
 
   function vBench(d) {
     if (!d.available) return `<div class="iw-empty">Benchmark unavailable: ${esc(d.error || "")}</div>`;
     const mut = d.by_mutation.map(m => `<div class="iw-row" style="display:block"><div style="display:flex;justify-content:space-between"><span>${esc(m.mutation)}</span><b>${m.recall}%</b></div>${bars(m.recall, 100, m.recall < 70 ? "warn" : "")}</div>`).join("");
     const lg = d.by_language.map(m => `<div class="iw-row"><span>${esc(m.language)}</span><span><b>${m.recall}%</b> <span class="iw-muted">of ${m.tested}</span></span></div>`).join("");
     const ms = d.misses.map(m => `<div class="iw-row"><span class="iw-muted"><b>${esc(m.mutation)}:</b> ${esc(m.text)}</span></div>`).join("");
-    return `<p class="iw-lead">Known scam messages are rewritten the way attackers do (capitals, emojis, hidden characters, 0TP spelling) and the detector is re-run. ${esc(d.note)}</p><div class="iw-grid"><div class="iw-box"><h4>Clean samples</h4><div class="iw-big">${d.baseline_recall}%</div><div class="iw-muted">of ${d.scams} scams caught · ${d.baseline_false_alarms} false alarms on ${d.safe} safe messages</div></div><div class="iw-box"><h4>After attacker tricks</h4><div class="iw-big">${d.mutated_recall}%</div><div class="iw-muted">recall over ${d.mutated_cases} mutated messages</div></div><div class="iw-box"><h4>By mutation</h4>${mut}</div><div class="iw-box"><h4>By language (mutated)</h4>${lg}</div><div class="iw-box" style="grid-column:1/-1"><h4>Weak spots: messages that slipped through</h4>${ms || '<div class="iw-empty">None</div>'}</div></div>`;
+    setTimeout(loadFb, 0);
+    return `<p class="iw-lead">Known scam messages are rewritten the way attackers do (capitals, emojis, hidden characters, 0TP spelling) and the detector is re-run. ${esc(d.note)}</p><div class="iw-grid"><div class="iw-box"><h4>Clean samples</h4><div class="iw-big">${d.baseline_recall}%</div><div class="iw-muted">of ${d.scams} scams caught · ${d.baseline_false_alarms} false alarms on ${d.safe} safe messages</div></div><div class="iw-box"><h4>After attacker tricks</h4><div class="iw-big">${d.mutated_recall}%</div><div class="iw-muted">recall over ${d.mutated_cases} mutated messages</div></div><div class="iw-box"><h4>By mutation</h4>${mut}</div><div class="iw-box"><h4>By language (mutated)</h4>${lg}</div><div class="iw-box" style="grid-column:1/-1"><h4>Real-world feedback</h4><div id="fbBox" class="iw-muted">Loading…</div></div><div class="iw-box" style="grid-column:1/-1"><h4>Weak spots: messages that slipped through</h4>${ms || '<div class="iw-empty">None</div>'}</div></div>`;
   }
 
   const WHAT = {outbreaks: "A sudden jump of one scam in one district, compared with what is normal there.", trends: "How many scams were reported each day, and what we expect next week.", rings: "Scammers who reuse the same number, UPI ID or fake website are shown as one group.", feed: "A privacy-safe summary that police or banks can read. No names or message text.", bench: "We test the detector with tricky, disguised scam messages to see where it fails."};
