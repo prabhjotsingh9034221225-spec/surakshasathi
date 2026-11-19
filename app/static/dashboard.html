@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SurakshaSathi — Scam Guardian</title>
+<meta name="description" content="A WhatsApp scam shield for elderly and first-time internet users. Check any message, link, screenshot or call in Hindi, Punjabi or English. Report fraud on 1930.">
+<meta name="theme-color" content="#2563eb">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SurakshaSathi — a trusted friend for every message you're unsure about">
+<meta property="og:description" content="Check suspicious messages, links, screenshots and calls in Hindi, Punjabi or English. Built for elderly and first-time internet users.">
+<meta property="og:image" content="https://surakshasathi-l6tj.onrender.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<link rel="manifest" href="/assets/manifest.json">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   /* ── Apple Design System ───────────────────────────────────────────── */
@@ -788,6 +798,40 @@ nav.jump a:hover{transform:translateY(-1px);color:var(--accent)}
 nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(37,99,235,.35)}
 @media (prefers-color-scheme:dark){nav.jump a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 1px rgba(255,255,255,.2)}}
 @media(max-width:600px){nav.jump{padding:8px 14px}}
+
+/* ── Accessibility, language, status, wake banner, voice, feedback, privacy ── */
+nav{gap:10px}
+.nav-tools{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.tool-grp{display:flex;gap:2px;padding:2px;border-radius:999px;background:rgba(37,99,235,.08);border:1px solid var(--separator)}
+.tool-grp button{font:inherit;font-size:12.5px;font-weight:700;min-width:30px;height:28px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:var(--text);cursor:pointer}
+.tool-grp button:hover{background:rgba(37,99,235,.14)}
+.tool-grp button.on,.tool-grp button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.status{display:flex;align-items:center;gap:6px}
+.status.demo .live-dot{background:var(--warn);box-shadow:0 0 0 3px rgba(255,149,0,.2)}
+.status.demo .live-label{color:var(--warn)}
+@media(max-width:700px){.nav-title{display:none}.nav-tools{gap:5px}.status .live-label{display:none}.tool-grp button{min-width:26px;padding:0 6px}}
+.wake{position:sticky;top:52px;z-index:998;text-align:center;padding:9px 16px;font-size:14px;font-weight:600;background:#fff4d6;color:#7a4b00;border-bottom:1px solid #f1d38a}
+.wake[hidden]{display:none}
+main,footer{zoom:var(--ui-zoom,1)}
+html.hc{--bg:#fff;--bg2:#fff;--card:#fff;--card-border:#000;--text:#000;--text2:#111;--accent:#0030c0;--separator:#000;--nav-bg:#fff}
+html.hc body{background:#fff;color:#000}
+html.hc body::before{display:none}
+html.hc .card,html.hc .chat-card,html.hc .lp-card,html.hc .act,html.hc .tile,html.hc .lp-cta,html.hc nav,html.hc nav.jump a{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:2px solid #000!important;box-shadow:none!important;color:#000}
+html.hc .hero-title{background:none;-webkit-text-fill-color:#000;color:#000}
+html.hc a{text-decoration:underline}
+html.hc .hero-title em,html.hc .hero-title *{background:none!important;-webkit-text-fill-color:#000!important;color:#000!important}
+html.hc nav.jump a.on{background:#0030c0!important;color:#fff!important}
+.ck-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.ck-mini{font:inherit;font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--card-border);background:rgba(37,99,235,.08);color:var(--text);cursor:pointer}
+.ck-mini:hover{background:rgba(37,99,235,.16)}
+.ck-mini.rec{background:#c62828;color:#fff;border-color:#c62828}
+.ck-mini[hidden]{display:none}
+.ck-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 20px;border-top:1px solid var(--separator)}
+.ck-actions .ck-fb{margin-left:auto;display:flex;gap:6px;align-items:center;font-size:14px;color:var(--text2)}
+.feed-empty .btn{margin-top:10px}
+footer .privacy{max-width:760px;margin:0 auto 14px;text-align:left;font-size:14px;color:var(--text2)}
+footer .privacy summary{cursor:pointer;font-weight:700;text-align:center;color:var(--text)}
+footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -800,22 +844,31 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
       <div class="nav-title">SurakshaSathi</div>
     </div>
   </a>
-  <span class="nav-badge" id="sampleBadge">Demo Data</span>
-  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-    <div class="live-dot"></div>
-    <span class="live-label">Live</span>
+    <div class="nav-tools">
+    <div class="tool-grp" role="group" aria-label="Page language">
+      <button type="button" data-pl="en" class="on" aria-label="English">EN</button>
+      <button type="button" data-pl="hi" aria-label="हिन्दी">हिं</button>
+      <button type="button" data-pl="pa" aria-label="ਪੰਜਾਬੀ">ਪੰ</button>
+    </div>
+    <div class="tool-grp" role="group" aria-label="Text size and contrast">
+      <button type="button" id="txtDown" aria-label="Smaller text">A−</button>
+      <button type="button" id="txtUp" aria-label="Larger text">A+</button>
+      <button type="button" id="hcBtn" aria-label="High contrast" aria-pressed="false">◐</button>
+    </div>
+    <div class="status"><div class="live-dot" id="liveDot"></div><span class="live-label" id="liveLabel">Connecting…</span></div>
   </div>
 </nav>
+<div class="wake" id="wake" role="status" hidden>⏳ Waking up the server… the first visit can take up to a minute. Thanks for waiting.</div>
 <nav class="jump" aria-label="Jump to a section">
-  <a href="#g-check">🔎 Check</a>
-  <a href="#g-help">💸 Lost money?</a>
-  <a href="#g-map">🗺️ Map</a>
-  <a href="#g-live">📡 Live reports</a>
-  <a href="#intel">📈 Trends</a>
-  <a href="#how">🧭 How it works</a>
-  <a href="#languages">🗣️ Languages</a>
-  <a href="#scams">🚨 Scams we catch</a>
-  <a href="#g-demo">💬 WhatsApp demo</a>
+  <a href="#g-check" data-i18n="j_check">🔎 Check</a>
+  <a href="#g-help" data-i18n="j_help">💸 Lost money?</a>
+  <a href="#g-map" data-i18n="j_map">🗺️ Map</a>
+  <a href="#g-live" data-i18n="j_live">📡 Live reports</a>
+  <a href="#intel" data-i18n="j_intel">📈 Trends</a>
+  <a href="#how" data-i18n="j_how">🧭 How it works</a>
+  <a href="#languages" data-i18n="j_lang">🗣️ Languages</a>
+  <a href="#scams" data-i18n="j_scams">🚨 Scams we catch</a>
+  <a href="#g-demo" data-i18n="j_demo">💬 WhatsApp demo</a>
 </nav>
 
 <!-- ── Main ─────────────────────────────────────────────────────────── -->
@@ -824,14 +877,14 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
   <!-- Hero -->
   <section class="hero fade-in">
     <div>
-      <div class="hero-badge">🛡️ Scam protection on WhatsApp</div>
-      <h1 class="hero-title">A trusted friend for every message you’re <em>unsure</em> about.</h1>
-      <p class="hero-sub">Forward any suspicious message, link or call to SurakshaSathi. It tells you in Hindi, Punjabi or English whether it’s a scam, and why. Built for elderly and first-time internet users.</p>
+      <div class="hero-badge" data-i18n="h_badge">🛡️ Scam protection on WhatsApp</div>
+      <h1 class="hero-title" data-i18n="h_title">A trusted friend for every message you’re <em>unsure</em> about.</h1>
+      <p class="hero-sub" data-i18n="h_sub">Forward any suspicious message, link or call to SurakshaSathi. It tells you in Hindi, Punjabi or English whether it’s a scam, and why. Built for elderly and first-time internet users.</p>
       <div class="hero-cta">
-        <a class="lp-btn lp-primary" href="#checkCard">Check a message now ↗</a>
-        <a class="lp-btn lp-ghost" href="#map">See the scam map</a>
+        <a class="lp-btn lp-primary" href="#checkCard" data-i18n="h_cta1">Check a message now ↗</a>
+        <a class="lp-btn lp-ghost" href="#map" data-i18n="h_cta2">See the scam map</a>
       </div>
-      <div class="hero-trust">🔒 Never asks for your OTP or PIN. Report fraud on 1930.</div>
+      <div class="hero-trust" data-i18n="h_trust">🔒 Never asks for your OTP or PIN. Report fraud on 1930.</div>
     </div>
     <div class="chat-card" aria-label="Example conversation">
       <div class="chat-head"><div class="chat-logo">🛡️</div><div><div class="chat-name">SurakshaSathi</div><div class="chat-sub">Replies in your language</div></div></div>
@@ -844,36 +897,36 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
   </section>
 
   <section class="actions" aria-label="What do you want to do?">
-    <a class="act act-check" href="#g-check"><span class="act-ico">🔎</span><b>Check something suspicious</b><span>Paste a message, link, screenshot or call. Get a clear answer.</span></a>
-    <a class="act act-help" href="#g-help"><span class="act-ico">💸</span><b>I already lost money</b><span>Step-by-step help for the first hour, with ready-made letters.</span></a>
-    <a class="act act-learn" href="#g-learn"><span class="act-ico">🗺️</span><b>See scams near me</b><span>Warnings, map and trends for your district.</span></a>
+    <a class="act act-check" href="#g-check"><span class="act-ico">🔎</span><b data-i18n="a1t">Check something suspicious</b><span data-i18n="a1d">Paste a message, link, screenshot or call. Get a clear answer.</span></a>
+    <a class="act act-help" href="#g-help"><span class="act-ico">💸</span><b data-i18n="a2t">I already lost money</b><span data-i18n="a2d">Step-by-step help for the first hour, with ready-made letters.</span></a>
+    <a class="act act-learn" href="#g-learn"><span class="act-ico">🗺️</span><b data-i18n="a3t">See scams near me</b><span data-i18n="a3d">Warnings, map and trends for your district.</span></a>
   </section>
 
   <!-- Stats Tiles -->
   <section class="tiles" aria-label="Summary statistics">
     <div class="tile fade-in">
       <div class="tile-icon blue">🔍</div>
-      <div class="tile-num blue" id="tChecked">–</div>
-      <div class="tile-label">Messages checked (30 days)</div>
+      <div class="tile-num blue" id="tChecked">…</div>
+      <div class="tile-label" data-i18n="t1">Messages checked (30 days)</div>
     </div>
     <div class="tile fade-in">
       <div class="tile-icon red">🚨</div>
-      <div class="tile-num red" id="tScam">–</div>
-      <div class="tile-label">Scams blocked</div>
+      <div class="tile-num red" id="tScam">…</div>
+      <div class="tile-label" data-i18n="t2">Scams blocked</div>
     </div>
     <div class="tile fade-in">
       <div class="tile-icon orange">⚠️</div>
-      <div class="tile-num orange" id="tSusp">–</div>
-      <div class="tile-label">Suspicious flagged</div>
+      <div class="tile-num orange" id="tSusp">…</div>
+      <div class="tile-label" data-i18n="t3">Suspicious flagged</div>
     </div>
     <div class="tile fade-in">
       <div class="tile-icon green">👨‍👩‍👧</div>
-      <div class="tile-num green" id="tGuard">–</div>
-      <div class="tile-label">With family guardian</div>
+      <div class="tile-num green" id="tGuard">…</div>
+      <div class="tile-label" data-i18n="t4">With family guardian</div>
     </div>
   </section>
 
-  <div class="grp" id="g-check"><span class="grp-num">1</span><div><h2>Check something suspicious</h2><p>Paste it, upload it, or pick a sample to try. We tell you if it is safe, suspicious or a scam, and what to do next.</p></div></div>
+  <div class="grp" id="g-check"><span class="grp-num">1</span><div><h2 data-i18n="g-check_h">Check something suspicious</h2><p data-i18n="g-check_p">Paste it, upload it, or pick a sample to try. We tell you if it is safe, suspicious or a scam, and what to do next.</p></div></div>
 
   <section class="card" id="checkCard">
     <div class="card-header" style="padding:24px 24px 0;">
@@ -889,6 +942,7 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
       <div>
         <div data-pane="msg">
           <textarea id="ckText" placeholder="Paste the message you received (English, Hindi or Punjabi)…"></textarea>
+          <div class="ck-tools"><button type="button" class="ck-mini" id="ckMic" hidden>🎤 Speak instead of typing</button></div>
           <div class="ck-samples"><span>Try a sample:</span>
             <button type="button" class="ck-chip" data-text="Dear customer, your SBI account will be BLOCKED today. Update KYC now: http://sbi-kyc-update.xyz/login and share the OTP you receive.">Fake KYC</button>
             <button type="button" class="ck-chip" data-text="यह पुलिस है। आपके नाम पर केस दर्ज है, गिरफ्तारी से बचने के लिए अभी पैसे भेजें और किसी को न बताएं।">पुलिस धमकी (Hindi)</button>
@@ -952,7 +1006,7 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
     </div>
   </section>
 
-  <div class="grp" id="g-help"><span class="grp-num">2</span><div><h2>Lost money? Act now</h2><p>If you already paid or shared an OTP, follow these steps in order. The first hour matters most.</p></div></div>
+  <div class="grp" id="g-help"><span class="grp-num">2</span><div><h2 data-i18n="g-help_h">Lost money? Act now</h2><p data-i18n="g-help_p">If you already paid or shared an OTP, follow these steps in order. The first hour matters most.</p></div></div>
 
   <section class="card" id="goldenHour">
     <div class="card-header" style="padding:24px 24px 0;">
@@ -983,7 +1037,7 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
     </div>
   </section>
 
-  <div class="grp" id="g-learn"><span class="grp-num">3</span><div><h2>Stay informed</h2><p>This week's warnings, where scams are being reported, and how they are changing.</p></div></div>
+  <div class="grp" id="g-learn"><span class="grp-num">3</span><div><h2 data-i18n="g-learn_h">Stay informed</h2><p data-i18n="g-learn_p">This week's warnings, where scams are being reported, and how they are changing.</p></div></div>
 
   <section class="aw" id="awareCard" hidden aria-label="This week's scam alert">
     <div>
@@ -1015,7 +1069,7 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
 
   </section>
 
-  <div class="grp" id="g-live"><span class="grp-num">📡</span><div><h2>Live reports and top scams</h2><p>What people are reporting right now, and which scam types are most common.</p></div></div>
+  <div class="grp" id="g-live"><span class="grp-num">📡</span><div><h2 data-i18n="g-live_h">Live reports and top scams</h2><p data-i18n="g-live_p">What people are reporting right now, and which scam types are most common.</p></div></div>
 
   <section class="live-grid">
       <!-- Live Reports -->
@@ -1055,7 +1109,7 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
     <div class="iw-body" id="iwBody"><div class="iw-empty">Loading…</div></div>
   </section>
 
-  <div class="grp" id="g-about"><span class="grp-num">4</span><div><h2>About SurakshaSathi</h2><p>How it works, the languages we speak and the scams we catch.</p></div></div>
+  <div class="grp" id="g-about"><span class="grp-num">4</span><div><h2 data-i18n="g-about_h">About SurakshaSathi</h2><p data-i18n="g-about_p">How it works, the languages we speak and the scams we catch.</p></div></div>
 
   <section class="lp-sec" id="how">
     <div class="lp-head"><span class="lp-eyebrow">How it works</span><h2>Three steps. Nothing to install.</h2><p>SurakshaSathi lives in WhatsApp, where your family already is.</p></div>
@@ -1078,7 +1132,7 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
     <a href="#checkCard">Check a message now</a>
   </section>
 
-  <div class="grp" id="g-demo"><span class="grp-num">5</span><div><h2>Try the WhatsApp demo</h2><p>See how the WhatsApp bot replies to a suspicious message.</p></div></div>
+  <div class="grp" id="g-demo"><span class="grp-num">5</span><div><h2 data-i18n="g-demo_h">Try the WhatsApp demo</h2><p data-i18n="g-demo_p">See how the WhatsApp bot replies to a suspicious message.</p></div></div>
 
   <section class="card" id="simCard">
     <div class="card-header" style="padding:24px 24px 0;">
@@ -1120,6 +1174,17 @@ nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-s
 
 <!-- ── Footer ────────────────────────────────────────────────────────── -->
 <footer>
+  <details class="privacy" id="privacy">
+    <summary data-i18n="f_priv">🔒 Privacy and how we use your data</summary>
+    <ul>
+      <li><b>Reports are anonymous.</b> The map and live feed keep only the district, the verdict, the scam type and a short snippet. Phone numbers, long digit runs (OTP, card, account) and UPI IDs are removed from the snippet first.</li>
+      <li><b>Golden Hour details stay in your browser.</b> The name, amount, transaction ID and account digits you type there are used only to prepare your letters. They are not sent to our server.</li>
+      <li><b>Family guardian.</b> If you add a guardian on WhatsApp, we store the two phone numbers only to send alerts. You can remove it any time by sending STOP.</li>
+      <li><b>Data for police and banks</b> is a summary of anonymous trends and linked scam identifiers, not personal details of the people who checked messages.</li>
+      <li><b>Feedback.</b> The "Was this right?" buttons store only the verdict and a yes or no.</li>
+      <li><b>Not legal or financial advice.</b> SurakshaSathi gives an automated opinion and can be wrong. When in doubt, do not pay, do not share an OTP or PIN, and call your bank or <a href="tel:1930">1930</a>.</li>
+    </ul>
+  </details>
   <p>SurakshaSathi · <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">Report at cybercrime.gov.in</a> · Helpline <strong>1930</strong></p>
 </footer>
 
@@ -1199,6 +1264,15 @@ function animateNum(el, target) {
   requestAnimationFrame(step);
 }
 
+function markAlive() { $("wake").hidden = true; window.__alive = true; }
+setTimeout(() => { if (!window.__alive) $("wake").hidden = false; }, 2500);
+document.addEventListener("click", async e => {
+  if (e.target && e.target.id === "seedBtn") {
+    e.target.disabled = true; e.target.textContent = "Loading…";
+    try { await fetch("/api/demo/seed", {method: "POST"}); } catch (x) {}
+    refresh();
+  }
+});
 async function refresh() {
   try {
     const [stats, heat, recent] = await Promise.all([
@@ -1209,7 +1283,9 @@ async function refresh() {
     animateNum($("tScam"), stats.scams_blocked);
     animateNum($("tSusp"), stats.suspicious);
     animateNum($("tGuard"), stats.users_with_guardian);
-    $("sampleBadge").style.display = stats.sample_data ? "inline-block" : "none";
+    markAlive();
+    $("liveLabel").textContent = stats.sample_data ? "Demo data" : "Live";
+    document.querySelector(".status").classList.toggle("demo", !!stats.sample_data);
 
     // Map
     if (mapOk) layer.clearLayers(); else drawFallbackMap(heat);
@@ -1234,7 +1310,7 @@ async function refresh() {
     const feed = $("feed"); feed.replaceChildren();
     if (!recent.length) {
       const li = document.createElement("li");
-      li.innerHTML = '<div class="feed-empty">No reports yet.</div>';
+      li.innerHTML = '<div class="feed-empty">No reports yet.<br><button type="button" class="btn btn-ghost" id="seedBtn">Load demo data</button></div>';
       feed.append(li);
     } else {
       recent.forEach(r => {
@@ -1402,7 +1478,48 @@ setInterval(refresh, 4000);
     if (ex.link_notes.length) h += `<div class="ck-sec"><h4>About the link</h4><ul>${ex.link_notes.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
     h += `<div class="ck-sec"><h4>What to do</h4><ol>${ex.next_steps.map(w => `<li>${esc(w)}</li>`).join("")}</ol></div>`;
     if (ex.report.show) h += `<div class="ck-sec ck-rep"><h4>Report it</h4><a class="ck-call" href="tel:1930">📞 Call 1930</a><a class="ck-call" href="${ex.report.portal.value}" target="_blank" rel="noopener">Report online</a><ol>${ex.report.steps.map(w => `<li>${esc(w)}</li>`).join("")}</ol></div>`;
+    h += `<div class="ck-actions"><button type="button" class="ck-mini" id="ckSpeak">🔊 Read this to me</button><span class="ck-fb" id="ckFb">Was this right? <button type="button" class="ck-mini" data-h="1" aria-label="Yes, this was right">👍</button><button type="button" class="ck-mini" data-h="0" aria-label="No, this was wrong">👎</button></span></div>`;
     res.innerHTML = h;
+    lastRes = r;
+    document.getElementById("ckSpeak").onclick = () => speakResult(r);
+    document.querySelectorAll("#ckFb button").forEach(b => b.onclick = async () => {
+      try { await fetch("/api/feedback", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({helpful: b.dataset.h === "1", verdict: r.verdict})}); } catch (e) {}
+      document.getElementById("ckFb").textContent = "Thank you for telling us.";
+    });
+  }
+  let lastRes = null, curAudio = null;
+  const VOICE = {en: "en-IN", hi: "hi-IN", pa: "pa-IN"};
+  async function speakResult(r) {
+    const ex = r.explanation, lang = (r.language || document.getElementById("ckLang").value || "en");
+    const text = [ex.headline, ex.summary].concat(ex.why || [], ex.next_steps || []).join(". ").slice(0, 880);
+    const b = document.getElementById("ckSpeak");
+    if (curAudio) { curAudio.pause(); curAudio = null; }
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    b.disabled = true; b.textContent = "🔊 Loading voice…";
+    try {
+      const resp = await fetch("/api/tts", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text, lang})});
+      if (!resp.ok) throw new Error("tts");
+      const j = await resp.json();
+      curAudio = new Audio(j.url); await curAudio.play();
+    } catch (e) {
+      if (window.speechSynthesis) { const u = new SpeechSynthesisUtterance(text); u.lang = VOICE[lang] || "en-IN"; speechSynthesis.speak(u); }
+      else { err.textContent = "Voice is not available on this device."; err.hidden = false; }
+    } finally { b.disabled = false; b.textContent = "🔊 Read this to me"; }
+  }
+  // Speak instead of typing (browser speech recognition, where supported)
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, mic = document.getElementById("ckMic");
+  if (SR && mic) {
+    mic.hidden = false; let rec = null;
+    mic.onclick = () => {
+      if (rec) { rec.stop(); return; }
+      rec = new SR(); const l = document.getElementById("ckLang").value || window.__pageLang || "en";
+      rec.lang = VOICE[l] || "en-IN"; rec.interimResults = false; rec.continuous = false;
+      mic.classList.add("rec"); mic.textContent = "⏹ Listening… tap to stop";
+      rec.onresult = e => { const t = Array.from(e.results).map(x => x[0].transcript).join(" "); const ta = document.getElementById("ckText"); ta.value = (ta.value ? ta.value + " " : "") + t; };
+      rec.onerror = () => { err.textContent = "Could not hear you. Please try again or type the message."; err.hidden = false; };
+      rec.onend = () => { rec = null; mic.classList.remove("rec"); mic.textContent = "🎤 Speak instead of typing"; };
+      rec.start();
+    };
   }
   btn.onclick = async () => {
     err.hidden = true;
@@ -1597,6 +1714,75 @@ setInterval(refresh, 4000);
     if(cur)set(cur);
   }
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+
+<script>
+// ── Page language, text size, contrast (remembered in this browser) ──
+(() => {
+  const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+  const T = {
+    hi: {
+      j_check:"🔎 जाँचें", j_help:"💸 पैसे गए?", j_map:"🗺️ नक्शा", j_live:"📡 ताज़ा रिपोर्ट", j_intel:"📈 रुझान", j_how:"🧭 कैसे काम करता है", j_lang:"🗣️ भाषाएँ", j_scams:"🚨 हम कौन से स्कैम पकड़ते हैं", j_demo:"💬 WhatsApp डेमो",
+      h_badge:"🛡️ WhatsApp पर स्कैम से सुरक्षा", h_title:"हर उस संदेश के लिए एक भरोसेमंद दोस्त, जिस पर आपको <em>शक</em> हो।",
+      h_sub:"कोई भी संदिग्ध संदेश, लिंक या कॉल SurakshaSathi को भेजें। यह हिन्दी, पंजाबी या अंग्रेज़ी में बताता है कि यह स्कैम है या नहीं, और क्यों। बुज़ुर्गों और पहली बार इंटरनेट चलाने वालों के लिए बनाया गया।",
+      h_cta1:"अभी संदेश जाँचें ↗", h_cta2:"स्कैम का नक्शा देखें", h_trust:"🔒 यह कभी आपका OTP या PIN नहीं माँगता। धोखाधड़ी की शिकायत 1930 पर करें।",
+      a1t:"कुछ संदिग्ध जाँचें", a1d:"संदेश, लिंक, स्क्रीनशॉट या कॉल डालें। साफ़ जवाब पाएँ।",
+      a2t:"मेरे पैसे चले गए", a2d:"पहले घंटे के लिए चरण-दर-चरण मदद, तैयार पत्रों के साथ।",
+      a3t:"मेरे आस-पास के स्कैम", a3d:"आपके ज़िले की चेतावनियाँ, नक्शा और रुझान।",
+      t1:"जाँचे गए संदेश (30 दिन)", t2:"रोके गए स्कैम", t3:"संदिग्ध चिह्नित", t4:"फ़ैमिली गार्डियन के साथ",
+      "g-check_h":"कुछ संदिग्ध जाँचें", "g-check_p":"इसे डालें, अपलोड करें या नमूना चुनें। हम बताएँगे कि यह सुरक्षित है, संदिग्ध है या स्कैम, और आगे क्या करें।",
+      "g-help_h":"पैसे चले गए? अभी कदम उठाएँ", "g-help_p":"अगर आपने पैसे भेज दिए या OTP बता दिया, तो ये कदम क्रम से उठाएँ। पहला घंटा सबसे ज़रूरी है।",
+      "g-learn_h":"जानकार रहें", "g-learn_p":"इस सप्ताह की चेतावनियाँ, स्कैम की रिपोर्ट कहाँ हो रही हैं और रुझान कैसे बदल रहे हैं।",
+      "g-live_h":"ताज़ा रिपोर्ट और सबसे आम स्कैम", "g-live_p":"लोग अभी क्या रिपोर्ट कर रहे हैं और कौन से स्कैम सबसे ज़्यादा हैं।",
+      "g-about_h":"SurakshaSathi के बारे में", "g-about_p":"यह कैसे काम करता है, हम कौन सी भाषाएँ बोलते हैं और कौन से स्कैम पकड़ते हैं।",
+      "g-demo_h":"WhatsApp डेमो आज़माएँ", "g-demo_p":"देखें कि संदिग्ध संदेश पर WhatsApp बॉट कैसे जवाब देता है।",
+      f_priv:"🔒 गोपनीयता और हम आपके डेटा का उपयोग कैसे करते हैं"
+    },
+    pa: {
+      j_check:"🔎 ਜਾਂਚ ਕਰੋ", j_help:"💸 ਪੈਸੇ ਗਏ?", j_map:"🗺️ ਨਕਸ਼ਾ", j_live:"📡 ਤਾਜ਼ਾ ਰਿਪੋਰਟਾਂ", j_intel:"📈 ਰੁਝਾਨ", j_how:"🧭 ਇਹ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ", j_lang:"🗣️ ਭਾਸ਼ਾਵਾਂ", j_scams:"🚨 ਅਸੀਂ ਕਿਹੜੇ ਸਕੈਮ ਫੜਦੇ ਹਾਂ", j_demo:"💬 WhatsApp ਡੈਮੋ",
+      h_badge:"🛡️ WhatsApp ‘ਤੇ ਸਕੈਮ ਤੋਂ ਸੁਰੱਖਿਆ", h_title:"ਹਰ ਉਸ ਸੁਨੇਹੇ ਲਈ ਇੱਕ ਭਰੋਸੇਮੰਦ ਦੋਸਤ, ਜਿਸ ‘ਤੇ ਤੁਹਾਨੂੰ <em>ਸ਼ੱਕ</em> ਹੋਵੇ।",
+      h_sub:"ਕੋਈ ਵੀ ਸ਼ੱਕੀ ਸੁਨੇਹਾ, ਲਿੰਕ ਜਾਂ ਕਾਲ SurakshaSathi ਨੂੰ ਭੇਜੋ। ਇਹ ਹਿੰਦੀ, ਪੰਜਾਬੀ ਜਾਂ ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਦੱਸਦਾ ਹੈ ਕਿ ਇਹ ਸਕੈਮ ਹੈ ਜਾਂ ਨਹੀਂ, ਅਤੇ ਕਿਉਂ। ਬਜ਼ੁਰਗਾਂ ਅਤੇ ਪਹਿਲੀ ਵਾਰ ਇੰਟਰਨੈੱਟ ਵਰਤਣ ਵਾਲਿਆਂ ਲਈ ਬਣਾਇਆ ਗਿਆ।",
+      h_cta1:"ਹੁਣੇ ਸੁਨੇਹਾ ਜਾਂਚੋ ↗", h_cta2:"ਸਕੈਮ ਦਾ ਨਕਸ਼ਾ ਵੇਖੋ", h_trust:"🔒 ਇਹ ਕਦੇ ਤੁਹਾਡਾ OTP ਜਾਂ PIN ਨਹੀਂ ਮੰਗਦਾ। ਧੋਖਾਧੜੀ ਦੀ ਸ਼ਿਕਾਇਤ 1930 ‘ਤੇ ਕਰੋ।",
+      a1t:"ਕੁਝ ਸ਼ੱਕੀ ਜਾਂਚੋ", a1d:"ਸੁਨੇਹਾ, ਲਿੰਕ, ਸਕ੍ਰੀਨਸ਼ਾਟ ਜਾਂ ਕਾਲ ਪਾਓ। ਸਾਫ਼ ਜਵਾਬ ਲਓ।",
+      a2t:"ਮੇਰੇ ਪੈਸੇ ਚਲੇ ਗਏ", a2d:"ਪਹਿਲੇ ਘੰਟੇ ਲਈ ਕਦਮ-ਦਰ-ਕਦਮ ਮਦਦ, ਤਿਆਰ ਚਿੱਠੀਆਂ ਨਾਲ।",
+      a3t:"ਮੇਰੇ ਨੇੜੇ ਦੇ ਸਕੈਮ", a3d:"ਤੁਹਾਡੇ ਜ਼ਿਲ੍ਹੇ ਦੀਆਂ ਚੇਤਾਵਨੀਆਂ, ਨਕਸ਼ਾ ਅਤੇ ਰੁਝਾਨ।",
+      t1:"ਜਾਂਚੇ ਗਏ ਸੁਨੇਹੇ (30 ਦਿਨ)", t2:"ਰੋਕੇ ਗਏ ਸਕੈਮ", t3:"ਸ਼ੱਕੀ ਚਿੰਨ੍ਹਿਤ", t4:"ਫੈਮਿਲੀ ਗਾਰਡੀਅਨ ਨਾਲ",
+      "g-check_h":"ਕੁਝ ਸ਼ੱਕੀ ਜਾਂਚੋ", "g-check_p":"ਇਸਨੂੰ ਪਾਓ, ਅੱਪਲੋਡ ਕਰੋ ਜਾਂ ਨਮੂਨਾ ਚੁਣੋ। ਅਸੀਂ ਦੱਸਾਂਗੇ ਕਿ ਇਹ ਸੁਰੱਖਿਅਤ ਹੈ, ਸ਼ੱਕੀ ਹੈ ਜਾਂ ਸਕੈਮ, ਅਤੇ ਅੱਗੇ ਕੀ ਕਰਨਾ ਹੈ।",
+      "g-help_h":"ਪੈਸੇ ਚਲੇ ਗਏ? ਹੁਣੇ ਕਦਮ ਚੁੱਕੋ", "g-help_p":"ਜੇ ਤੁਸੀਂ ਪੈਸੇ ਭੇਜ ਦਿੱਤੇ ਜਾਂ OTP ਦੱਸ ਦਿੱਤਾ, ਤਾਂ ਇਹ ਕਦਮ ਕ੍ਰਮ ਨਾਲ ਚੁੱਕੋ। ਪਹਿਲਾ ਘੰਟਾ ਸਭ ਤੋਂ ਜ਼ਰੂਰੀ ਹੈ।",
+      "g-learn_h":"ਜਾਣਕਾਰ ਰਹੋ", "g-learn_p":"ਇਸ ਹਫ਼ਤੇ ਦੀਆਂ ਚੇਤਾਵਨੀਆਂ, ਸਕੈਮ ਦੀਆਂ ਰਿਪੋਰਟਾਂ ਕਿੱਥੇ ਹੋ ਰਹੀਆਂ ਹਨ ਅਤੇ ਰੁਝਾਨ ਕਿਵੇਂ ਬਦਲ ਰਹੇ ਹਨ।",
+      "g-live_h":"ਤਾਜ਼ਾ ਰਿਪੋਰਟਾਂ ਅਤੇ ਸਭ ਤੋਂ ਆਮ ਸਕੈਮ", "g-live_p":"ਲੋਕ ਹੁਣ ਕੀ ਰਿਪੋਰਟ ਕਰ ਰਹੇ ਹਨ ਅਤੇ ਕਿਹੜੇ ਸਕੈਮ ਸਭ ਤੋਂ ਵੱਧ ਹਨ।",
+      "g-about_h":"SurakshaSathi ਬਾਰੇ", "g-about_p":"ਇਹ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ, ਅਸੀਂ ਕਿਹੜੀਆਂ ਭਾਸ਼ਾਵਾਂ ਬੋਲਦੇ ਹਾਂ ਅਤੇ ਕਿਹੜੇ ਸਕੈਮ ਫੜਦੇ ਹਾਂ।",
+      "g-demo_h":"WhatsApp ਡੈਮੋ ਅਜ਼ਮਾਓ", "g-demo_p":"ਵੇਖੋ ਕਿ ਸ਼ੱਕੀ ਸੁਨੇਹੇ ‘ਤੇ WhatsApp ਬੋਟ ਕਿਵੇਂ ਜਵਾਬ ਦਿੰਦਾ ਹੈ।",
+      f_priv:"🔒 ਗੋਪਨੀਅਤਾ ਅਤੇ ਅਸੀਂ ਤੁਹਾਡੇ ਡੇਟਾ ਦੀ ਵਰਤੋਂ ਕਿਵੇਂ ਕਰਦੇ ਹਾਂ"
+    }
+  };
+  const els = [...document.querySelectorAll("[data-i18n]")];
+  els.forEach(e => e.dataset.en = e.innerHTML);
+  const btns = [...document.querySelectorAll("[data-pl]")];
+  function setLang(l) {
+    window.__pageLang = l;
+    document.documentElement.lang = l;
+    els.forEach(e => { const k = e.dataset.i18n; e.innerHTML = (l !== "en" && T[l] && T[l][k]) ? T[l][k] : e.dataset.en; });
+    btns.forEach(b => b.classList.toggle("on", b.dataset.pl === l));
+    ["ckLang","simLang"].forEach(id => { const s = document.getElementById(id); if (s && [...s.options].some(o => o.value === l)) s.value = l; });
+    store.set("ss_lang", l);
+  }
+  btns.forEach(b => b.onclick = () => setLang(b.dataset.pl));
+  const saved = store.get("ss_lang"); if (saved && saved !== "en") setLang(saved);
+
+  // text size
+  const root = document.documentElement, LV = [1, 1.15, 1.3, 1.5];
+  let lv = parseInt(store.get("ss_zoom") || "0", 10); if (!(lv >= 0 && lv < LV.length)) lv = 0;
+  function applyZoom() { root.style.setProperty("--ui-zoom", LV[lv]); document.getElementById("txtDown").disabled = lv === 0; document.getElementById("txtUp").disabled = lv === LV.length - 1; store.set("ss_zoom", lv); }
+  document.getElementById("txtUp").onclick = () => { if (lv < LV.length - 1) { lv++; applyZoom(); } };
+  document.getElementById("txtDown").onclick = () => { if (lv > 0) { lv--; applyZoom(); } };
+  applyZoom();
+  // contrast
+  const hc = document.getElementById("hcBtn");
+  function applyHC(on) { root.classList.toggle("hc", on); hc.setAttribute("aria-pressed", on ? "true" : "false"); store.set("ss_hc", on ? "1" : "0"); }
+  hc.onclick = () => applyHC(!root.classList.contains("hc"));
+  applyHC(store.get("ss_hc") === "1");
 })();
 </script>
 </body>

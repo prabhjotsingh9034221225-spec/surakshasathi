@@ -34,6 +34,7 @@ app = FastAPI(title="SurakshaSathi", version="1.0.0", lifespan=lifespan)
 app.mount("/audio", StaticFiles(directory=str(settings.audio_dir)), name="audio")
 STATIC = ROOT / "app" / "static"
 app.mount("/samples", StaticFiles(directory=str(STATIC / "samples")), name="samples")
+app.mount("/assets", StaticFiles(directory=str(STATIC / "assets")), name="assets")
 
 
 # ---------------------------------------------------------------- tiny rate limiter
@@ -137,6 +138,33 @@ def api_analyze(body: AnalyzeIn, request: Request) -> dict:
     lang = body.lang or detect_language(body.text)
     a = analyze(body.text, lang)
     return {**a.to_dict(), "explanation": explain.build(a)}
+
+
+class FeedbackIn(BaseModel):
+    helpful: bool
+    verdict: str | None = Field(default=None, pattern="^(scam|suspicious|safe)$")
+
+
+@app.post("/api/feedback")
+def api_feedback(body: FeedbackIn, request: Request) -> dict:
+    rate_limit(request, limit=20)
+    storage.add_feedback(body.verdict, body.helpful)
+    return {"ok": True}
+
+
+class TtsIn(BaseModel):
+    text: str = Field(min_length=1, max_length=900)
+    lang: str = Field(default="en", pattern="^(en|hi|pa)$")
+
+
+@app.post("/api/tts")
+def api_tts(body: TtsIn, request: Request) -> dict:
+    """Read a verdict aloud. Returns an mp3 URL, or 503 so the browser can fall back to its own voice."""
+    rate_limit(request, limit=15)
+    path = speech.synthesize(body.text, body.lang)
+    if not path:
+        raise HTTPException(503, "Voice is not available right now.")
+    return {"url": f"/audio/{path.name}"}
 
 
 class LinkIn(BaseModel):

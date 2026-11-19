@@ -46,6 +46,12 @@ CREATE TABLE IF NOT EXISTS indicators (
 );
 CREATE INDEX IF NOT EXISTS idx_ind_digest ON indicators(digest);
 CREATE INDEX IF NOT EXISTS idx_ind_report ON indicators(report_id);
+CREATE TABLE IF NOT EXISTS feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts REAL NOT NULL,
+    verdict TEXT,
+    helpful INTEGER NOT NULL
+);
 CREATE TABLE IF NOT EXISTS seen_messages (
     id TEXT PRIMARY KEY,
     ts REAL NOT NULL
@@ -225,3 +231,15 @@ def clear_guardian(guardian_phone: str) -> int:
     with connect() as c:
         cur = c.execute("UPDATE users SET guardian_phone=NULL WHERE guardian_phone=?", (guardian_phone,))
         return cur.rowcount
+
+
+def add_feedback(verdict: str | None, helpful: bool) -> None:
+    """Anonymous thumbs up/down on a verdict. No text, phone or message content is stored."""
+    with connect() as c:
+        c.execute("INSERT INTO feedback(ts, verdict, helpful) VALUES (?,?,?)", (time.time(), verdict, 1 if helpful else 0))
+
+
+def feedback_summary() -> dict[str, int]:
+    with connect() as c:
+        row = c.execute("SELECT COUNT(*), COALESCE(SUM(helpful),0) FROM feedback").fetchone()
+    return {"total": row[0], "helpful": row[1]}
