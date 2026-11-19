@@ -776,6 +776,18 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 @media(max-width:860px){.live-grid{grid-template-columns:1fr}}
 .live-grid .feed{max-height:380px;overflow:auto}
 .grp-num.emoji,#g-live .grp-num{font-size:20px}
+
+/* ── Jump bar: a button for every section ── */
+html{scroll-padding-top:112px}
+nav.jump{position:sticky;top:52px;z-index:999;height:auto;padding:8px 24px;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;border-bottom:0.5px solid var(--separator)}
+nav.jump::-webkit-scrollbar{display:none}
+nav.jump a{flex:none;white-space:nowrap;text-decoration:none;color:var(--text);font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:999px;
+ background:linear-gradient(145deg,rgba(255,255,255,.6),rgba(255,255,255,.25));border:1px solid rgba(255,255,255,.65);
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 2px 8px rgba(30,64,175,.08);transition:transform .15s,background .15s,color .15s}
+nav.jump a:hover{transform:translateY(-1px);color:var(--accent)}
+nav.jump a.on{background:var(--accent);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+@media (prefers-color-scheme:dark){nav.jump a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 1px rgba(255,255,255,.2)}}
+@media(max-width:600px){nav.jump{padding:8px 14px}}
 </style>
 </head>
 <body>
@@ -789,13 +801,21 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     </div>
   </a>
   <span class="nav-badge" id="sampleBadge">Demo Data</span>
-  <div class="nav-links" aria-label="Sections">
-    <a href="#g-check">Check</a><a href="#g-help">Lost money?</a><a href="#g-learn">Scams near me</a><a href="#g-live">Live reports</a><a href="#g-about">About</a>
-  </div>
   <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
     <div class="live-dot"></div>
     <span class="live-label">Live</span>
   </div>
+</nav>
+<nav class="jump" aria-label="Jump to a section">
+  <a href="#g-check">🔎 Check</a>
+  <a href="#g-help">💸 Lost money?</a>
+  <a href="#g-map">🗺️ Map</a>
+  <a href="#g-live">📡 Live reports</a>
+  <a href="#intel">📈 Trends</a>
+  <a href="#how">🧭 How it works</a>
+  <a href="#languages">🗣️ Languages</a>
+  <a href="#scams">🚨 Scams we catch</a>
+  <a href="#g-demo">💬 WhatsApp demo</a>
 </nav>
 
 <!-- ── Main ─────────────────────────────────────────────────────────── -->
@@ -980,7 +1000,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     <div class="aw-quiz" id="awQuiz" hidden></div>
   </section>
 
-  <section class="map-single">
+  <section class="map-single" id="g-map">
     <!-- Map Card -->
     <div class="card">
       <div class="card-header">
@@ -1563,6 +1583,20 @@ setInterval(refresh, 4000);
     document.getElementById("ghPrint").onclick = () => window.print();
     out.scrollIntoView({behavior: "smooth", block: "start"});
   };
+})();
+</script>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('nav.jump a'));
+  var map={};links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)map[a.getAttribute('href')]=t;});
+  function set(h){links.forEach(function(a){var on=a.getAttribute('href')===h;a.classList.toggle('on',on);if(on){var bar=a.parentNode;bar.scrollLeft=a.offsetLeft-(bar.clientWidth-a.offsetWidth)/2;}});}
+  function onScroll(){
+    var cur=null,y=130;
+    Object.keys(map).forEach(function(h){var r=map[h].getBoundingClientRect();if(r.top<=y&&r.bottom>y)cur=h;});
+    if(cur)set(cur);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 })();
 </script>
 </body>
