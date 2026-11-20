@@ -1171,7 +1171,7 @@ html.hc .hangup{background:#000}
         <select id="alLang" aria-label="Alert language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
         <button type="button" class="btn btn-ghost" id="alPreview">Preview my alert</button></div>
       <div class="al-out" id="alOut" role="status" aria-live="polite"></div>
-      <div class="lc-controls"><a class="btn btn-primary" id="alSub" href="#alertsCard" target="_blank" rel="noopener">💬 Subscribe on WhatsApp</a></div>
+      <div class="lc-controls"><a class="btn btn-primary" id="alSub" href="#alertsCard" target="_blank" rel="noopener">📢 Join our WhatsApp Channel</a></div>
       <p class="ck-hint" id="alHint" style="margin:8px 0 0">Alerts are opt-in. Reply ALERTS OFF or STOP at any time and we delete your subscription.</p>
     </div>
   </section>
@@ -2264,12 +2264,11 @@ setInterval(refresh, 4000);
   window.__dr = dr;
 
   // ===================== District alerts =====================
-  fetch("/api/status").then(r => r.json()).then(j => { window.__waNumber = j.whatsapp_number || ""; alLink(); }).catch(() => {});
+  fetch("/api/status").then(r => r.json()).then(j => { window.__waChannel = j.channel_url || ""; alLink(); }).catch(() => {});
   function alLink() {
-    const d = $("alDistrict").value.trim(), a = $("alSub"), num = window.__waNumber || "";
-    const text = encodeURIComponent("ALERTS " + (d || ""));
-    if (num) { a.href = `https://wa.me/${num}?text=${text}`; a.removeAttribute("aria-disabled"); }
-    else { a.href = `https://wa.me/?text=${text}`; $("alHint").textContent = "Pick the SurakshaSathi chat in WhatsApp and send the message shown. Alerts are opt-in. Reply ALERTS OFF or STOP at any time and we delete your subscription."; }
+    const a = $("alSub"), ch = window.__waChannel || "";
+    if (ch) { a.href = ch; $("alHint").textContent = "Join the channel to get district alerts and the daily scam report on WhatsApp. Followers cannot see each other, and you can leave any time."; }
+    else { a.href = "#channelCard"; a.removeAttribute("target"); }
   }
   $("alDistrict").oninput = alLink;
   $("alPreview").onclick = async () => {
