@@ -1181,13 +1181,7 @@ html.hc .hangup{background:#000}
     <div class="card-head"><h3 id="chTitle">📢 WhatsApp Channel: daily scam report</h3><p>Follow our channel for live district alerts, the district-wise report and this week's top scams. Followers cannot see each other.</p></div>
     <div class="al-body">
       <div class="lc-controls"><a class="btn btn-primary" id="chJoin" href="https://whatsapp.com/channel/0029VbEOrH5KwqSYaL8U6X0w" target="_blank" rel="noopener">📢 Join the Channel</a></div>
-      <details id="chOwner" style="margin-top:8px" hidden><summary style="cursor:pointer;font-weight:600">Channel owner</summary>
-        <div class="lc-controls"><input type="password" id="chKey" placeholder="Admin token" autocomplete="off" aria-label="Admin token" style="padding:10px 12px;border-radius:12px;border:1px solid var(--card-border);background:transparent;color:inherit;font:inherit;height:46px;box-sizing:border-box">
-          <select id="chLang" aria-label="Report language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
-          <button type="button" class="btn btn-ghost" id="chLoad">Get today's report</button>
-          <button type="button" class="btn btn-ghost" id="chCopy" hidden>📋 Copy report</button></div>
-        <div class="al-out" id="chOut" style="min-height:60px" role="status" aria-live="polite"></div>
-      </details>
+      <div id="chOwnerSlot"></div>
     </div>
   </section>
 
@@ -2293,7 +2287,6 @@ setInterval(refresh, 4000);
 (() => {
   const $ = id => document.getElementById(id);
   let cur = "";
-  try { $("chKey").value = sessionStorage.getItem("ss_ck") || ""; } catch (e) {}
   async function load() {
     const out = $("chOut"), key = $("chKey").value.trim();
     if (!key) { out.textContent = "Enter the admin token."; return; }
@@ -2306,8 +2299,22 @@ setInterval(refresh, 4000);
     } catch (e) { out.textContent = "Could not load the report right now."; }
   }
   // Secret owner shortcut: Ctrl+Alt+O, the #owner link, or 5 quick taps on the footer. Everything stays behind the admin token.
+  let ownerBuilt = false;
+  function buildOwner() {
+    if (ownerBuilt) return; ownerBuilt = true;
+    $("chOwnerSlot").innerHTML = `<details id="chOwner" open style="margin-top:8px"><summary style="cursor:pointer;font-weight:600">Channel owner</summary>
+        <div class="lc-controls"><input type="password" id="chKey" placeholder="Admin token" autocomplete="off" aria-label="Admin token" style="padding:10px 12px;border-radius:12px;border:1px solid var(--card-border);background:transparent;color:inherit;font:inherit;height:46px;box-sizing:border-box">
+          <select id="chLang" aria-label="Report language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
+          <button type="button" class="btn btn-ghost" id="chLoad">Get today's report</button>
+          <button type="button" class="btn btn-ghost" id="chCopy" hidden>📋 Copy report</button></div>
+        <div class="al-out" id="chOut" style="min-height:60px" role="status" aria-live="polite"></div>
+      </details>`;
+    try { $("chKey").value = sessionStorage.getItem("ss_ck") || ""; } catch (e) {}
+    $("chLoad").onclick = load; $("chLang").onchange = () => { if (cur) load(); };
+    $("chCopy").onclick = async () => { try { await navigator.clipboard.writeText(cur); $("chCopy").textContent = "✅ Copied"; } catch (e) { $("chCopy").textContent = "Select and copy"; } setTimeout(() => $("chCopy").textContent = "📋 Copy report", 2000); };
+  }
   function openOwner() {
-    const d = $("chOwner"); d.hidden = false; d.open = true;
+    buildOwner();
     $("channelCard").scrollIntoView({behavior: "smooth", block: "center"});
     setTimeout(() => $("chKey").focus(), 400);
   }
@@ -2317,8 +2324,6 @@ setInterval(refresh, 4000);
   let taps = [];
   const ft = document.querySelector("footer");
   if (ft) ft.addEventListener("click", () => { const n = Date.now(); taps = taps.filter(t => n - t < 2500).concat(n); if (taps.length >= 5) { taps = []; openOwner(); } });
-  $("chLoad").onclick = load; $("chLang").onchange = () => { if (cur) load(); };
-  $("chCopy").onclick = async () => { try { await navigator.clipboard.writeText(cur); $("chCopy").textContent = "✅ Copied"; } catch (e) { $("chCopy").textContent = "Select and copy"; } setTimeout(() => $("chCopy").textContent = "📋 Copy report", 2000); };
 })();
 </script>
 </body>

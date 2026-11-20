@@ -92,7 +92,7 @@ def require_demo() -> None:
 # ---------------------------------------------------------------- pages
 @app.get("/", include_in_schema=False)
 def dashboard() -> FileResponse:
-    return FileResponse(STATIC / "dashboard.html")
+    return FileResponse(STATIC / "dashboard.html", headers={"Cache-Control": "no-cache"})
 
 
 @app.get("/health")
