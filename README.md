@@ -59,3 +59,12 @@ Set `DEMO_MODE=0` and a real `ADMIN_TOKEN` before exposing the server publicly.
 - In production, WhatsApp only allows free-form business messages within 24 hours of a user's last message, so alerts to a guardian who hasn't messaged the bot need an approved message template.
 - The district list in `app/geo.py` is a starter set; extend it or swap in a full district GeoJSON.
 - Speech-to-text uses Whisper; accuracy for Punjabi is weaker than for Hindi. Bhashini is the natural upgrade.
+
+
+## Detection accuracy (honest numbers)
+
+Detection is hybrid: keyword rules, an intent layer (`app/intent.py`) that scores the *shape* of a scam (money demand, fake authority, threat or lure, pressure, a number or link to act on), link heuristics, and an optional Claude fallback.
+
+- Regression set: 197 scams and 147 genuine messages in English, Hindi, Punjabi and Hinglish (`tests/samples.py`), plus 1,576 attacker-disguised variants (leetspeak, spaced letters, padding). All are classified correctly and `pytest` fails if that regresses.
+- **That is not the real-world number.** The rules were tuned on those messages. Each time a fresh set was written and measured *before* tuning, the offline rules caught about 80% as "scam" (65%, 61%, 81%, 77%, 83% across rounds; the intent layer arrived after round 2) with no false scam alarms on genuine messages in the early rounds and a few in later ones, which were then fixed.
+- No detector reaches 100%. Messages that are genuine in one situation and a scam in another (for example "share the delivery OTP") are kept in `AMBIGUOUS` and should always produce a warning.

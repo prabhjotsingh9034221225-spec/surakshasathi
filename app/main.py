@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import benchmark, calls, demo, explain, geo, intel, llm, speech, storage, whatsapp
+from . import benchmark, calls, demo, explain, geo, indicators, intel, llm, speech, storage, whatsapp
 from .analyzer import analyze
 from .bot import Bot, broadcast_daily_lesson
 from .config import ROOT, settings
@@ -263,6 +263,24 @@ def api_check_link(body: LinkIn, request: Request) -> dict:
     ex = explain.build(a)
     ex["why"] = [] if verdict == "safe" else ex["why"]
     return {**a.to_dict(), "explanation": ex}
+
+
+class IdentifierIn(BaseModel):
+    value: str = Field(min_length=3, max_length=200)
+
+
+@app.post("/api/check/identifier")
+def api_check_identifier(body: IdentifierIn, request: Request) -> dict:
+    """Has this phone number, UPI ID or website been reported before? Looks up a salted hash, never raw values."""
+    rate_limit(request)
+    found = indicators.extract(body.value.strip())
+    if not found:
+        raise HTTPException(422, "Please enter a 10-digit mobile number, a UPI ID like name@bank, or a website.")
+    ind = found[0]
+    stats = storage.lookup_indicator(ind["digest"])
+    n = stats["reports"]
+    level = "high" if n >= 3 else "reported" if n >= 1 else "unknown"
+    return {"kind": ind["kind"], "hint": ind["hint"], "level": level, **stats}
 
 
 MAX_IMAGE_BYTES = 5 * 1024 * 1024

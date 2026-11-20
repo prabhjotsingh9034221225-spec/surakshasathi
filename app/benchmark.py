@@ -71,7 +71,8 @@ def run(force: bool = False) -> dict[str, Any]:
         S = _load_samples()
     except Exception as exc:  # pragma: no cover
         return {"available": False, "error": f"samples not found: {exc}"}
-    scams, safe = list(S.SCAMS), list(S.SAFE)
+    scams = [t for n in ("SCAMS", "SCAMS_V2", "SCAMS_V3", "SCAMS_V4", "SCAMS_V5", "SCAMS_V6") for t in getattr(S, n, [])]
+    safe = [t for n in ("SAFE", "SAFE_V2", "SAFE_V3", "SAFE_V4", "SAFE_V5", "SAFE_V6") for t in getattr(S, n, [])]
     base = sum(_flag(t) for t in scams)
     safe_fp = sum(_flag(t) for t in safe)
     by_mut, misses = [], []
@@ -111,6 +112,6 @@ def run(force: bool = False) -> dict[str, Any]:
         "by_language": sorted(by_lang, key=lambda x: x["recall"]),
         "baseline_by_language": [{"language": k, "tested": v[0], "recall": round(v[1] / v[0] * 100)} for k, v in base_lang.items()],
         "misses": misses,
-        "note": "Mutations imitate attacker tricks. The LLM fallback is not included, so real-world recall can be higher. Samples are the project's own labelled set, not a blind test.",
+        "note": "Scores are on the project's own labelled messages, which the rules were tuned on, so they are a regression check and overstate real-world accuracy. On brand-new messages written after tuning, the offline rules caught roughly 80% as scam; the AI fallback and link checks add more. Mutations imitate attacker tricks.",
     })
     return _CACHE

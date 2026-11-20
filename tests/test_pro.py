@@ -28,3 +28,16 @@ def test_export_is_redacted_and_windowed():
     blob = str(rows[0])
     assert "9876543210" not in blob and "ravi@okhdfc" not in blob and "482913" not in blob
     assert rows[0]["time_utc"].endswith("Z")
+
+
+def test_identifier_lookup_counts_reports_by_hash():
+    from app import indicators
+    _fresh()
+    for _ in range(3):
+        storage.add_report(district="Ludhiana", verdict="scam", score=90, category="kyc",
+                           snippet="Pay to ravi.kumar@okhdfc now", channel="web")
+    d = indicators.extract("ravi.kumar@okhdfc")[0]["digest"]
+    hit = storage.lookup_indicator(d)
+    assert hit["reports"] == 3 and hit["districts"] == ["Ludhiana"] and hit["categories"] == ["kyc"]
+    other = storage.lookup_indicator(indicators.extract("someone.else@okhdfc")[0]["digest"])
+    assert other["reports"] == 0 and other["last_seen_days"] is None

@@ -937,6 +937,7 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="link">🔗 Link</button>
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="shot">📷 Screenshot</button>
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="call">📞 Call</button>
+      <button class="ck-tab" role="tab" aria-selected="false" data-mode="id">🔢 Number / UPI</button>
     </div>
     <div class="ck-body">
       <div>
@@ -979,6 +980,15 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
             <button type="button" class="ck-chip" data-call="Hello sir, I am calling from CBI. Your Aadhaar is linked to money laundering. Do not disconnect the call and do not tell anyone. Transfer your money to the RBI verification account to clear your name.">Digital arrest call</button>
             <button type="button" class="ck-chip" data-call="Your SIM will be blocked in two hours. Press 1 to talk to TRAI officer. Do not cut the call.">SIM block call</button>
             <button type="button" class="ck-chip" data-call="Hello, this is your branch. Your cheque book is ready. You can collect it any day this week.">Normal bank call</button>
+          </div>
+        </div>
+        <div data-pane="id" hidden>
+          <input type="text" id="ckId" placeholder="Mobile number, UPI ID (name@bank) or website" autocomplete="off">
+          <p class="ck-hint">Someone asked you to pay or call? Check whether this number, UPI ID or site has been reported by other people here.</p>
+          <div class="ck-samples"><span>Try a sample:</span>
+            <button type="button" class="ck-chip" data-id="9000022222">Phone number</button>
+            <button type="button" class="ck-chip" data-id="kbc.prize@ybl">UPI ID</button>
+            <button type="button" class="ck-chip" data-id="sbi-kyc-update.xyz">Website</button>
           </div>
         </div>
         <div style="margin-top:12px"><select id="ckLang" aria-label="Language">
@@ -1457,6 +1467,7 @@ setInterval(refresh, 4000);
     if (c.dataset.text) document.getElementById("ckText").value = c.dataset.text;
     if (c.dataset.url) document.getElementById("ckUrl").value = c.dataset.url;
     if (c.dataset.call) document.getElementById("ckCall").value = c.dataset.call;
+    if (c.dataset.id) document.getElementById("ckId").value = c.dataset.id;
     if (c.dataset.img) {
       try {
         const blob = await (await fetch(c.dataset.img)).blob();
@@ -1478,14 +1489,35 @@ setInterval(refresh, 4000);
     if (ex.link_notes.length) h += `<div class="ck-sec"><h4>About the link</h4><ul>${ex.link_notes.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
     h += `<div class="ck-sec"><h4>What to do</h4><ol>${ex.next_steps.map(w => `<li>${esc(w)}</li>`).join("")}</ol></div>`;
     if (ex.report.show) h += `<div class="ck-sec ck-rep"><h4>Report it</h4><a class="ck-call" href="tel:1930">📞 Call 1930</a><a class="ck-call" href="${ex.report.portal.value}" target="_blank" rel="noopener">Report online</a><ol>${ex.report.steps.map(w => `<li>${esc(w)}</li>`).join("")}</ol></div>`;
-    h += `<div class="ck-actions"><button type="button" class="ck-mini" id="ckSpeak">🔊 Read this to me</button><span class="ck-fb" id="ckFb">Was this right? <button type="button" class="ck-mini" data-h="1" aria-label="Yes, this was right">👍</button><button type="button" class="ck-mini" data-h="0" aria-label="No, this was wrong">👎</button></span></div>`;
+    h += `<div class="ck-actions"><button type="button" class="ck-mini" id="ckSpeak">🔊 Read this to me</button>${r.verdict !== "safe" ? '<button type="button" class="ck-mini" id="ckShare">📤 Warn my family on WhatsApp</button>' : ""}<span class="ck-fb" id="ckFb">Was this right? <button type="button" class="ck-mini" data-h="1" aria-label="Yes, this was right">👍</button><button type="button" class="ck-mini" data-h="0" aria-label="No, this was wrong">👎</button></span></div>`;
     res.innerHTML = h;
     lastRes = r;
     document.getElementById("ckSpeak").onclick = () => speakResult(r);
+    const sh = document.getElementById("ckShare");
+    if (sh) sh.onclick = () => {
+      const w = r.verdict === "scam" ? "a SCAM" : "SUSPICIOUS";
+      const msg = `⚠️ Scam alert from SurakshaSathi: I checked a message and it looks like ${w}.\n${(r.explanation && r.explanation.headline) || ""}\nDo not click links, pay, or share any OTP/PIN. If you lost money call 1930.\nCheck anything suspicious here: ${location.origin}`;
+      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank", "noopener");
+    };
     document.querySelectorAll("#ckFb button").forEach(b => b.onclick = async () => {
       try { await fetch("/api/feedback", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({helpful: b.dataset.h === "1", verdict: r.verdict})}); } catch (e) {}
       document.getElementById("ckFb").textContent = "Thank you for telling us.";
     });
+  }
+  function showId(j) {
+    const kinds = {phone: "mobile number", upi: "UPI ID", domain: "website"};
+    const lv = {
+      high: {cls: "scam", icon: "🚨", head: "Reported many times", tip: "Do not pay, call back or share anything with this " + kinds[j.kind] + "."},
+      reported: {cls: "suspicious", icon: "⚠️", head: "Reported before", tip: "Be careful. Do not pay or share OTP/PIN until you are sure who this is."},
+      unknown: {cls: "safe", icon: "ℹ️", head: "No reports here yet", tip: "That does NOT mean it is safe. Scammers use new numbers all the time. Never pay a stranger who rushes you."}
+    }[j.level];
+    const bits = [];
+    if (j.reports) bits.push(`<li><b>${j.reports}</b> report${j.reports > 1 ? "s" : ""} in the last 90 days${j.last_seen_days === 0 ? " (latest today)" : j.last_seen_days ? ` (latest ${j.last_seen_days} day${j.last_seen_days > 1 ? "s" : ""} ago)` : ""}</li>`);
+    if (j.districts && j.districts.length) bits.push(`<li>Seen in: ${j.districts.join(", ")}</li>`);
+    if (j.categories && j.categories.length) bits.push(`<li>Linked to: ${j.categories.map(c => c.replace(/_/g, " ")).join(", ")}</li>`);
+    document.getElementById("ckRes").innerHTML = `<div class="ck-banner ${lv.cls}"><span class="ck-icon">${lv.icon}</span><div><h3>${lv.head}</h3><small>${esc(j.hint)} · ${kinds[j.kind]}</small></div></div>
+      <div class="ck-sec"><p style="margin:0 0 8px">${lv.tip}</p>${bits.length ? "<ul>" + bits.join("") + "</ul>" : ""}</div>
+      <div class="ck-sec"><p class="ck-hint" style="margin:0">Reports come from people who checked messages on SurakshaSathi. Numbers are matched by a private hash and are never shown in full.</p></div>`;
   }
   let lastRes = null, curAudio = null;
   const VOICE = {en: "en-IN", hi: "hi-IN", pa: "pa-IN"};
@@ -1533,6 +1565,10 @@ setInterval(refresh, 4000);
       const u = document.getElementById("ckUrl").value.trim();
       if (!u) { err.textContent = "Please paste a link first."; err.hidden = false; return; }
       url = "/api/check/link"; opts = {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({url: u, lang: lang || null})};
+    } else if (mode === "id") {
+      const v = document.getElementById("ckId").value.trim();
+      if (!v) { err.textContent = "Please enter a number, UPI ID or website first."; err.hidden = false; return; }
+      url = "/api/check/identifier"; opts = {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({value: v})};
     } else if (mode === "call") {
       const t = document.getElementById("ckCall").value.trim();
       const af = document.getElementById("ckAudio").files[0];
@@ -1552,7 +1588,7 @@ setInterval(refresh, 4000);
       const r = await fetch(url, opts);
       const j = await r.json().catch(() => ({}));
       if (!r.ok) { err.textContent = typeof j.detail === "string" ? j.detail : "Something went wrong. Please try again."; err.hidden = false; return; }
-      show(j);
+      if (mode === "id") showId(j); else show(j);
     } catch (e) { err.textContent = "Could not reach the server. Please try again."; err.hidden = false; }
     finally { btn.disabled = false; btn.innerHTML = old; }
   };

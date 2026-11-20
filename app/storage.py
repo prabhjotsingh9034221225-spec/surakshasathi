@@ -260,3 +260,23 @@ def export_reports(days: int = 30, limit: int = 20000) -> list[dict[str, Any]]:
         d["time_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(d.pop("ts")))
         out.append(d)
     return out
+
+
+def lookup_indicator(digest: str, days: int = 90) -> dict[str, Any]:
+    """How often a phone number / UPI ID / domain (by salted hash) appears in non-safe reports. Counts only."""
+    cutoff = time.time() - days * 86400
+    with connect() as c:
+        rows = c.execute(
+            "SELECT i.ts, i.district, r.category FROM indicators i JOIN reports r ON r.id = i.report_id WHERE i.digest=? AND i.ts>=?",
+            (digest, cutoff),
+        ).fetchall()
+    cats: dict[str, int] = {}
+    for r in rows:
+        if r["category"]:
+            cats[r["category"]] = cats.get(r["category"], 0) + 1
+    return {
+        "reports": len(rows),
+        "districts": sorted({r["district"] for r in rows if r["district"]}),
+        "last_seen_days": int((time.time() - max(r["ts"] for r in rows)) // 86400) if rows else None,
+        "categories": sorted(cats, key=cats.get, reverse=True)[:3],
+    }
