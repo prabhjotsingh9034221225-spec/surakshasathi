@@ -832,6 +832,55 @@ html.hc nav.jump a.on{background:#0030c0!important;color:#fff!important}
 footer .privacy{max-width:760px;margin:0 auto 14px;text-align:left;font-size:14px;color:var(--text2)}
 footer .privacy summary{cursor:pointer;font-weight:700;text-align:center;color:var(--text)}
 footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
+.pay-q{display:grid;gap:8px;margin-top:12px}
+.pay-q label{display:flex;gap:10px;align-items:flex-start;line-height:1.4;cursor:pointer}
+.pay-q input{margin-top:3px;width:18px;height:18px;flex:none}
+
+/* ── Live Call Shield, Scam Drill, District alerts ── */
+.lc-body,.dr-body,.al-body{padding:6px 24px 22px}
+.lc-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.lc-controls select,.lc-controls input[type=text]{padding:10px 12px;border-radius:12px;border:1px solid var(--card-border);background:transparent;color:inherit;font:inherit;min-width:0}
+.lc-controls input[type=text]{flex:1 1 180px}
+.lc-meter{height:12px;border-radius:99px;background:rgba(120,130,160,.2);overflow:hidden;margin:6px 0 10px}
+.lc-fill{height:100%;width:0;border-radius:99px;background:#16a34a;transition:width .5s,background .5s}
+.lc-fill.warn{background:#f59e0b}.lc-fill.bad{background:#dc2626}
+.lc-status{font-weight:700;font-size:16px;min-height:26px}
+.lc-status.warn{color:#b45309}.lc-status.bad{color:#c62828}.lc-status.ok{color:#15803d}
+.lc-transcript{margin-top:10px;max-height:150px;overflow:auto;padding:12px 14px;border-radius:12px;border:1px dashed var(--card-border);font-size:15px;line-height:1.5;color:var(--text2);min-height:48px}
+.lc-transcript:empty::before{content:"What we hear will appear here…";opacity:.6}
+.hangup{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 30%,#ef4444,#7f1d1d);animation:huPulse 1s ease-in-out infinite alternate}
+.hangup[hidden]{display:none}
+@keyframes huPulse{from{filter:brightness(1)}to{filter:brightness(1.18)}}
+@media (prefers-reduced-motion:reduce){.hangup{animation:none}}
+.hu-box{max-width:560px;text-align:center;color:#fff}
+.hu-icon{font-size:72px}
+.hu-box h2{font-size:clamp(40px,9vw,72px);margin:6px 0;font-weight:900;letter-spacing:-.02em;color:#fff;background:none;-webkit-text-fill-color:#fff}
+.hu-box p{font-size:20px;line-height:1.45;margin:10px 0}
+.hu-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+.hu-ok{background:#fff;color:#7f1d1d;font-weight:800;border:0;padding:14px 22px;border-radius:14px;font-size:18px;cursor:pointer}
+.hu-alt{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);padding:14px 20px;border-radius:14px;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer}
+.hu-note{font-size:15px!important;opacity:.9}
+.train-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+@media(max-width:860px){.train-grid{grid-template-columns:1fr}}
+.dr-pick{display:grid;gap:10px;margin-top:10px}
+.dr-pick button{text-align:left;font:inherit;padding:14px 16px;border-radius:14px;border:1px solid var(--card-border);background:rgba(37,99,235,.06);color:inherit;cursor:pointer}
+.dr-pick button:hover{background:rgba(37,99,235,.14)}
+.dr-pick b{display:block;font-size:17px}
+.dr-voice{display:flex;gap:6px;align-items:center;font-weight:600}
+.dr-prog{font-weight:700;color:var(--text2);margin:6px 0}
+.dr-scammer{padding:14px 16px;border-radius:14px;background:rgba(198,40,40,.1);border:1px solid rgba(198,40,40,.35);font-size:18px;line-height:1.5}
+.dr-scammer::before{content:"📞 Caller: ";font-weight:800;color:#c62828}
+.dr-opts{display:grid;gap:10px;margin:12px 0}
+.dr-opts button{text-align:left;font:inherit;font-size:16px;padding:13px 15px;border-radius:14px;border:1.5px solid var(--card-border);background:transparent;color:inherit;cursor:pointer}
+.dr-opts button:hover:not(:disabled){border-color:var(--accent)}
+.dr-opts button.good{border-color:#16a34a;background:rgba(22,163,74,.14)}
+.dr-opts button.bad{border-color:#dc2626;background:rgba(220,38,38,.12)}
+.dr-fb{min-height:24px;font-weight:600;margin-bottom:10px;line-height:1.45}
+.dr-score{font-size:46px;font-weight:900;margin:4px 0}
+.al-out{padding:12px 14px;border-radius:12px;border:1px dashed var(--card-border);white-space:pre-wrap;line-height:1.5;min-height:48px;margin:6px 0 12px}
+.al-out:empty::before{content:"Type your district and tap Preview to see what an alert looks like.";opacity:.6}
+.al-out.live{border-style:solid;border-color:#dc2626;background:rgba(220,38,38,.08)}
+html.hc .hangup{background:#000}
 </style>
 </head>
 <body>
@@ -861,7 +910,9 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
 <div class="wake" id="wake" role="status" hidden>⏳ Waking up the server… the first visit can take up to a minute. Thanks for waiting.</div>
 <nav class="jump" aria-label="Jump to a section">
   <a href="#g-check" data-i18n="j_check">🔎 Check</a>
+  <a href="#liveCall">📞 Live call</a>
   <a href="#g-help" data-i18n="j_help">💸 Lost money?</a>
+  <a href="#g-train">🎯 Practice &amp; alerts</a>
   <a href="#g-map" data-i18n="j_map">🗺️ Map</a>
   <a href="#g-live" data-i18n="j_live">📡 Live reports</a>
   <a href="#intel" data-i18n="j_intel">📈 Trends</a>
@@ -938,6 +989,7 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="shot">📷 Screenshot</button>
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="call">📞 Call</button>
       <button class="ck-tab" role="tab" aria-selected="false" data-mode="id">🔢 Number / UPI</button>
+      <button class="ck-tab" role="tab" aria-selected="false" data-mode="pay">💸 Before I pay</button>
     </div>
     <div class="ck-body">
       <div>
@@ -982,6 +1034,23 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
             <button type="button" class="ck-chip" data-call="Hello, this is your branch. Your cheque book is ready. You can collect it any day this week.">Normal bank call</button>
           </div>
         </div>
+        <div data-pane="pay" hidden>
+          <input type="text" id="payTo" placeholder="Who are you paying? UPI ID or mobile number (optional)" autocomplete="off">
+          <input type="number" id="payAmt" min="0" inputmode="numeric" placeholder="Amount in ₹ (optional)" style="margin-top:8px">
+          <div class="pay-q" role="group" aria-label="Questions about this payment">
+            <label><input type="checkbox" data-flag="stranger"> Someone I do not know asked me to pay</label>
+            <label><input type="checkbox" data-flag="rushed"> I am being rushed ("do it now!")</label>
+            <label><input type="checkbox" data-flag="secret"> They told me not to tell my family</label>
+            <label><input type="checkbox" data-flag="to_receive"> I have to pay or enter my PIN to <b>receive</b> money, a prize or a refund</label>
+            <label><input type="checkbox" data-flag="authority"> Police, a bank or an officer asked me to move money</label>
+            <label><input type="checkbox" data-flag="name_mismatch"> The name shown is not who I expected</label>
+            <label><input type="checkbox" data-flag="new_payee"> This is a new person I have not paid before</label>
+          </div>
+          <div class="ck-samples"><span>Try a sample:</span>
+            <button type="button" class="ck-chip" data-pay='{"to":"kbc.prize@ybl","amt":"12000","flags":["stranger","rushed","to_receive"]}'>"Pay fee to get prize"</button>
+            <button type="button" class="ck-chip" data-pay='{"to":"","amt":"500","flags":[]}'>Paying a friend</button>
+          </div>
+        </div>
         <div data-pane="id" hidden>
           <input type="text" id="ckId" placeholder="Mobile number, UPI ID (name@bank) or website" autocomplete="off">
           <p class="ck-hint">Someone asked you to pay or call? Check whether this number, UPI ID or site has been reported by other people here.</p>
@@ -1016,6 +1085,21 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
     </div>
   </section>
 
+  <section class="card" id="liveCall" aria-labelledby="lcTitle">
+    <div class="card-head"><h3 id="lcTitle">📞 Live Call Shield</h3><p>On a suspicious call? Put it on speaker and tap Start. We listen for scam tricks and tell you to <b>hang up</b> the moment we hear them.</p></div>
+    <div class="lc-body">
+      <div class="lc-controls">
+        <select id="lcLang" aria-label="Language of the call"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
+        <button type="button" class="btn btn-primary" id="lcStart">🎙️ Start listening</button>
+        <button type="button" class="btn btn-ghost" id="lcDemo">▶ Play a sample scam call</button>
+      </div>
+      <div class="lc-meter" aria-hidden="true"><div class="lc-fill" id="lcFill"></div></div>
+      <div class="lc-status" id="lcStatus" role="status" aria-live="polite">Not listening. Tap Start, or play the sample call to see how it works.</div>
+      <div class="lc-transcript" id="lcText" aria-label="What we heard"></div>
+      <p class="ck-hint" id="lcPrivacy" style="margin:10px 0 0">Your browser turns speech into text (Chrome may use Google's servers for this). Only that text comes to us, it is checked and not stored.</p>
+    </div>
+  </section>
+
   <div class="grp" id="g-help"><span class="grp-num">2</span><div><h2 data-i18n="g-help_h">Lost money? Act now</h2><p data-i18n="g-help_p">If you already paid or shared an OTP, follow these steps in order. The first hour matters most.</p></div></div>
 
   <section class="card" id="goldenHour">
@@ -1046,6 +1130,41 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
       <div class="gh-out" id="ghOut" hidden></div>
     </div>
   </section>
+
+  <div class="grp" id="g-train"><span class="grp-num">🎯</span><div><h2>Practice and stay alert</h2><p>Train yourself or your parents to say no, and get warned when scams rise in your district.</p></div></div>
+
+  <div class="live-grid train-grid">
+  <section class="card" id="drill" aria-labelledby="drTitle">
+    <div class="card-head"><h3 id="drTitle">🎯 Scam Drill</h3><p>A scammer speaks, you choose how to reply. Three quick rounds, no risk, real tricks.</p></div>
+    <div class="dr-body">
+      <div id="drStart">
+        <div class="lc-controls"><select id="drLang" aria-label="Language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
+        <label class="dr-voice"><input type="checkbox" id="drVoice" checked> 🔊 Read aloud</label></div>
+        <div class="dr-pick" id="drPick"></div>
+      </div>
+      <div id="drPlay" hidden>
+        <div class="dr-prog" id="drProg"></div>
+        <div class="dr-scammer" id="drScammer"></div>
+        <div class="dr-opts" id="drOpts"></div>
+        <div class="dr-fb" id="drFb" role="status" aria-live="polite"></div>
+        <button type="button" class="btn btn-primary" id="drNext" hidden>Next ➜</button>
+      </div>
+      <div id="drDone" hidden></div>
+    </div>
+  </section>
+
+  <section class="card" id="alertsCard" aria-labelledby="alTitle">
+    <div class="card-head"><h3 id="alTitle">🔔 District early warning</h3><p>When one scam suddenly rises in your district, we send a short alert on WhatsApp in your language.</p></div>
+    <div class="al-body">
+      <div class="lc-controls"><input type="text" id="alDistrict" placeholder="Your district, e.g. Ludhiana" autocomplete="off" aria-label="District">
+        <select id="alLang" aria-label="Alert language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
+        <button type="button" class="btn btn-ghost" id="alPreview">Preview my alert</button></div>
+      <div class="al-out" id="alOut" role="status" aria-live="polite"></div>
+      <div class="lc-controls"><a class="btn btn-primary" id="alSub" href="#alertsCard" target="_blank" rel="noopener">💬 Subscribe on WhatsApp</a></div>
+      <p class="ck-hint" id="alHint" style="margin:8px 0 0">Alerts are opt-in. Reply ALERTS OFF or STOP at any time and we delete your subscription.</p>
+    </div>
+  </section>
+  </div>
 
   <div class="grp" id="g-learn"><span class="grp-num">3</span><div><h2 data-i18n="g-learn_h">Stay informed</h2><p data-i18n="g-learn_p">This week's warnings, where scams are being reported, and how they are changing.</p></div></div>
 
@@ -1181,6 +1300,20 @@ footer .privacy ul{margin:10px 0 0 20px;display:grid;gap:8px;line-height:1.5}
   </section>
 
 </main>
+<div class="hangup" id="hangup" role="alertdialog" aria-modal="true" aria-labelledby="huTitle" hidden>
+  <div class="hu-box">
+    <div class="hu-icon">☎️🚫</div>
+    <h2 id="huTitle">HANG UP NOW</h2>
+    <p id="huWhy">This call matches a scam.</p>
+    <div class="hu-actions">
+      <button type="button" class="btn hu-ok" id="huDone">✅ I hung up</button>
+      <a class="btn hu-alt" href="tel:1930">📞 Call 1930 (cyber helpline)</a>
+      <button type="button" class="btn hu-alt" id="huShare">📤 Tell my family</button>
+    </div>
+    <p class="hu-note">Never share an OTP or PIN, never move money to a "safe account", and never stay on a call because someone says you are under arrest.</p>
+  </div>
+</div>
+
 
 <!-- ── Footer ────────────────────────────────────────────────────────── -->
 <footer>
@@ -1468,6 +1601,11 @@ setInterval(refresh, 4000);
     if (c.dataset.url) document.getElementById("ckUrl").value = c.dataset.url;
     if (c.dataset.call) document.getElementById("ckCall").value = c.dataset.call;
     if (c.dataset.id) document.getElementById("ckId").value = c.dataset.id;
+    if (c.dataset.pay) {
+      const p = JSON.parse(c.dataset.pay);
+      document.getElementById("payTo").value = p.to; document.getElementById("payAmt").value = p.amt;
+      document.querySelectorAll("[data-flag]").forEach(b => b.checked = p.flags.includes(b.dataset.flag));
+    }
     if (c.dataset.img) {
       try {
         const blob = await (await fetch(c.dataset.img)).blob();
@@ -1489,10 +1627,25 @@ setInterval(refresh, 4000);
     if (ex.link_notes.length) h += `<div class="ck-sec"><h4>About the link</h4><ul>${ex.link_notes.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
     h += `<div class="ck-sec"><h4>What to do</h4><ol>${ex.next_steps.map(w => `<li>${esc(w)}</li>`).join("")}</ol></div>`;
     if (ex.report.show) h += `<div class="ck-sec ck-rep"><h4>Report it</h4><a class="ck-call" href="tel:1930">📞 Call 1930</a><a class="ck-call" href="${ex.report.portal.value}" target="_blank" rel="noopener">Report online</a><ol>${ex.report.steps.map(w => `<li>${esc(w)}</li>`).join("")}</ol></div>`;
-    h += `<div class="ck-actions"><button type="button" class="ck-mini" id="ckSpeak">🔊 Read this to me</button>${r.verdict !== "safe" ? '<button type="button" class="ck-mini" id="ckShare">📤 Warn my family on WhatsApp</button>' : ""}<span class="ck-fb" id="ckFb">Was this right? <button type="button" class="ck-mini" data-h="1" aria-label="Yes, this was right">👍</button><button type="button" class="ck-mini" data-h="0" aria-label="No, this was wrong">👎</button></span></div>`;
+    h += `<div class="ck-actions"><button type="button" class="ck-mini" id="ckSpeak">🔊 Read this to me</button>${r.verdict !== "safe" ? '<button type="button" class="ck-mini" id="ckShare">📤 Warn my family on WhatsApp</button>' : ""}${r.verdict !== "safe" && lastText ? '<button type="button" class="ck-mini" id="ckStall">✍️ Draft a safe reply</button>' : ""}<span class="ck-fb" id="ckFb">Was this right? <button type="button" class="ck-mini" data-h="1" aria-label="Yes, this was right">👍</button><button type="button" class="ck-mini" data-h="0" aria-label="No, this was wrong">👎</button></span></div>`;
     res.innerHTML = h;
     lastRes = r;
     document.getElementById("ckSpeak").onclick = () => speakResult(r);
+    const st = document.getElementById("ckStall");
+    if (st) st.onclick = async () => {
+      st.disabled = true;
+      try {
+        const resp = await fetch("/api/stall-reply", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text: lastText, lang: document.getElementById("ckLang").value || window.__pageLang || "en"})});
+        const j = await resp.json();
+        if (!resp.ok) throw new Error(j.detail || "failed");
+        const box = document.createElement("div"); box.className = "ck-sec";
+        box.innerHTML = `<h4>A safe reply you can send yourself</h4><div class="ck-quote" id="stallText"></div><div class="ck-tools"><button type="button" class="ck-mini" id="stallCopy">📋 Copy reply</button></div><ul style="margin-top:10px">${j.rules.map(x => `<li>${esc(x)}</li>`).join("")}</ul><p class="ck-hint" style="margin:8px 0 0">SurakshaSathi never contacts the scammer for you. This text gives away nothing and may waste their time. Send it once, then block and report.</p>`;
+        document.getElementById("ckRes").appendChild(box);
+        document.getElementById("stallText").textContent = j.reply;
+        document.getElementById("stallCopy").onclick = async e => { try { await navigator.clipboard.writeText(j.reply); e.target.textContent = "✅ Copied"; } catch (x) { e.target.textContent = "Select the text and copy"; } };
+        st.remove();
+      } catch (e) { st.disabled = false; err.textContent = "Could not draft a reply for this message."; err.hidden = false; }
+    };
     const sh = document.getElementById("ckShare");
     if (sh) sh.onclick = () => {
       const w = r.verdict === "scam" ? "a SCAM" : "SUSPICIOUS";
@@ -1503,6 +1656,13 @@ setInterval(refresh, 4000);
       try { await fetch("/api/feedback", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({helpful: b.dataset.h === "1", verdict: r.verdict})}); } catch (e) {}
       document.getElementById("ckFb").textContent = "Thank you for telling us.";
     });
+  }
+  function showPay(j) {
+    const cls = {stop: "scam", wait: "suspicious", go: "safe"}[j.level], icon = {stop: "🛑", wait: "✋", go: "✅"}[j.level];
+    let h = `<div class="ck-banner ${cls}"><span class="ck-icon">${icon}</span><div><h3>${esc(j.headline)}</h3>${j.payee ? `<small>${esc(j.payee.hint)} · reported ${j.payee.reports} time${j.payee.reports === 1 ? "" : "s"}</small>` : ""}</div></div>`;
+    if (j.reasons.length) h += `<div class="ck-sec"><h4>Why</h4><ul>${j.reasons.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    h += `<div class="ck-sec"><h4>What to do</h4><ul>${j.next_steps.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    document.getElementById("ckRes").innerHTML = h;
   }
   function showId(j) {
     const kinds = {phone: "mobile number", upi: "UPI ID", domain: "website"};
@@ -1519,7 +1679,7 @@ setInterval(refresh, 4000);
       <div class="ck-sec"><p style="margin:0 0 8px">${lv.tip}</p>${bits.length ? "<ul>" + bits.join("") + "</ul>" : ""}</div>
       <div class="ck-sec"><p class="ck-hint" style="margin:0">Reports come from people who checked messages on SurakshaSathi. Numbers are matched by a private hash and are never shown in full.</p></div>`;
   }
-  let lastRes = null, curAudio = null;
+  let lastRes = null, curAudio = null, lastText = "";
   const VOICE = {en: "en-IN", hi: "hi-IN", pa: "pa-IN"};
   async function speakResult(r) {
     const ex = r.explanation, lang = (r.language || document.getElementById("ckLang").value || "en");
@@ -1557,14 +1717,20 @@ setInterval(refresh, 4000);
     err.hidden = true;
     const lang = document.getElementById("ckLang").value;
     let url, opts;
+    lastText = "";
     if (mode === "msg") {
       const text = document.getElementById("ckText").value.trim();
       if (!text) { err.textContent = "Please paste a message first."; err.hidden = false; return; }
+      lastText = text;
       url = "/api/analyze"; opts = {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text, lang: lang || null})};
     } else if (mode === "link") {
       const u = document.getElementById("ckUrl").value.trim();
       if (!u) { err.textContent = "Please paste a link first."; err.hidden = false; return; }
       url = "/api/check/link"; opts = {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({url: u, lang: lang || null})};
+    } else if (mode === "pay") {
+      const body = {payee: document.getElementById("payTo").value.trim() || null, amount: parseFloat(document.getElementById("payAmt").value) || null, lang: lang || window.__pageLang || "en"};
+      document.querySelectorAll("[data-flag]").forEach(b => body[b.dataset.flag] = b.checked);
+      url = "/api/check/payment"; opts = {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)};
     } else if (mode === "id") {
       const v = document.getElementById("ckId").value.trim();
       if (!v) { err.textContent = "Please enter a number, UPI ID or website first."; err.hidden = false; return; }
@@ -1588,7 +1754,7 @@ setInterval(refresh, 4000);
       const r = await fetch(url, opts);
       const j = await r.json().catch(() => ({}));
       if (!r.ok) { err.textContent = typeof j.detail === "string" ? j.detail : "Something went wrong. Please try again."; err.hidden = false; return; }
-      if (mode === "id") showId(j); else show(j);
+      if (mode === "id") showId(j); else if (mode === "pay") showPay(j); else show(j);
     } catch (e) { err.textContent = "Could not reach the server. Please try again."; err.hidden = false; }
     finally { btn.disabled = false; btn.innerHTML = old; }
   };
@@ -1843,6 +2009,259 @@ setInterval(refresh, 4000);
   function applyHC(on) { root.classList.toggle("hc", on); hc.setAttribute("aria-pressed", on ? "true" : "false"); store.set("ss_hc", on ? "1" : "0"); }
   hc.onclick = () => applyHC(!root.classList.contains("hc"));
   applyHC(store.get("ss_hc") === "1");
+})();
+</script>
+
+<script>
+// ── Live Call Shield, Scam Drill, District alerts ──
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const VOICE = {en: "en-IN", hi: "hi-IN", pa: "pa-IN"};
+  const say = (text, lang) => { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = VOICE[lang] || "en-IN"; speechSynthesis.speak(u); } catch (e) {} };
+
+  // ===================== Live Call Shield =====================
+  const HANG = {en: ["Hang up now. This is a scam call.", "HANG UP NOW"], hi: ["कॉल काट दीजिए। यह ठगी की कॉल है।", "कॉल काटिए"], pa: ["ਕਾਲ ਕੱਟ ਦਿਓ। ਇਹ ਠੱਗੀ ਦੀ ਕਾਲ ਹੈ।", "ਕਾਲ ਕੱਟੋ"]};
+  const DEMO = {
+    en: ["Hello sir, I am calling from the cyber crime department.", "A parcel booked in your name was found with drugs at the airport.", "Your Aadhaar is linked to a money laundering case and you are under investigation.", "Do not disconnect this call and do not tell anyone, otherwise you will be arrested.", "To clear your name, transfer your savings to the RBI safe account right now."],
+    hi: ["नमस्ते सर, मैं साइबर क्राइम विभाग से बोल रहा हूँ।", "आपके नाम से भेजे गए पार्सल में ड्रग्स मिले हैं।", "आपका आधार मनी लॉन्ड्रिंग केस से जुड़ा है, आपको गिरफ्तार किया जा सकता है।", "कॉल मत काटिए और किसी को मत बताइए।", "अपनी बचत अभी RBI के सुरक्षित खाते में भेजिए।"],
+    pa: ["ਸਤ ਸ੍ਰੀ ਅਕਾਲ ਜੀ, ਮੈਂ ਸਾਈਬਰ ਕ੍ਰਾਈਮ ਵਿਭਾਗ ਤੋਂ ਬੋਲ ਰਿਹਾ ਹਾਂ।", "ਤੁਹਾਡੇ ਨਾਮ ਦੇ ਪਾਰਸਲ ਵਿੱਚੋਂ ਡਰੱਗਜ਼ ਮਿਲੇ ਹਨ।", "ਤੁਹਾਡਾ ਆਧਾਰ ਮਨੀ ਲਾਂਡਰਿੰਗ ਕੇਸ ਨਾਲ ਜੁੜਿਆ ਹੈ, ਤੁਹਾਨੂੰ ਗ੍ਰਿਫ਼ਤਾਰ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।", "ਕਾਲ ਨਾ ਕੱਟੋ ਅਤੇ ਕਿਸੇ ਨੂੰ ਨਾ ਦੱਸੋ।", "ਆਪਣੀ ਬੱਚਤ ਹੁਣੇ RBI ਦੇ ਸੁਰੱਖਿਅਤ ਖਾਤੇ ਵਿੱਚ ਭੇਜੋ।"]
+  };
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const lc = {on: false, demo: false, tx: "", rec: null, timer: null, busy: false, lastLen: 0, alerted: false, lastCheck: 0, dtimer: null, lastResult: null};
+  function lcStatus(text, cls) { const el = $("lcStatus"); el.textContent = text; el.className = "lc-status " + (cls || ""); }
+  function lcMeter(score, cls) { const f = $("lcFill"); f.style.width = Math.max(4, Math.min(100, score)) + "%"; f.className = "lc-fill " + (cls || ""); }
+  function lcShowText() { const t = $("lcText"); t.textContent = lc.tx.trim(); t.scrollTop = t.scrollHeight; }
+  async function lcCheck(force) {
+    const now = Date.now();
+    if (lc.busy || lc.tx.trim().length < 12 || (!force && (lc.tx.length === lc.lastLen || now - lc.lastCheck < 1500))) return;
+    lc.busy = true; lc.lastLen = lc.tx.length; lc.lastCheck = now;
+    const lang = $("lcLang").value;
+    try {
+      const r = await fetch("/api/analyze", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text: lc.tx.slice(-1200), lang, fast: true})});
+      if (!r.ok) throw new Error("x");
+      const j = await r.json(); lc.lastResult = j;
+      if (!lc.on && !lc.demo) return;
+      if (j.verdict === "scam") { lcMeter(100, "bad"); lcStatus("⚠️ This sounds like a SCAM call. Hang up.", "bad"); if (!lc.alerted) { lc.alerted = true; showHangup(j, lang); } }
+      else if (j.verdict === "suspicious") { lcMeter(Math.max(j.score, 50), "warn"); lcStatus("⚠️ Careful: this call has warning signs. Do not share anything or pay.", "warn"); }
+      else { lcMeter(Math.max(j.score, 6), ""); lcStatus("✅ Nothing suspicious so far. Keep listening…", "ok"); }
+    } catch (e) { lcStatus("Could not check right now. If anything feels wrong, hang up.", "warn"); }
+    finally { lc.busy = false; }
+  }
+  function showHangup(j, lang) {
+    const why = (j.explanation && (j.explanation.summary || j.explanation.headline)) || "This call matches a scam.";
+    $("huTitle").textContent = (HANG[lang] || HANG.en)[1]; $("huWhy").textContent = why; $("hangup").hidden = false;
+    try { navigator.vibrate && navigator.vibrate([300, 150, 300, 150, 600]); } catch (e) {}
+    say((HANG[lang] || HANG.en)[0], lang); $("huDone").focus();
+  }
+  function lcStop() {
+    lc.on = false; lc.demo = false; clearTimeout(lc.dtimer);
+    if (lc.rec) { try { lc.rec.onend = null; lc.rec.stop(); } catch (e) {} lc.rec = null; }
+    $("lcStart").textContent = "🎙️ Start listening"; $("lcDemo").disabled = false; $("lcStart").disabled = false;
+  }
+  function lcReset() { lc.tx = ""; lc.lastLen = 0; lc.alerted = false; $("lcText").textContent = ""; lcMeter(0, ""); }
+  function lcStartMic() {
+    if (lc.on) { lcStop(); lcStatus("Stopped. Tap Start when the next call comes.", ""); return; }
+    if (!SR) { lcStatus("This browser cannot listen to speech. Use Chrome or Edge, or play the sample call.", "warn"); return; }
+    lcReset(); lc.on = true; $("lcStart").textContent = "⏹ Stop"; $("lcDemo").disabled = true; lcStatus("Listening… put the call on speaker.", "ok");
+    const begin = () => {
+      const rec = new SR(); rec.lang = VOICE[$("lcLang").value] || "en-IN"; rec.continuous = true; rec.interimResults = true; lc.rec = rec;
+      let finalTx = lc.tx;
+      rec.onresult = e => { let interim = ""; for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) finalTx += " " + t; else interim += " " + t; } lc.tx = finalTx + interim; lcShowText(); lcCheck(false); };
+      rec.onerror = ev => { if (ev.error === "not-allowed" || ev.error === "service-not-allowed") { lcStop(); lcStatus("Microphone is blocked. Allow the microphone for this site, then try again.", "warn"); } };
+      rec.onend = () => { if (lc.on) { lc.tx = finalTx; try { begin(); } catch (e) { lcStop(); } } };
+      rec.start();
+    };
+    try { begin(); } catch (e) { lcStop(); lcStatus("Could not start the microphone.", "warn"); }
+    clearInterval(lc.timer); lc.timer = setInterval(() => { if (lc.on) lcCheck(false); else clearInterval(lc.timer); }, 3000);
+  }
+  function lcPlayDemo() {
+    if (lc.on || lc.demo) return;
+    lcReset(); lc.demo = true; $("lcStart").disabled = true; $("lcDemo").disabled = true;
+    const lines = DEMO[$("lcLang").value] || DEMO.en; let i = 0;
+    lcStatus("Playing a sample scam call…", "ok");
+    const next = async () => {
+      if (!lc.demo) return;
+      if (i >= lines.length) { lcStop(); return; }
+      lc.tx += " " + lines[i]; i++; lcShowText(); await lcCheck(true);
+      lc.dtimer = setTimeout(next, 2600);
+    };
+    next();
+  }
+  $("lcStart").onclick = lcStartMic; $("lcDemo").onclick = lcPlayDemo;
+  $("lcLang").onchange = () => { if (lc.on) { lcStop(); lcStatus("Language changed. Tap Start again.", ""); } };
+  if (!SR) $("lcStart").title = "Needs Chrome or Edge";
+  $("huDone").onclick = () => { $("hangup").hidden = true; if (window.speechSynthesis) speechSynthesis.cancel(); lcStop(); lcStatus("Good decision. You stayed safe. Report the number to 1930 if you can.", "ok"); };
+  $("huShare").onclick = () => {
+    const msg = `⚠️ Scam call alert: SurakshaSathi just caught a scam call on my phone. If someone calls saying you are under arrest, your account is blocked, or asks for an OTP or money, hang up. Report on 1930. Check calls and messages here: ${location.origin}`;
+    window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank", "noopener");
+  };
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("hangup").hidden) $("huDone").click(); });
+  window.__lc = lc;
+
+  // ===================== Scam Drill =====================
+  const D = {
+    en: [
+      {id: "arrest", icon: "👮", title: "The 'police' video call", steps: [
+        {s: "This is Inspector Rathore from Mumbai Cyber Crime. A parcel in your name has drugs. You are under digital arrest. Stay on this video call and do not tell anyone.", o: [
+          ["Okay, I will stay on the call and not tell anyone.", 0, "Cutting you off from family is their trap. Real police never keep you on a video call or ask for secrecy."],
+          ["I am hanging up and going to my local police station with my family.", 1, "Exactly right. A real case is handled at a police station, in person."],
+          ["Please tell me what I should do to fix it.", 0, "Talking on gives them control. The safest move is to end the call."]]},
+        {s: "To prove your innocence, transfer all your savings to the RBI safe account right now. It will be returned after verification.", o: [
+          ["I will send the money to prove I am innocent.", 0, "There is no such thing as a 'safe account'. No government office ever asks for this."],
+          ["There is no 'safe account'. I am calling 1930.", 1, "Correct. 1930 is the real cyber crime helpline."],
+          ["Give me time, I will send half now.", 0, "Half is still a loss. Rushing you is part of the trick."]]},
+        {s: "If you hang up, we will send officers to your house in 10 minutes and freeze your Aadhaar.", o: [
+          ["I will hang up and tell a family member. Threats are how they scare people.", 1, "Well done. A threat means they are running out of tricks."],
+          ["I am scared, I will stay on the line.", 0, "Fear is their weapon. Ending the call is always safe."],
+          ["Let me give my Aadhaar number so they believe me.", 0, "Never give your Aadhaar number to a caller. It can be misused."]]}]},
+      {id: "kyc", icon: "🏦", title: "The bank KYC call", steps: [
+        {s: "Sir, I am calling from SBI head office. Your KYC has expired and your account will be blocked in one hour.", o: [
+          ["Banks do not block accounts by phone. I will visit my branch.", 1, "Right. Always check at the branch or on the number printed on your card."],
+          ["Oh no, what should I do?", 0, "Panic is what they want. Stop and think first."],
+          ["Tell me how to update it right now.", 0, "Updating KYC over a call is the trick."]]},
+        {s: "Please tell me the 6 digit OTP that just came to your phone to verify your identity.", o: [
+          ["The OTP is on my screen, let me read it.", 0, "An OTP is the key to your account. Never read it out."],
+          ["I never share an OTP with anyone, not even the bank.", 1, "Perfect. A real bank never asks for your OTP."],
+          ["I will tell you only the first three digits.", 0, "Even half an OTP helps a thief."]]},
+        {s: "Now install this app so I can fix your account remotely. It is the official bank app.", o: [
+          ["I will install it.", 0, "Such apps let scammers control your whole phone."],
+          ["No. I do not install apps because of a call. Goodbye.", 1, "Correct. Only install apps from the official store, on your own."],
+          ["Send me the link first and I will think.", 0, "The link is the trap. Do not open links from callers."]]}]}
+    ],
+    hi: [
+      {id: "arrest", icon: "👮", title: "'पुलिस' का वीडियो कॉल", steps: [
+        {s: "मैं मुंबई साइबर क्राइम का इंस्पेक्टर राठौर बोल रहा हूँ। आपके नाम के पार्सल में ड्रग्स मिले हैं। आप डिजिटल अरेस्ट में हैं। इस वीडियो कॉल पर बने रहें और किसी को न बताएँ।", o: [
+          ["ठीक है, मैं कॉल पर रहूँगा और किसी को नहीं बताऊँगा।", 0, "आपको परिवार से अलग करना ही उनका जाल है। असली पुलिस वीडियो कॉल पर नहीं रखती और गोपनीयता नहीं माँगती।"],
+          ["मैं कॉल काट रहा हूँ और परिवार के साथ नज़दीकी थाने जाऊँगा।", 1, "बिल्कुल सही। असली मामला थाने में ही सुलझता है।"],
+          ["बताइए इसे ठीक करने के लिए मुझे क्या करना होगा?", 0, "बात जारी रखने से वे आपको काबू में कर लेते हैं। कॉल काटना सबसे सुरक्षित है।"]]},
+        {s: "बेगुनाही साबित करने के लिए अभी अपनी सारी बचत RBI के सुरक्षित खाते में भेजिए। जाँच के बाद लौटा दी जाएगी।", o: [
+          ["बेगुनाही साबित करने के लिए पैसे भेज दूँगा।", 0, "'सुरक्षित खाता' जैसी कोई चीज़ नहीं होती। कोई सरकारी विभाग ऐसा नहीं कहता।"],
+          ["'सुरक्षित खाता' कुछ नहीं होता। मैं 1930 पर कॉल कर रहा हूँ।", 1, "सही। 1930 ही असली मदद है।"],
+          ["थोड़ा समय दीजिए, आधे पैसे भेज देता हूँ।", 0, "आधे पैसे भी नुकसान ही हैं। जल्दी मचाना उनकी चाल है।"]]},
+        {s: "अगर कॉल काटी तो 10 मिनट में आपके घर पुलिस भेजेंगे और आधार फ्रीज़ कर देंगे।", o: [
+          ["कॉल काटकर परिवार के किसी सदस्य को बताऊँगा। धमकी से डराना उनकी चाल है।", 1, "बहुत अच्छे। धमकी का मतलब है कि उनकी चालें खत्म हो रही हैं।"],
+          ["डर लग रहा है, कॉल पर बना रहता हूँ।", 0, "डर ही उनका हथियार है। कॉल काटना हमेशा सुरक्षित है।"],
+          ["अपना आधार नंबर दे देता हूँ ताकि वे मान लें।", 0, "कॉल करने वाले को आधार नंबर कभी न दें। इसका दुरुपयोग हो सकता है।"]]}]},
+      {id: "kyc", icon: "🏦", title: "बैंक KYC की कॉल", steps: [
+        {s: "सर, मैं SBI मुख्यालय से बोल रहा हूँ। आपकी KYC समाप्त हो गई है और एक घंटे में खाता बंद हो जाएगा।", o: [
+          ["बैंक फोन पर खाता बंद नहीं करता। मैं शाखा जाकर पूछूँगा।", 1, "सही। हमेशा शाखा या कार्ड पर छपे नंबर से पक्का करें।"],
+          ["अरे नहीं, अब मैं क्या करूँ?", 0, "घबराहट ही वे चाहते हैं। रुककर सोचें।"],
+          ["बताइए अभी कैसे अपडेट करूँ।", 0, "फोन पर KYC अपडेट करना ठगी का तरीका है।"]]},
+        {s: "अब आपके फोन पर जो 6 अंकों का OTP आया है, वह पहचान के लिए बताइए।", o: [
+          ["OTP मेरी स्क्रीन पर है, पढ़कर बता देता हूँ।", 0, "OTP आपके खाते की चाबी है। इसे कभी न बताएँ।"],
+          ["मैं OTP किसी को नहीं बताता, बैंक को भी नहीं।", 1, "बिल्कुल सही। असली बैंक कभी OTP नहीं माँगता।"],
+          ["सिर्फ़ पहले तीन अंक बता देता हूँ।", 0, "आधा OTP भी ठग के काम आता है।"]]},
+        {s: "अब यह ऐप इंस्टॉल कीजिए ताकि मैं दूर से आपका खाता ठीक कर सकूँ। यह बैंक का आधिकारिक ऐप है।", o: [
+          ["इंस्टॉल कर लेता हूँ।", 0, "ऐसे ऐप से ठग आपका पूरा फोन चला सकते हैं।"],
+          ["नहीं। मैं कॉल पर कहे गए ऐप इंस्टॉल नहीं करता। नमस्ते।", 1, "सही। ऐप खुद आधिकारिक स्टोर से ही लें।"],
+          ["पहले लिंक भेजिए, मैं सोचकर देखता हूँ।", 0, "लिंक ही जाल है। कॉल पर दिए लिंक न खोलें।"]]}]}
+    ],
+    pa: [
+      {id: "arrest", icon: "👮", title: "'ਪੁਲਿਸ' ਦੀ ਵੀਡੀਓ ਕਾਲ", steps: [
+        {s: "ਮੈਂ ਮੁੰਬਈ ਸਾਈਬਰ ਕ੍ਰਾਈਮ ਦਾ ਇੰਸਪੈਕਟਰ ਰਾਠੌੜ ਬੋਲ ਰਿਹਾ ਹਾਂ। ਤੁਹਾਡੇ ਨਾਮ ਦੇ ਪਾਰਸਲ ਵਿੱਚੋਂ ਡਰੱਗਜ਼ ਮਿਲੇ ਹਨ। ਤੁਸੀਂ ਡਿਜੀਟਲ ਅਰੈਸਟ ਵਿੱਚ ਹੋ। ਇਸ ਵੀਡੀਓ ਕਾਲ ਤੇ ਬਣੇ ਰਹੋ ਅਤੇ ਕਿਸੇ ਨੂੰ ਨਾ ਦੱਸੋ।", o: [
+          ["ਠੀਕ ਹੈ, ਮੈਂ ਕਾਲ ਤੇ ਰਹਾਂਗਾ ਅਤੇ ਕਿਸੇ ਨੂੰ ਨਹੀਂ ਦੱਸਾਂਗਾ।", 0, "ਪਰਿਵਾਰ ਤੋਂ ਵੱਖ ਕਰਨਾ ਹੀ ਉਨ੍ਹਾਂ ਦਾ ਜਾਲ ਹੈ। ਅਸਲੀ ਪੁਲਿਸ ਵੀਡੀਓ ਕਾਲ ਤੇ ਨਹੀਂ ਰੱਖਦੀ ਅਤੇ ਗੁਪਤ ਰੱਖਣ ਲਈ ਨਹੀਂ ਕਹਿੰਦੀ।"],
+          ["ਮੈਂ ਕਾਲ ਕੱਟ ਰਿਹਾ ਹਾਂ ਅਤੇ ਪਰਿਵਾਰ ਨਾਲ ਨੇੜਲੇ ਥਾਣੇ ਜਾਵਾਂਗਾ।", 1, "ਬਿਲਕੁਲ ਠੀਕ। ਅਸਲੀ ਮਾਮਲਾ ਥਾਣੇ ਵਿੱਚ ਹੀ ਸੁਲਝਦਾ ਹੈ।"],
+          ["ਦੱਸੋ, ਇਸਨੂੰ ਠੀਕ ਕਰਨ ਲਈ ਮੈਨੂੰ ਕੀ ਕਰਨਾ ਪਵੇਗਾ?", 0, "ਗੱਲ ਜਾਰੀ ਰੱਖਣ ਨਾਲ ਉਹ ਤੁਹਾਨੂੰ ਕਾਬੂ ਕਰ ਲੈਂਦੇ ਹਨ। ਕਾਲ ਕੱਟਣਾ ਸਭ ਤੋਂ ਸੁਰੱਖਿਅਤ ਹੈ।"]]},
+        {s: "ਬੇਗੁਨਾਹੀ ਸਾਬਤ ਕਰਨ ਲਈ ਹੁਣੇ ਆਪਣੀ ਸਾਰੀ ਬੱਚਤ RBI ਦੇ ਸੁਰੱਖਿਅਤ ਖਾਤੇ ਵਿੱਚ ਭੇਜੋ। ਜਾਂਚ ਤੋਂ ਬਾਅਦ ਮੋੜ ਦਿੱਤੀ ਜਾਵੇਗੀ।", o: [
+          ["ਬੇਗੁਨਾਹੀ ਸਾਬਤ ਕਰਨ ਲਈ ਪੈਸੇ ਭੇਜ ਦਿੰਦਾ ਹਾਂ।", 0, "'ਸੁਰੱਖਿਅਤ ਖਾਤਾ' ਨਾਮ ਦੀ ਕੋਈ ਚੀਜ਼ ਨਹੀਂ ਹੁੰਦੀ। ਕੋਈ ਸਰਕਾਰੀ ਵਿਭਾਗ ਇਹ ਨਹੀਂ ਕਹਿੰਦਾ।"],
+          ["'ਸੁਰੱਖਿਅਤ ਖਾਤਾ' ਕੁਝ ਨਹੀਂ ਹੁੰਦਾ। ਮੈਂ 1930 ਤੇ ਕਾਲ ਕਰ ਰਿਹਾ ਹਾਂ।", 1, "ਠੀਕ। 1930 ਹੀ ਅਸਲੀ ਮਦਦ ਹੈ।"],
+          ["ਥੋੜ੍ਹਾ ਸਮਾਂ ਦਿਓ, ਅੱਧੇ ਪੈਸੇ ਭੇਜ ਦਿੰਦਾ ਹਾਂ।", 0, "ਅੱਧੇ ਪੈਸੇ ਵੀ ਨੁਕਸਾਨ ਹੀ ਹਨ। ਜਲਦੀ ਮਚਾਉਣਾ ਉਨ੍ਹਾਂ ਦੀ ਚਾਲ ਹੈ।"]]},
+        {s: "ਜੇ ਕਾਲ ਕੱਟੀ ਤਾਂ 10 ਮਿੰਟ ਵਿੱਚ ਤੁਹਾਡੇ ਘਰ ਪੁਲਿਸ ਭੇਜਾਂਗੇ ਅਤੇ ਆਧਾਰ ਫ੍ਰੀਜ਼ ਕਰ ਦਿਆਂਗੇ।", o: [
+          ["ਕਾਲ ਕੱਟ ਕੇ ਪਰਿਵਾਰ ਦੇ ਕਿਸੇ ਮੈਂਬਰ ਨੂੰ ਦੱਸਾਂਗਾ। ਧਮਕੀ ਨਾਲ ਡਰਾਉਣਾ ਉਨ੍ਹਾਂ ਦੀ ਚਾਲ ਹੈ।", 1, "ਬਹੁਤ ਵਧੀਆ। ਧਮਕੀ ਦਾ ਮਤਲਬ ਹੈ ਕਿ ਉਨ੍ਹਾਂ ਦੀਆਂ ਚਾਲਾਂ ਮੁੱਕ ਰਹੀਆਂ ਹਨ।"],
+          ["ਡਰ ਲੱਗ ਰਿਹਾ ਹੈ, ਕਾਲ ਤੇ ਬਣਿਆ ਰਹਿੰਦਾ ਹਾਂ।", 0, "ਡਰ ਹੀ ਉਨ੍ਹਾਂ ਦਾ ਹਥਿਆਰ ਹੈ। ਕਾਲ ਕੱਟਣਾ ਹਮੇਸ਼ਾ ਸੁਰੱਖਿਅਤ ਹੈ।"],
+          ["ਆਪਣਾ ਆਧਾਰ ਨੰਬਰ ਦੇ ਦਿੰਦਾ ਹਾਂ ਤਾਂ ਜੋ ਉਹ ਮੰਨ ਜਾਣ।", 0, "ਕਾਲ ਕਰਨ ਵਾਲੇ ਨੂੰ ਆਧਾਰ ਨੰਬਰ ਕਦੇ ਨਾ ਦਿਓ। ਇਸਦੀ ਦੁਰਵਰਤੋਂ ਹੋ ਸਕਦੀ ਹੈ।"]]}]},
+      {id: "kyc", icon: "🏦", title: "ਬੈਂਕ KYC ਦੀ ਕਾਲ", steps: [
+        {s: "ਸਰ, ਮੈਂ SBI ਹੈੱਡ ਆਫ਼ਿਸ ਤੋਂ ਬੋਲ ਰਿਹਾ ਹਾਂ। ਤੁਹਾਡੀ KYC ਖ਼ਤਮ ਹੋ ਗਈ ਹੈ ਅਤੇ ਇੱਕ ਘੰਟੇ ਵਿੱਚ ਖਾਤਾ ਬੰਦ ਹੋ ਜਾਵੇਗਾ।", o: [
+          ["ਬੈਂਕ ਫ਼ੋਨ ਤੇ ਖਾਤਾ ਬੰਦ ਨਹੀਂ ਕਰਦਾ। ਮੈਂ ਸ਼ਾਖਾ ਜਾ ਕੇ ਪੁੱਛਾਂਗਾ।", 1, "ਠੀਕ। ਹਮੇਸ਼ਾ ਸ਼ਾਖਾ ਜਾਂ ਕਾਰਡ ਤੇ ਛਪੇ ਨੰਬਰ ਤੋਂ ਪੱਕਾ ਕਰੋ।"],
+          ["ਹਾਏ ਨਹੀਂ, ਹੁਣ ਮੈਂ ਕੀ ਕਰਾਂ?", 0, "ਘਬਰਾਹਟ ਹੀ ਉਹ ਚਾਹੁੰਦੇ ਹਨ। ਰੁਕ ਕੇ ਸੋਚੋ।"],
+          ["ਦੱਸੋ ਹੁਣੇ ਕਿਵੇਂ ਅੱਪਡੇਟ ਕਰਾਂ।", 0, "ਫ਼ੋਨ ਤੇ KYC ਅੱਪਡੇਟ ਕਰਨਾ ਠੱਗੀ ਦਾ ਤਰੀਕਾ ਹੈ।"]]},
+        {s: "ਹੁਣ ਤੁਹਾਡੇ ਫ਼ੋਨ ਤੇ ਜੋ 6 ਅੰਕਾਂ ਦਾ OTP ਆਇਆ ਹੈ, ਉਹ ਪਛਾਣ ਲਈ ਦੱਸੋ।", o: [
+          ["OTP ਮੇਰੀ ਸਕ੍ਰੀਨ ਤੇ ਹੈ, ਪੜ੍ਹ ਕੇ ਦੱਸ ਦਿੰਦਾ ਹਾਂ।", 0, "OTP ਤੁਹਾਡੇ ਖਾਤੇ ਦੀ ਚਾਬੀ ਹੈ। ਇਹ ਕਦੇ ਨਾ ਦੱਸੋ।"],
+          ["ਮੈਂ OTP ਕਿਸੇ ਨੂੰ ਨਹੀਂ ਦੱਸਦਾ, ਬੈਂਕ ਨੂੰ ਵੀ ਨਹੀਂ।", 1, "ਬਿਲਕੁਲ ਠੀਕ। ਅਸਲੀ ਬੈਂਕ ਕਦੇ OTP ਨਹੀਂ ਮੰਗਦਾ।"],
+          ["ਸਿਰਫ਼ ਪਹਿਲੇ ਤਿੰਨ ਅੰਕ ਦੱਸ ਦਿੰਦਾ ਹਾਂ।", 0, "ਅੱਧਾ OTP ਵੀ ਠੱਗ ਦੇ ਕੰਮ ਆਉਂਦਾ ਹੈ।"]]},
+        {s: "ਹੁਣ ਇਹ ਐਪ ਇੰਸਟਾਲ ਕਰੋ ਤਾਂ ਜੋ ਮੈਂ ਦੂਰੋਂ ਤੁਹਾਡਾ ਖਾਤਾ ਠੀਕ ਕਰ ਸਕਾਂ। ਇਹ ਬੈਂਕ ਦੀ ਅਧਿਕਾਰਤ ਐਪ ਹੈ।", o: [
+          ["ਇੰਸਟਾਲ ਕਰ ਲੈਂਦਾ ਹਾਂ।", 0, "ਅਜਿਹੀ ਐਪ ਨਾਲ ਠੱਗ ਤੁਹਾਡਾ ਪੂਰਾ ਫ਼ੋਨ ਚਲਾ ਸਕਦੇ ਹਨ।"],
+          ["ਨਹੀਂ। ਮੈਂ ਕਾਲ ਤੇ ਦੱਸੀਆਂ ਐਪਾਂ ਇੰਸਟਾਲ ਨਹੀਂ ਕਰਦਾ। ਸਤ ਸ੍ਰੀ ਅਕਾਲ।", 1, "ਠੀਕ। ਐਪ ਆਪ ਅਧਿਕਾਰਤ ਸਟੋਰ ਤੋਂ ਹੀ ਲਓ।"],
+          ["ਪਹਿਲਾਂ ਲਿੰਕ ਭੇਜੋ, ਮੈਂ ਸੋਚ ਕੇ ਵੇਖਦਾ ਹਾਂ।", 0, "ਲਿੰਕ ਹੀ ਜਾਲ ਹੈ। ਕਾਲ ਤੇ ਦਿੱਤੇ ਲਿੰਕ ਨਾ ਖੋਲ੍ਹੋ।"]]}]}
+    ]
+  };
+  const UI = {
+    en: {pick: "Choose a call to practise", round: "Round", of: "of", next: "Next ➜", finish: "See my score", again: "Practise again", other: "Try the other call", share: "📤 Share my score",
+         grade: ["🛡️ Scam-proof!", "👍 Almost there", "📘 Keep practising"], fell: "Tricks that almost worked on you:", all: "You stopped every trick. Teach someone in your family today.", ok: "✅ ", no: "❌ "},
+    hi: {pick: "अभ्यास के लिए कॉल चुनें", round: "राउंड", of: "में से", next: "आगे ➜", finish: "मेरा स्कोर देखें", again: "फिर से अभ्यास करें", other: "दूसरी कॉल आज़माएँ", share: "📤 स्कोर शेयर करें",
+         grade: ["🛡️ ठगी से पूरी तरह सुरक्षित!", "👍 लगभग तैयार", "📘 और अभ्यास करें"], fell: "ये चालें लगभग चल गई थीं:", all: "आपने हर चाल रोक दी। आज परिवार में किसी को सिखाइए।", ok: "✅ ", no: "❌ "},
+    pa: {pick: "ਅਭਿਆਸ ਲਈ ਕਾਲ ਚੁਣੋ", round: "ਗੇੜ", of: "ਵਿੱਚੋਂ", next: "ਅੱਗੇ ➜", finish: "ਮੇਰਾ ਸਕੋਰ ਵੇਖੋ", again: "ਦੁਬਾਰਾ ਅਭਿਆਸ ਕਰੋ", other: "ਦੂਜੀ ਕਾਲ ਅਜ਼ਮਾਓ", share: "📤 ਸਕੋਰ ਸਾਂਝਾ ਕਰੋ",
+         grade: ["🛡️ ਠੱਗੀ ਤੋਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਸੁਰੱਖਿਅਤ!", "👍 ਲਗਭਗ ਤਿਆਰ", "📘 ਹੋਰ ਅਭਿਆਸ ਕਰੋ"], fell: "ਇਹ ਚਾਲਾਂ ਲਗਭਗ ਚੱਲ ਗਈਆਂ ਸਨ:", all: "ਤੁਸੀਂ ਹਰ ਚਾਲ ਰੋਕ ਦਿੱਤੀ। ਅੱਜ ਪਰਿਵਾਰ ਵਿੱਚ ਕਿਸੇ ਨੂੰ ਸਿਖਾਓ।", ok: "✅ ", no: "❌ "}
+  };
+  const dr = {sc: null, step: 0, score: 0, fell: [], lang: "en"};
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function drPickList() {
+    const lang = $("drLang").value, u = UI[lang];
+    $("drPick").innerHTML = `<div class="dr-prog">${esc(u.pick)}</div>` + D[lang].map((s, i) => `<button type="button" data-i="${i}"><b>${s.icon} ${esc(s.title)}</b></button>`).join("");
+    $("drPick").querySelectorAll("button").forEach(b => b.onclick = () => drBegin(parseInt(b.dataset.i, 10)));
+  }
+  function drBegin(i) {
+    dr.lang = $("drLang").value; dr.sc = D[dr.lang][i]; dr.idx = i; dr.step = 0; dr.score = 0; dr.fell = [];
+    $("drStart").hidden = true; $("drDone").hidden = true; $("drPlay").hidden = false; drRound();
+  }
+  function drRound() {
+    const u = UI[dr.lang], st = dr.sc.steps[dr.step];
+    $("drProg").textContent = `${u.round} ${dr.step + 1} ${u.of} ${dr.sc.steps.length}  ·  ${dr.sc.icon} ${dr.sc.title}`;
+    $("drScammer").textContent = st.s; $("drFb").textContent = ""; $("drNext").hidden = true;
+    $("drOpts").innerHTML = ""; const box = $("drOpts");
+    shuffle(st.o).forEach(o => { const b = document.createElement("button"); b.type = "button"; b.textContent = o[0]; b.onclick = () => drAnswer(b, o, st); box.appendChild(b); });
+    if ($("drVoice").checked) say(st.s, dr.lang);
+  }
+  function drAnswer(btn, o, st) {
+    const u = UI[dr.lang];
+    [...$("drOpts").children].forEach(b => { b.disabled = true; });
+    btn.classList.add(o[1] ? "good" : "bad");
+    if (o[1]) dr.score++; else dr.fell.push(o[2]);
+    if (!o[1]) { const good = st.o.find(x => x[1]); [...$("drOpts").children].forEach(b => { if (b.textContent === good[0]) b.classList.add("good"); }); }
+    $("drFb").textContent = (o[1] ? u.ok : u.no) + o[2];
+    if ($("drVoice").checked) say(o[2], dr.lang);
+    const last = dr.step === dr.sc.steps.length - 1;
+    $("drNext").textContent = last ? u.finish : u.next; $("drNext").hidden = false; $("drNext").focus();
+  }
+  function drFinish() {
+    const u = UI[dr.lang], n = dr.sc.steps.length, g = dr.score === n ? 0 : dr.score >= n - 1 ? 1 : 2;
+    const other = (dr.idx + 1) % D[dr.lang].length;
+    $("drPlay").hidden = true; $("drDone").hidden = false;
+    $("drDone").innerHTML = `<div class="dr-score">${dr.score} / ${n}</div><h3 style="margin:0 0 8px">${esc(u.grade[g])}</h3>` +
+      (dr.fell.length ? `<p style="margin:0 0 6px"><b>${esc(u.fell)}</b></p><ul>${dr.fell.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p>${esc(u.all)}</p>`) +
+      `<div class="lc-controls"><button type="button" class="btn btn-primary" id="drAgain">${esc(u.again)}</button><button type="button" class="btn btn-ghost" id="drOther">${esc(u.other)}</button><button type="button" class="btn btn-ghost" id="drShare">${esc(u.share)}</button></div>`;
+    $("drAgain").onclick = () => drBegin(dr.idx); $("drOther").onclick = () => drBegin(other);
+    $("drShare").onclick = () => { const m = `🎯 I scored ${dr.score}/${n} on SurakshaSathi's Scam Drill (${dr.sc.title}). Can you beat me? Practise saying no to scammers: ${location.origin}/#drill`; window.open("https://wa.me/?text=" + encodeURIComponent(m), "_blank", "noopener"); };
+    if (window.speechSynthesis) speechSynthesis.cancel();
+  }
+  $("drNext").onclick = () => { if (dr.step >= dr.sc.steps.length - 1) drFinish(); else { dr.step++; drRound(); } };
+  $("drLang").onchange = () => { $("drPlay").hidden = true; $("drDone").hidden = true; $("drStart").hidden = false; if (window.speechSynthesis) speechSynthesis.cancel(); drPickList(); };
+  if (!window.speechSynthesis) { const v = $("drVoice"); v.checked = false; v.disabled = true; }
+  drPickList();
+  window.__dr = dr;
+
+  // ===================== District alerts =====================
+  fetch("/api/status").then(r => r.json()).then(j => { window.__waNumber = j.whatsapp_number || ""; alLink(); }).catch(() => {});
+  function alLink() {
+    const d = $("alDistrict").value.trim(), a = $("alSub"), num = window.__waNumber || "";
+    const text = encodeURIComponent("ALERTS " + (d || ""));
+    if (num) { a.href = `https://wa.me/${num}?text=${text}`; a.removeAttribute("aria-disabled"); }
+    else { a.href = `https://wa.me/?text=${text}`; $("alHint").textContent = "Pick the SurakshaSathi chat in WhatsApp and send the message shown. Alerts are opt-in. Reply ALERTS OFF or STOP at any time and we delete your subscription."; }
+  }
+  $("alDistrict").oninput = alLink;
+  $("alPreview").onclick = async () => {
+    const d = $("alDistrict").value.trim(), out = $("alOut"); out.className = "al-out";
+    if (d.length < 2) { out.textContent = "Please type your district first."; return; }
+    out.textContent = "Checking…";
+    try {
+      const r = await fetch(`/api/alerts/preview?district=${encodeURIComponent(d)}&lang=${$("alLang").value}`), j = await r.json();
+      if (!r.ok) { out.textContent = j.detail || "We do not know that district yet."; return; }
+      if (j.active) { out.textContent = j.text; out.className = "al-out live"; }
+      else out.textContent = `✅ No scam surge in ${j.district} right now. If one starts, subscribers get an alert like the ones we send for other districts.`;
+      $("alDistrict").value = j.district; alLink();
+    } catch (e) { out.textContent = "Could not check right now. Please try again."; }
+  };
 })();
 </script>
 </body>

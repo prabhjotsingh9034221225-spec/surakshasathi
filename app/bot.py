@@ -34,6 +34,9 @@ def parse_command(text: str) -> tuple[str | None, str]:
     m = re.match(r"^(district|zila|ज़िला|जिला|ਜ਼ਿਲ੍ਹਾ|ਜ਼ਿਲ੍ਹਾ)\s+(.+)$", t, re.I)
     if m:
         return "district", m.group(2)
+    m = re.match(r"^(alerts?|चेतावनी|ਚੇਤਾਵਨੀ)(?:\s+(.+))?$", t, re.I)
+    if m:
+        return "alerts", (m.group(2) or "").strip()
     if low in {"report", "complaint", "शिकायत", "ਸ਼ਿਕਾਇਤ"}:
         return "report", ""
     if low in {"tip", "lesson", "सीख", "ਸਿੱਖਿਆ"}:
@@ -87,6 +90,9 @@ class Bot:
             return
         if cmd == "district":
             self._cmd_district(user, arg)
+            return
+        if cmd == "alerts":
+            self._cmd_alerts(user, arg)
             return
         if cmd == "report":
             self._cmd_report(user)
@@ -202,6 +208,22 @@ class Bot:
             return
         storage.update_user(phone, district=district)
         self._text(phone, i18n.tr("district_set", lang, district=district))
+
+    def _cmd_alerts(self, user: dict, arg: str) -> None:
+        from .geo import resolve_district
+
+        phone, lang = user["phone"], user["lang"]
+        if arg.lower() in {"off", "stop", "बंद", "ਬੰਦ"}:
+            storage.alert_unsubscribe(phone)
+            self._text(phone, i18n.tr("alerts_off", lang))
+            return
+        district = resolve_district(arg) if arg and arg.lower() != "on" else user.get("district")
+        if not district:
+            self._text(phone, i18n.tr("alerts_need_district", lang) if not arg or arg.lower() == "on" else i18n.tr("district_unknown", lang))
+            return
+        storage.update_user(phone, district=district)
+        storage.alert_subscribe(phone, district)
+        self._text(phone, i18n.tr("alerts_on", lang, district=district))
 
     def _cmd_report(self, user: dict) -> None:
         phone, lang = user["phone"], user["lang"]

@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import benchmark, calls, demo, explain, geo, indicators, intel, llm, speech, storage, whatsapp
+from . import alerts, benchmark, calls, demo, explain, geo, indicators, intel, llm, paycheck, speech, stall, storage, whatsapp
 from .analyzer import analyze
 from .bot import Bot, broadcast_daily_lesson
 from .config import ROOT, settings
@@ -103,6 +103,7 @@ def health() -> dict:
         "llm_enabled": bool(settings.anthropic_api_key),
         "link_checker": "google-safe-browsing" if settings.safe_browsing_key else "heuristics-only",
         "demo_mode": settings.demo_mode,
+        "whatsapp_number": settings.whatsapp_public_number,
     }
 
 
@@ -157,13 +158,14 @@ async def twilio_inbound(request: Request, background: BackgroundTasks, x_twilio
 class AnalyzeIn(BaseModel):
     text: str = Field(min_length=1, max_length=4000)
     lang: str | None = Field(default=None, pattern="^(en|hi|pa)$")
+    fast: bool = False  # rules only, no AI call: used by the live call shield, which checks every few seconds
 
 
 @app.post("/api/analyze")
 def api_analyze(body: AnalyzeIn, request: Request) -> dict:
     rate_limit(request)
     lang = body.lang or detect_language(body.text)
-    a = analyze(body.text, lang)
+    a = analyze(body.text, lang, use_llm=not body.fast)
     return {**a.to_dict(), "explanation": explain.build(a)}
 
 
@@ -281,6 +283,59 @@ def api_check_identifier(body: IdentifierIn, request: Request) -> dict:
     n = stats["reports"]
     level = "high" if n >= 3 else "reported" if n >= 1 else "unknown"
     return {"kind": ind["kind"], "hint": ind["hint"], "level": level, **stats}
+
+
+class PayIn(BaseModel):
+    payee: str | None = Field(default=None, max_length=200)
+    amount: float | None = Field(default=None, ge=0, le=1e9)
+    lang: str = Field(default="en", pattern="^(en|hi|pa)$")
+    stranger: bool = False
+    rushed: bool = False
+    to_receive: bool = False
+    secret: bool = False
+    new_payee: bool = False
+    name_mismatch: bool = False
+    authority: bool = False
+
+
+@app.post("/api/check/payment")
+def api_check_payment(body: PayIn, request: Request) -> dict:
+    """'Before I pay': reports about the payee plus a few plain questions give a stop, wait or go answer."""
+    rate_limit(request)
+    payee = None
+    reports = 0
+    if body.payee and body.payee.strip():
+        found = indicators.extract(body.payee.strip())
+        if found:
+            stats = storage.lookup_indicator(found[0]["digest"])
+            reports = stats["reports"]
+            payee = {"kind": found[0]["kind"], "hint": found[0]["hint"], "reports": reports}
+    flags = body.model_dump(include={"stranger", "rushed", "to_receive", "secret", "new_payee", "name_mismatch", "authority"})
+    return {**paycheck.check(flags, body.amount, reports, body.lang), "payee": payee}
+
+
+class StallIn(BaseModel):
+    text: str = Field(min_length=3, max_length=3000)
+    lang: str = Field(default="en", pattern="^(en|hi|pa)$")
+
+
+@app.post("/api/stall-reply")
+def api_stall_reply(body: StallIn, request: Request) -> dict:
+    """A safe reply the person can send themselves to stall a scammer. We never contact the scammer."""
+    rate_limit(request)
+    a = analyze(body.text, body.lang, online=False)
+    if a.verdict == "safe":
+        raise HTTPException(422, "That message does not look like a scam, so there is no need to stall anyone.")
+    return stall.suggest(a.categories, body.lang)
+
+
+@app.get("/api/alerts/preview")
+def api_alerts_preview(district: str = Query(..., min_length=2, max_length=60), lang: str = Query("en", pattern="^(en|hi|pa)$")) -> dict:
+    """What a subscriber in this district would get right now, plus how many people have opted in."""
+    d = geo.resolve_district(district)
+    if not d:
+        raise HTTPException(422, "We do not know that district yet.")
+    return {"district": d, **alerts.preview(d, lang), "subscribers": storage.alert_subscriber_count()}
 
 
 MAX_IMAGE_BYTES = 5 * 1024 * 1024
@@ -453,6 +508,13 @@ def demo_seed(request: Request, n: int = Query(150, ge=1, le=1000)) -> dict:
 
 
 # ---------------------------------------------------------------- admin
+@app.post("/admin/broadcast-alerts")
+def admin_broadcast_alerts(x_admin_token: str | None = Header(None)) -> JSONResponse:
+    """Send new district outbreak alerts to opted-in subscribers. Call hourly from a cron job."""
+    require_admin(x_admin_token)
+    return JSONResponse(alerts.broadcast(whatsapp.get_sender()))
+
+
 @app.post("/admin/broadcast-lesson")
 def admin_broadcast(x_admin_token: str | None = Header(None)) -> JSONResponse:
     """Send today's 'Scam of the Day' to every user. Call from a daily cron job."""

@@ -52,6 +52,17 @@ CREATE TABLE IF NOT EXISTS feedback (
     verdict TEXT,
     helpful INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS alert_subs (
+    phone TEXT PRIMARY KEY,
+    district TEXT NOT NULL,
+    created_at REAL NOT NULL
+);
+CREATE TABLE IF NOT EXISTS alerts_sent (
+    day TEXT NOT NULL,
+    district TEXT NOT NULL,
+    category TEXT NOT NULL,
+    PRIMARY KEY (day, district, category)
+);
 CREATE TABLE IF NOT EXISTS seen_messages (
     id TEXT PRIMARY KEY,
     ts REAL NOT NULL
@@ -226,6 +237,7 @@ def delete_user(phone: str) -> None:
     """Erase a user's profile (guardian link, district, last flagged message). Anonymous report rows stay."""
     with connect() as c:
         c.execute("DELETE FROM users WHERE phone=?", (phone,))
+        c.execute("DELETE FROM alert_subs WHERE phone=?", (phone,))
 
 
 def clear_guardian(guardian_phone: str) -> int:
@@ -280,3 +292,38 @@ def lookup_indicator(digest: str, days: int = 90) -> dict[str, Any]:
         "last_seen_days": int((time.time() - max(r["ts"] for r in rows)) // 86400) if rows else None,
         "categories": sorted(cats, key=cats.get, reverse=True)[:3],
     }
+
+
+# ---- district alerts -----------------------------------------------------
+def alert_subscribe(phone: str, district: str) -> None:
+    with connect() as c:
+        c.execute("INSERT OR REPLACE INTO alert_subs(phone, district, created_at) VALUES (?,?,?)", (phone, district, time.time()))
+
+
+def alert_unsubscribe(phone: str) -> bool:
+    with connect() as c:
+        return c.execute("DELETE FROM alert_subs WHERE phone=?", (phone,)).rowcount > 0
+
+
+def alert_subscribers(district: str) -> list[dict[str, Any]]:
+    with connect() as c:
+        rows = c.execute(
+            "SELECT a.phone, COALESCE(u.lang,'en') lang FROM alert_subs a LEFT JOIN users u ON u.phone=a.phone WHERE a.district=?",
+            (district,),
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def alert_subscriber_count() -> int:
+    with connect() as c:
+        return int(c.execute("SELECT COUNT(*) FROM alert_subs").fetchone()[0])
+
+
+def alert_already_sent(day: str, district: str, category: str) -> bool:
+    with connect() as c:
+        return c.execute("SELECT 1 FROM alerts_sent WHERE day=? AND district=? AND category=?", (day, district, category)).fetchone() is not None
+
+
+def mark_alert_sent(day: str, district: str, category: str) -> None:
+    with connect() as c:
+        c.execute("INSERT OR IGNORE INTO alerts_sent(day, district, category) VALUES (?,?,?)", (day, district, category))

@@ -287,6 +287,21 @@ T = {
         "hi": "✅ ज़िला सेव हो गया: {district}। अपने इलाके को सुरक्षित रखने में मदद के लिए धन्यवाद।",
         "pa": "✅ ਜ਼ਿਲ੍ਹਾ ਸੇਵ ਹੋ ਗਿਆ: {district}। ਆਪਣੇ ਇਲਾਕੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਣ ਵਿੱਚ ਮਦਦ ਲਈ ਧੰਨਵਾਦ।",
     },
+    "alerts_on": {
+        "en": "🔔 Alerts on for {district}. I will message you when scams spike there. Reply ALERTS OFF to stop.",
+        "hi": "🔔 {district} के लिए चेतावनी चालू। वहाँ ठगी बढ़ने पर मैं आपको संदेश भेजूँगा। बंद करने के लिए ALERTS OFF भेजें।",
+        "pa": "🔔 {district} ਲਈ ਚੇਤਾਵਨੀਆਂ ਚਾਲੂ। ਉੱਥੇ ਠੱਗੀ ਵਧਣ ਤੇ ਮੈਂ ਤੁਹਾਨੂੰ ਸੁਨੇਹਾ ਭੇਜਾਂਗਾ। ਬੰਦ ਕਰਨ ਲਈ ALERTS OFF ਭੇਜੋ।",
+    },
+    "alerts_off": {
+        "en": "🔕 Alerts are off. You will not get district warnings any more.",
+        "hi": "🔕 चेतावनियाँ बंद हो गईं। अब आपको ज़िले की चेतावनी नहीं मिलेगी।",
+        "pa": "🔕 ਚੇਤਾਵਨੀਆਂ ਬੰਦ ਹੋ ਗਈਆਂ। ਹੁਣ ਤੁਹਾਨੂੰ ਜ਼ਿਲ੍ਹੇ ਦੀ ਚੇਤਾਵਨੀ ਨਹੀਂ ਮਿਲੇਗੀ।",
+    },
+    "alerts_need_district": {
+        "en": "📍 Tell me your district to get alerts, for example: ALERTS Ludhiana",
+        "hi": "📍 चेतावनी पाने के लिए अपना ज़िला बताएँ, जैसे: ALERTS Ludhiana",
+        "pa": "📍 ਚੇਤਾਵਨੀਆਂ ਲਈ ਆਪਣਾ ਜ਼ਿਲ੍ਹਾ ਦੱਸੋ, ਜਿਵੇਂ: ALERTS Ludhiana",
+    },
     "district_unknown": {
         "en": "I do not know that district yet. Try the district's English name, like *DISTRICT Ludhiana*.",
         "hi": "यह ज़िला मुझे अभी नहीं पता। अंग्रेज़ी नाम लिखकर देखें, जैसे *DISTRICT Ludhiana*।",
