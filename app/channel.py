@@ -8,7 +8,7 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from . import alerts, intel
+from . import alerts, intel, storage
 
 _GENERIC = "('none','urgency','impersonation','link_link','link_bait','block_threat')"
 _T = {
@@ -51,3 +51,22 @@ def build(lang: str = "en", url: str = "", now: float | None = None, top_n: int 
     lines += ["", t["foot"].format(url=url or "")]
     return {"lang": lang, "text": "\n".join(lines).strip(), "alerts": len(live), "top": [{"category": r["category"], "reports": r["n"]} for r in top],
             "districts": [{"district": d["district"], "reports": d["n"], "top": d["top"]} for d in dist]}
+
+
+def broadcast_digest(sender, url: str = "", now: float | None = None) -> dict[str, int]:
+    """Send the daily report to every opted-in subscriber in their language, at most once per day."""
+    day = time.strftime("%Y-%m-%d", time.gmtime(now or time.time()))
+    if storage.alert_already_sent(day, "*digest*", "daily"):
+        return {"sent": 0, "already_sent_today": 1}
+    texts: dict[str, str] = {}
+    sent = 0
+    for sub in storage.alert_subscribers_all():
+        lang = sub["lang"] if sub["lang"] in _T else "en"
+        text = texts.get(lang) or texts.setdefault(lang, build(lang, url=url, now=now)["text"])
+        try:
+            sender.send_text(sub["phone"], text)
+            sent += 1
+        except Exception as exc:
+            print(f"[digest send failed]: {exc}")
+    storage.mark_alert_sent(day, "*digest*", "daily")
+    return {"sent": sent, "already_sent_today": 0}

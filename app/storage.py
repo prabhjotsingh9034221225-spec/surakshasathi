@@ -314,6 +314,12 @@ def alert_subscribers(district: str) -> list[dict[str, Any]]:
     return [dict(r) for r in rows]
 
 
+def alert_subscribers_all() -> list[dict[str, Any]]:
+    with connect() as c:
+        rows = c.execute("SELECT a.phone, COALESCE(u.lang,'en') lang FROM alert_subs a LEFT JOIN users u ON u.phone=a.phone").fetchall()
+    return [dict(r) for r in rows]
+
+
 def alert_subscriber_count() -> int:
     with connect() as c:
         return int(c.execute("SELECT COUNT(*) FROM alert_subs").fetchone()[0])

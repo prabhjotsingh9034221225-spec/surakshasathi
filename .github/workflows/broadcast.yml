@@ -1,0 +1,17 @@
+name: broadcast
+# Hourly: district outbreak alerts to opted-in subscribers. Daily 09:00 IST: the scam report digest.
+# Needs the repo secret ADMIN_TOKEN (same value as ADMIN_TOKEN in Render).
+on:
+  schedule:
+    - cron: "5 * * * *"
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Outbreak alerts
+        run: curl -fsS --max-time 120 -X POST -H "X-Admin-Token: ${{ secrets.ADMIN_TOKEN }}" https://surakshasathi-l6tj.onrender.com/admin/broadcast-alerts
+      - name: Daily digest
+        if: github.event.schedule == '30 3 * * *' || github.event_name == 'workflow_dispatch'
+        run: curl -fsS --max-time 120 -X POST -H "X-Admin-Token: ${{ secrets.ADMIN_TOKEN }}" https://surakshasathi-l6tj.onrender.com/admin/broadcast-digest

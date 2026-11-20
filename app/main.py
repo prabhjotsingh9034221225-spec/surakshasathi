@@ -522,6 +522,13 @@ def admin_broadcast_alerts(x_admin_token: str | None = Header(None)) -> JSONResp
     return JSONResponse(alerts.broadcast(whatsapp.get_sender()))
 
 
+@app.post("/admin/broadcast-digest")
+def admin_broadcast_digest(request: Request, x_admin_token: str | None = Header(None)) -> JSONResponse:
+    """Send the daily scam report to every opted-in subscriber. Call once a day from a cron job."""
+    require_admin(x_admin_token)
+    return JSONResponse(channel.broadcast_digest(whatsapp.get_sender(), url=str(request.base_url).rstrip("/")))
+
+
 @app.post("/admin/broadcast-lesson")
 def admin_broadcast(x_admin_token: str | None = Header(None)) -> JSONResponse:
     """Send today's 'Scam of the Day' to every user. Call from a daily cron job."""

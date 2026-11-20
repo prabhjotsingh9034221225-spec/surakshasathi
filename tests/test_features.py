@@ -115,3 +115,15 @@ def test_channel_digest_withholds_small_districts_and_has_sections(tmp_path, mon
     assert "Top scams" in out["text"] and "District-wise" in out["text"] and "1930" in out["text"]
     for lang in ("hi", "pa"):
         assert channel.build(lang)["text"]
+
+
+def test_digest_broadcast_once_per_day():
+    from app import channel, storage
+    class S:
+        def __init__(self): self.n = []
+        def send_text(self, to, text): self.n.append((to, text))
+    storage.ensure_user("911111111111")
+    storage.alert_subscribe("911111111111", "Ludhiana")
+    s = S()
+    assert channel.broadcast_digest(s)["sent"] >= 1
+    assert channel.broadcast_digest(s)["already_sent_today"] == 1
