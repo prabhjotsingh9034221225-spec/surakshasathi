@@ -923,6 +923,7 @@ html.hc .hangup{background:#000}
   <a href="#liveCall">📞 Live call</a>
   <a href="#g-help" data-i18n="j_help">💸 Lost money?</a>
   <a href="#g-train">🎯 Practice &amp; alerts</a>
+  <a href="#channelCard">📢 Channel</a>
   <a href="#g-map" data-i18n="j_map">🗺️ Map</a>
   <a href="#g-live" data-i18n="j_live">📡 Live reports</a>
   <a href="#intel" data-i18n="j_intel">📈 Trends</a>
@@ -1175,6 +1176,17 @@ html.hc .hangup{background:#000}
     </div>
   </section>
   </div>
+
+  <section class="card" id="channelCard" aria-labelledby="chTitle" style="margin-top:16px">
+    <div class="card-head"><h3 id="chTitle">📢 WhatsApp Channel: daily scam report</h3><p>One broadcast for everyone: live district alerts, district-wise report and this week's top scams. Followers cannot see each other.</p></div>
+    <div class="al-body">
+      <div class="lc-controls"><select id="chLang" aria-label="Report language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
+        <button type="button" class="btn btn-ghost" id="chCopy">📋 Copy report</button>
+        <a class="btn btn-primary" id="chJoin" href="#channelCard" target="_blank" rel="noopener" hidden>📢 Join the Channel</a></div>
+      <div class="al-out" id="chOut" style="min-height:120px" role="status" aria-live="polite"></div>
+      <p class="ck-hint" id="chHint" style="margin:8px 0 0">Channel owner: copy this report and post it in your WhatsApp Channel. Only totals are shown, small districts are hidden to protect privacy.</p>
+    </div>
+  </section>
 
   <div class="grp" id="g-learn"><span class="grp-num">3</span><div><h2 data-i18n="g-learn_h">Stay informed</h2><p data-i18n="g-learn_p">This week's warnings, where scams are being reported, and how they are changing.</p></div></div>
 
@@ -2272,6 +2284,24 @@ setInterval(refresh, 4000);
       $("alDistrict").value = j.district; alLink();
     } catch (e) { out.textContent = "Could not check right now. Please try again."; }
   };
+})();
+</script>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let cur = "";
+  async function load() {
+    const out = $("chOut"); out.textContent = "Loading…";
+    try {
+      const r = await fetch("/api/channel/digest?lang=" + $("chLang").value), j = await r.json();
+      cur = j.text || ""; out.textContent = cur || "No report yet.";
+      const a = $("chJoin"); if (j.channel_url) { a.href = j.channel_url; a.hidden = false; $("chHint").textContent = "Follow the channel to get the daily report. Followers cannot see each other. Only totals are shown, small districts are hidden."; }
+    } catch (e) { out.textContent = "Could not load the report right now."; }
+  }
+  $("chLang").onchange = load;
+  $("chCopy").onclick = async () => { try { await navigator.clipboard.writeText(cur); $("chCopy").textContent = "✅ Copied"; } catch (e) { const r = document.createRange(); r.selectNodeContents($("chOut")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $("chCopy").textContent = "Select and copy"; } setTimeout(() => $("chCopy").textContent = "📋 Copy report", 2000); };
+  load();
 })();
 </script>
 </body>

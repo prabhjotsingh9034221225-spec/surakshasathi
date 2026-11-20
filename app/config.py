@@ -72,6 +72,7 @@ class Settings:
     # --- Admin / demo ---
     admin_token: str = field(default_factory=lambda: _env("ADMIN_TOKEN", "change-me"))
     whatsapp_public_number: str = field(default_factory=lambda: "".join(ch for ch in _env("WHATSAPP_PUBLIC_NUMBER") if ch.isdigit()))
+    whatsapp_channel_url: str = field(default_factory=lambda: _env("WHATSAPP_CHANNEL_URL").strip())
     demo_mode: bool = field(default_factory=lambda: _flag("DEMO_MODE", True))
     public_base_url: str = field(default_factory=lambda: _env("PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/"))
 

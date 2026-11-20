@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import alerts, benchmark, calls, demo, explain, geo, indicators, intel, llm, paycheck, speech, stall, storage, whatsapp
+from . import alerts, benchmark, channel, calls, demo, explain, geo, indicators, intel, llm, paycheck, speech, stall, storage, whatsapp
 from .analyzer import analyze
 from .bot import Bot, broadcast_daily_lesson
 from .config import ROOT, settings
@@ -104,6 +104,7 @@ def health() -> dict:
         "link_checker": "google-safe-browsing" if settings.safe_browsing_key else "heuristics-only",
         "demo_mode": settings.demo_mode,
         "whatsapp_number": settings.whatsapp_public_number,
+        "channel_url": settings.whatsapp_channel_url,
     }
 
 
@@ -336,6 +337,12 @@ def api_alerts_preview(district: str = Query(..., min_length=2, max_length=60), 
     if not d:
         raise HTTPException(422, "We do not know that district yet.")
     return {"district": d, **alerts.preview(d, lang), "subscribers": storage.alert_subscriber_count()}
+
+
+@app.get("/api/channel/digest")
+def api_channel_digest(request: Request, lang: str = Query("en", pattern="^(en|hi|pa)$")) -> dict:
+    """Ready-to-post WhatsApp Channel update: live alerts, district-wise report and top scams (aggregates only)."""
+    return {**channel.build(lang, url=str(request.base_url).rstrip("/")), "channel_url": settings.whatsapp_channel_url}
 
 
 MAX_IMAGE_BYTES = 5 * 1024 * 1024

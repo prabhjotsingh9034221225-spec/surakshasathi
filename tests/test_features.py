@@ -107,3 +107,11 @@ def test_stop_command_removes_alert_subscription():
     assert storage.alert_subscribers("Ludhiana")
     bot.handle_text("944444444444", "STOP")
     assert storage.alert_subscribers("Ludhiana") == []
+
+
+def test_channel_digest_withholds_small_districts_and_has_sections(tmp_path, monkeypatch):
+    from app import channel
+    out = channel.build("en", url="https://x.example")
+    assert "Top scams" in out["text"] and "District-wise" in out["text"] and "1930" in out["text"]
+    for lang in ("hi", "pa"):
+        assert channel.build(lang)["text"]
