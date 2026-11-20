@@ -1178,13 +1178,16 @@ html.hc .hangup{background:#000}
   </div>
 
   <section class="card" id="channelCard" aria-labelledby="chTitle" style="margin-top:16px">
-    <div class="card-head"><h3 id="chTitle">📢 WhatsApp Channel: daily scam report</h3><p>One broadcast for everyone: live district alerts, district-wise report and this week's top scams. Followers cannot see each other.</p></div>
+    <div class="card-head"><h3 id="chTitle">📢 WhatsApp Channel: daily scam report</h3><p>Follow our channel for live district alerts, the district-wise report and this week's top scams. Followers cannot see each other.</p></div>
     <div class="al-body">
-      <div class="lc-controls"><select id="chLang" aria-label="Report language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
-        <button type="button" class="btn btn-ghost" id="chCopy">📋 Copy report</button>
-        <a class="btn btn-primary" id="chJoin" href="#channelCard" target="_blank" rel="noopener" hidden>📢 Join the Channel</a></div>
-      <div class="al-out" id="chOut" style="min-height:120px" role="status" aria-live="polite"></div>
-      <p class="ck-hint" id="chHint" style="margin:8px 0 0">Channel owner: copy this report and post it in your WhatsApp Channel. Only totals are shown, small districts are hidden to protect privacy.</p>
+      <div class="lc-controls"><a class="btn btn-primary" id="chJoin" href="https://whatsapp.com/channel/0029VbEOrH5KwqSYaL8U6X0w" target="_blank" rel="noopener">📢 Join the Channel</a></div>
+      <details id="chOwner" style="margin-top:8px"><summary style="cursor:pointer;font-weight:600">Channel owner</summary>
+        <div class="lc-controls"><input type="password" id="chKey" placeholder="Admin token" autocomplete="off" aria-label="Admin token" style="padding:10px 12px;border-radius:12px;border:1px solid var(--card-border);background:transparent;color:inherit;font:inherit;height:46px;box-sizing:border-box">
+          <select id="chLang" aria-label="Report language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="pa">ਪੰਜਾਬੀ</option></select>
+          <button type="button" class="btn btn-ghost" id="chLoad">Get today's report</button>
+          <button type="button" class="btn btn-ghost" id="chCopy" hidden>📋 Copy report</button></div>
+        <div class="al-out" id="chOut" style="min-height:60px" role="status" aria-live="polite"></div>
+      </details>
     </div>
   </section>
 
@@ -2290,17 +2293,20 @@ setInterval(refresh, 4000);
 (() => {
   const $ = id => document.getElementById(id);
   let cur = "";
+  try { $("chKey").value = sessionStorage.getItem("ss_ck") || ""; } catch (e) {}
   async function load() {
-    const out = $("chOut"); out.textContent = "Loading…";
+    const out = $("chOut"), key = $("chKey").value.trim();
+    if (!key) { out.textContent = "Enter the admin token."; return; }
+    out.textContent = "Loading…";
     try {
-      const r = await fetch("/api/channel/digest?lang=" + $("chLang").value), j = await r.json();
-      cur = j.text || ""; out.textContent = cur || "No report yet.";
-      const a = $("chJoin"); if (j.channel_url) { a.href = j.channel_url; a.hidden = false; $("chHint").textContent = "Follow the channel to get the daily report. Followers cannot see each other. Only totals are shown, small districts are hidden."; }
+      const r = await fetch("/api/channel/digest?lang=" + $("chLang").value, {headers: {"X-Admin-Token": key}});
+      if (r.status === 401 || r.status === 403) { out.textContent = "Wrong token."; $("chCopy").hidden = true; return; }
+      const j = await r.json(); cur = j.text || ""; out.textContent = cur || "No report yet."; $("chCopy").hidden = !cur;
+      try { sessionStorage.setItem("ss_ck", key); } catch (e) {}
     } catch (e) { out.textContent = "Could not load the report right now."; }
   }
-  $("chLang").onchange = load;
-  $("chCopy").onclick = async () => { try { await navigator.clipboard.writeText(cur); $("chCopy").textContent = "✅ Copied"; } catch (e) { const r = document.createRange(); r.selectNodeContents($("chOut")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $("chCopy").textContent = "Select and copy"; } setTimeout(() => $("chCopy").textContent = "📋 Copy report", 2000); };
-  load();
+  $("chLoad").onclick = load; $("chLang").onchange = () => { if (cur) load(); };
+  $("chCopy").onclick = async () => { try { await navigator.clipboard.writeText(cur); $("chCopy").textContent = "✅ Copied"; } catch (e) { $("chCopy").textContent = "Select and copy"; } setTimeout(() => $("chCopy").textContent = "📋 Copy report", 2000); };
 })();
 </script>
 </body>

@@ -340,8 +340,9 @@ def api_alerts_preview(district: str = Query(..., min_length=2, max_length=60), 
 
 
 @app.get("/api/channel/digest")
-def api_channel_digest(request: Request, lang: str = Query("en", pattern="^(en|hi|pa)$")) -> dict:
-    """Ready-to-post WhatsApp Channel update: live alerts, district-wise report and top scams (aggregates only)."""
+def api_channel_digest(request: Request, lang: str = Query("en", pattern="^(en|hi|pa)$"), x_admin_token: str | None = Header(None)) -> dict:
+    """Ready-to-post Channel report. Owner only: needs the admin token."""
+    require_admin(x_admin_token)
     return {**channel.build(lang, url=str(request.base_url).rstrip("/")), "channel_url": settings.whatsapp_channel_url}
 
 
